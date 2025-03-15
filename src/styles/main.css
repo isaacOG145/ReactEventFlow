@@ -1,33 +1,63 @@
+* {
+  font-family: "Montserrat", sans-serif;
+}
+
 /* Estilos para el contenedor principal */
 .app-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh; /* Ocupa toda la altura de la pantalla */
-    width: 100vw; /* Ocupa todo el ancho de la pantalla */
-    margin: 0;
-    padding: 0;
-    overflow: hidden; /* Evita el desplazamiento */
-  }
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  /* Ocupa toda la altura de la pantalla */
+  width: 100vw;
+  /* Ocupa todo el ancho de la pantalla */
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  /* Evita el desplazamiento */
+}
 
-/* Contenedor principal */
 .background-container {
-    position: relative;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh; /* Ocupa toda la altura de la pantalla */
-    width: 100vw; /* Ocupa todo el ancho de la pantalla */
-    overflow: hidden;
-  }
-  
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100vh;
+  /* Ocupa toda la altura de la pantalla */
+  width: 100vw;
+}
 
-  /* Contenedor del formulario */
-  .login-container {
-    background-color: white;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    text-align: center;
-    z-index: 1; /* Asegura que el formulario esté por encima del fondo */
-  }
+.logo {
+  margin-top: 20px;
+  margin-bottom: 50px;
+  height: 156px;
+  width: 266px;
+}
+
+
+
+/* Contenedor del formulario */
+.login-container {
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  z-index: 1;
+  /* Asegura que el formulario esté por encima del fondo */
+}
+
+h1 {
+  font-optical-sizing: auto;
+  font-weight: 700;
+  font-style: bold;
+  color: #142EA9;
+}
+
+.login-title {
+  font-size: 40px;
+  margin-top: 100px;
+  margin-bottom: 100px;
+}

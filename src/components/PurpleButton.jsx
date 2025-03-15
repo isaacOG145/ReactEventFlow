@@ -7,7 +7,7 @@ export default function PurpleButton({children}){
 
 
     return(
-        <button className="btn btn-purple">{children}</button>
+        <button className="bt btn-purple">{children}</button>
     );
 }
 

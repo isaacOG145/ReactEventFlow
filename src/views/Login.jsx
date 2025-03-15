@@ -12,24 +12,25 @@ function Login() {
             <div className="row">
                 <img className="logo" src={loginLogo} alt="" />
             </div>
-            
-                <div className="login-container col-6 row">
-                    <h1>EventFlow</h1>
-                    <form>
-                        <div className="mb-3">
-                            <label htmlFor="username" className="form-label">Ingresar usuario*</label>
-                            <input type="text" className="form-control" id="username" required />
-                        </div>
-                        <div className="mb-3">
-                            <label htmlFor="password" className="form-label">Ingresar contraseña*</label>
-                            <input type="password" className="form-control" id="password" required />
-                        </div>
-                        <PurpleButton>Iniciar sesión</PurpleButton>
-                    </form>
-                    <p>¿Has olvidado tu contraseña?</p>
-                    <p>Crear una cuenta</p>
-                </div>
-            
+
+            <div className="login-container col-6 row">
+                <h1 className="login-title">Iniciar sesión</h1>
+                <form>
+
+                    <div className="mb-3">
+                        <label htmlFor="username" className="form-label">Ingresar usuario*</label>
+                        <input type="text" className="form-control" id="username" required />
+                    </div>
+                    <div className="mb-3">
+                        <label htmlFor="password" className="form-label">Ingresar contraseña*</label>
+                        <input type="password" className="form-control" id="password" required />
+                    </div>
+                    <PurpleButton>Crear una cuenta</PurpleButton>
+                </form>
+                <p>¿Has olvidado tu contraseña?</p>
+                <p>Crear una cuenta</p>
+            </div>
+
 
         </div>
     );

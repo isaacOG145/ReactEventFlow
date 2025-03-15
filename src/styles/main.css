@@ -8,7 +8,6 @@
 /* Estilos para el contenedor principal */
 .app-container {
   display: flex;
-  justify-content: center;
   align-items: center;
   height: 100vh;
   width: 100vw;
@@ -21,7 +20,6 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center; /* Centra el contenido verticalmente */
   height: 100vh;
   width: 100vw;
 }
@@ -73,7 +71,7 @@ h1 {
   margin-bottom: 5px;
   font-size: 20px;
   font-weight: normal;
-  color: #141414;
+  color: #141414 !important;
 }
 
 /* Estilos para el texto dentro del label */

@@ -5,12 +5,12 @@
   box-sizing: border-box;
 }
 
-/* Estilos para el contenedor principal */
 .app-container {
   display: flex;
-  align-items: center;
-  height: 100vh;
+  flex-direction: column;
+  min-height: 100%;
   width: 100vw;
+  background-color: #F2F6F9;
 }
 
 .background-container {
@@ -119,4 +119,38 @@ h1 {
   text-align: start;
 }
 
+/*header principal*/
+.root-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  padding: 20px;
+  height: 150px;  /* Ajusta según la altura de tu header */
+  border-bottom: 2px solid #8005A3;
+  background-color: #ffffff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
 
+.admin-nav {
+  position: fixed;
+  top: 150px;  /* Empuja el nav hacia abajo para que esté debajo del header */
+  left: 0;
+  height: calc(100vh - 150px);  /* Resta la altura del header */
+  width: 320px;
+  background-color: #5C30B6;
+  padding: 1rem;
+  z-index: 999;  /* Asegura que se quede debajo del header */
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+}
+
+.content {
+  margin-left: 320px;
+  margin-top: 150px;
+  padding: 20px;
+  width: calc(100% - 320px);
+  height: calc(100vh - 150px);
+  overflow-y: auto;
+  background-color: #F2F6F9;
+}

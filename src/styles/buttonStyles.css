@@ -31,3 +31,17 @@
 .btn-blue:active {
     background-color: #0E2385; /* Oscurece el color cuando se presiona el botón */
 }
+
+.btn-nav{
+    font-weight: bold;
+    background-color: #5C30B6;
+    margin-bottom: 15px;
+}
+
+.btn-nav:hover{
+    background-color: #9125B0;
+}
+
+.btn-nav:active{
+    background-color: #650481;
+}

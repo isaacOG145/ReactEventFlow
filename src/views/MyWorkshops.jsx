@@ -5,7 +5,7 @@ import '../styles/main.css';
 import CustomerRootHeader from "../components/CustomerRootHeader";
 import AdminNav from "../components/AdminNav";
 
-export default function Dashboard() {
+export default function MyWorkshops() {
   return (
     <div className="app-container">
       <CustomerRootHeader />
@@ -13,7 +13,7 @@ export default function Dashboard() {
         <AdminNav />
       </div>
       <div className="content">
-        <h1>Contenido Principal</h1>
+        <h1>Mis talleres</h1>
         <p>Este es el contenido principal del dashboard.</p>
         <p>Puedes agregar más elementos aquí.</p>
 

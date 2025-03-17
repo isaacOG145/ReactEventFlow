@@ -1,14 +1,16 @@
-import Login from "./views/login";
-import './styles/main.css'
-import CreateAccount from "./views/createAccount";
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Login from './views/Login'
+import Dashboard from './views/Dashboard';
 
 function App() {
-  return (
-    <div className="app-container">
-      <Login/>
-    </div>
-    
-  );
+    return (
+        <Router>
+            <Routes>
+                <Route path="/" element={<Login />} />
+                <Route path="/dashboard" element={<Dashboard />} />
+            </Routes>
+        </Router>
+    );
 }
 
 export default App;

@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import 'bootstrap/dist/css/bootstrap.min.css';
+
+import '../styles/iconStyles.css';
 import '../styles/main.css';
 
 import CustomerRootHeader from "../components/CustomerRootHeader";
@@ -59,6 +61,7 @@ export default function NewChecker() {
           />
 
           <InputComponent
+            
             label="Email"
             type="email"
             id="email"
@@ -67,7 +70,7 @@ export default function NewChecker() {
             onChange={handleChange}
             required
           />
-          <img src={telefono}/>
+          <img src={telefono} class="icon-sm" />
           <InputComponent
             label="Teléfono"
             type="tel"
@@ -77,8 +80,9 @@ export default function NewChecker() {
             onChange={handleChange}
             required
           />
-           <img src={llave}/>
+           <img src={llave} class="icon-sm" />
           <InputComponent
+          
             label="Contraseña"
             type="password"
             id="password"
@@ -87,7 +91,7 @@ export default function NewChecker() {
             onChange={handleChange}
             required
           />
-          <img src={llave}/>
+          <img src={llave} class="icon-sm"/>
           <InputComponent
             label="Confirmar Contraseña"
             type="password"
@@ -104,3 +108,4 @@ export default function NewChecker() {
     </div>
   );
 }
+

@@ -7,6 +7,11 @@ import AdminNav from "../components/AdminNav";
 import BlueButton from "../components/BlueButton";
 import InputComponent from "../components/InputComponent";
 
+
+// iconos 
+import telefono from "../assets/icons/telefono-inteligente.png"
+import llave from "../assets/icons/llave.png";
+
 export default function NewChecker() {
   const [formData, setFormData] = useState({
     firstName: "",
@@ -62,7 +67,7 @@ export default function NewChecker() {
             onChange={handleChange}
             required
           />
-
+          <img src={telefono}/>
           <InputComponent
             label="Teléfono"
             type="tel"
@@ -72,7 +77,7 @@ export default function NewChecker() {
             onChange={handleChange}
             required
           />
-
+           <img src={llave}/>
           <InputComponent
             label="Contraseña"
             type="password"
@@ -82,7 +87,7 @@ export default function NewChecker() {
             onChange={handleChange}
             required
           />
-
+          <img src={llave}/>
           <InputComponent
             label="Confirmar Contraseña"
             type="password"

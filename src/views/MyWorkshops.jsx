@@ -12,8 +12,8 @@ import CustomerRootHeader from "../components/CustomerRootHeader";
 import AdminNav from "../components/AdminNav";
 
 const events = [
-  { id: 1, name: "Feria de ciencias", description: "Evento con concursos y exposiciones", date: "12/jun/2025" },
-  { id: 2, name: "Concurso de arte", description: "Evento anual para exposiciones artísticas", date: "01/oct/2025" }
+  { id: 1, name: "Feria de ciencias", description: "Evento con concursos y exposiciones", asociado: "Evento_1" },
+  { id: 2, name: "Concurso de arte", description: "Evento anual para exposiciones artísticas", asociado: "Evento_1" }
 ];
 export default function MyWorkshops() {
   return (
@@ -40,7 +40,7 @@ export default function MyWorkshops() {
                    <td>{index + 1}</td>
                    <td>{event.name}</td>
                    <td><a href="#" className="text-primary">{event.description}</a></td>
-                   <td>{event.date}</td>
+                   <td>{event.asociado}</td>
                    <td>
                      <button className="btn btn-link">
                        <img src={iconoDetalles} alt="Ver detalles" width="20" />

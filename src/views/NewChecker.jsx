@@ -1,11 +1,29 @@
-import React from "react";
+import React, { useState } from "react";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../styles/main.css';
 
 import CustomerRootHeader from "../components/CustomerRootHeader";
 import AdminNav from "../components/AdminNav";
+import BlueButton from "../components/BlueButton";
+import InputComponent from "../components/InputComponent";
 
 export default function NewChecker() {
+  const [formData, setFormData] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    phone: "",
+    password: "",
+    confirmPassword: ""
+  });
+
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
+    });
+  };
+
   return (
     <div className="app-container">
       <CustomerRootHeader />
@@ -13,11 +31,71 @@ export default function NewChecker() {
         <AdminNav />
       </div>
       <div className="content">
-        <h1>Crear checador</h1>
-        <p>Este es el contenido principal del dashboard.</p>
-        <p>Puedes agregar más elementos aquí.</p>
+        <h1>Registrar Checador</h1>
+        <form className="register-form">
+          <InputComponent
+            label="Nombre"
+            type="text"
+            id="firstName"
+            name="firstName"
+            value={formData.firstName}
+            onChange={handleChange}
+            required
+          />
+          
+          <InputComponent
+            label="Apellido"
+            type="text"
+            id="lastName"
+            name="lastName"
+            value={formData.lastName}
+            onChange={handleChange}
+            required
+          />
 
+          <InputComponent
+            label="Email"
+            type="email"
+            id="email"
+            name="email"
+            value={formData.email}
+            onChange={handleChange}
+            required
+          />
+
+          <InputComponent
+            label="Teléfono"
+            type="tel"
+            id="phone"
+            name="phone"
+            value={formData.phone}
+            onChange={handleChange}
+            required
+          />
+
+          <InputComponent
+            label="Contraseña"
+            type="password"
+            id="password"
+            name="password"
+            value={formData.password}
+            onChange={handleChange}
+            required
+          />
+
+          <InputComponent
+            label="Confirmar Contraseña"
+            type="password"
+            id="confirmPassword"
+            name="confirmPassword"
+            value={formData.confirmPassword}
+            onChange={handleChange}
+            required
+          />
+
+          <BlueButton>Registrar Nuevo</BlueButton>
+        </form>
       </div>
     </div>
   );
-} 
+}

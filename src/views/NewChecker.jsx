@@ -5,25 +5,18 @@ import '../styles/main.css';
 
 import CustomerRootHeader from "../components/CustomerRootHeader";
 import AdminNav from "../components/AdminNav";
+import InputComponent from "../components/InputComponent";
+import CustomPasswordInput from "../components/CustomPasswordInput";
 import BlueButton from "../components/BlueButton";
 
 // mis iconos
-import contrasena from '../assets/icons/llave.png';
-import telefono from '../assets/icons/telefono-inteligente.png';
+import passwordIcon from '../assets/icons/llave.png'
+import cellphone from '../assets/icons/telefono-inteligente.png';
 import sobre from '../assets/icons/sobres.png';
-import usuario from '../assets/icons/usuario.png';
+import userIcon from '../assets/icons/usuario.png';
 
-export default function NewEvent() {
-  const [eventName, setEventName] = useState("");
-  const [eventDate, setEventDate] = useState("");
-  const [eventDescription, setEventDescription] = useState("");
-  const [gallery, setGallery] = useState([null, null, null]);
+export default function NewChecker() {
 
-  const handleImageChange = (index, file) => {
-    const newGallery = [...gallery];
-    newGallery[index] = file;
-    setGallery(newGallery);
-  };
 
   return (
     <div className="app-container">
@@ -33,97 +26,144 @@ export default function NewEvent() {
       </div>
 
       <div className="content">
-        <h1 className="text-center mb-4">Registrar checador</h1>
 
-        <form className="register-form">
-          <div className="row mb-3">
-            <div className="col-md-6">
-              <label htmlFor="eventName" className="form-label">
-                <img src={usuario} alt="icon" className="icon-sm me-2" />Nombre<span>*</span>
-              </label>
-              <input
-                type="text"
-                id="eventName"
-                value={eventName}
-                onChange={(e) => setEventName(e.target.value)}
-                className="form-control"
-                required
-              />
+
+        <div className="form">
+          <h1 className="text-center mb-4">Registrar checador</h1>
+
+          <form>
+            <div className="row">
+              {/* Primera columna */}
+              <div className="col-md-6">
+                <div className="form-block p-3">
+                  <InputComponent
+                    type="text"
+                    label={
+                      <>
+                        <img src={userIcon} alt="Icono" className="icon-sm" />
+                        <span className="label-text">Nombres</span>
+                        <span className="required-asterisk">*</span>
+                      </>
+                    }
+                    id="name"
+                  />
+                </div>
+              </div>
+
+              {/* Segunda columna */}
+              <div className="col-md-6">
+                <div className="form-block p-3">
+                  <InputComponent
+                    type="text"
+                    label={
+                      <>
+                        <img src={userIcon} alt="Icono" className="icon-sm" />
+                        <span className="label-text">Apellidos</span>
+                        <span className="required-asterisk">*</span>
+                      </>
+                    }
+                    id="lastName"
+                  />
+                </div>
+              </div>
+            </div>
+            <div className="row">
+              {/* Primera columna */}
+              <div className="col-md-6">
+                <div className="form-block p-2">
+                  <InputComponent
+                    type="text"
+                    label={
+                      <>
+                        <img src={sobre} alt="Icono" className="icon-sm" />
+                        <span className="label-text">Correo electrónico</span>
+                        <span className="required-asterisk">*</span>
+                      </>
+                    }
+                    id="email"
+                  />
+                </div>
+              </div>
+
+              {/* Segunda columna */}
+              <div className="col-md-6">
+                <div className="form-block p-2">
+                  <div className="form-block p-2">
+                    <InputComponent
+                      type="text"
+                      label={
+                        <>
+                          <img src={cellphone} alt="Icono" className="icon-sm" />
+                          <span className="label-text">Teléfono</span>
+                          <span className="required-asterisk">*</span>
+                        </>
+                      }
+                      id="cellphone"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="row">
+              {/* Primera columna */}
+              <div className="col-md-6">
+                <div className="form-block p-2">
+                  <CustomPasswordInput
+
+                    label={
+                      <>
+                        <img className="icon-md" src={passwordIcon} alt="Icono" />
+                        <span className="label-text">Ingresar contraseña</span>
+                        <span className="required-asterisk">*</span>
+                      </>
+                    }
+                    id="password"
+                  />
+                </div>
+              </div>
+
+              {/* Segunda columna */}
+              <div className="col-md-6">
+                <div className="form-block p-2">
+                  <CustomPasswordInput
+
+                    label={
+                      <>
+                        <img className="icon-md" src={passwordIcon} alt="Icono" />
+                        <span className="label-text">Confirmar contraseña</span>
+                        <span className="required-asterisk">*</span>
+                      </>
+                    }
+                    id="repeatPassword"
+                  />
+
+                </div>
+              </div>
             </div>
 
-            <div className="col-md-6">
-              <label htmlFor="eventDate" className="form-label">
-                <img src={usuario} alt="icon" className="icon-sm me-2" />Apellido<span>*</span>
-              </label>
-              <input
-                type="text"
-                id="eventDate"
-                value={eventDate}
-                onChange={(e) => setEventDate(e.target.value)}
-                className="form-control"
-                required
-              />
-            </div>
-          </div>
+            <div className="row">
+              
+              <div className="col-md-9">
+                <div className="form-block p-2">
+                  
+                </div>
+              </div>
 
-          <div className="row mb-3">
-            <div className="col-md-6">
-              <label htmlFor="eventDescription" className="form-label">
-                <img src={sobre} alt="icon" className="icon-sm me-2" />Email<span>*</span>
-              </label>
-              <input
-                type="email"
-                id="eventDescription"
-                value={eventDescription}
-                onChange={(e) => setEventDescription(e.target.value)}
-                className="form-control"
-                required
-              />
+  
+              <div className="col-md-3">
+                <div className="form-block p-2">
+                  <BlueButton>Registrar nuevo</BlueButton>
+                </div>
+              </div>
             </div>
+          </form>
 
-            <div className="col-md-6">
-              <label htmlFor="phone" className="form-label">
-                <img src={telefono} alt="icon" className="icon-sm me-2" />Teléfono<span>*</span>
-              </label>
-              <input
-                type="tel"
-                id="phone"
-                className="form-control"
-                required
-              />
-            </div>
-          </div>
 
-          <div className="row mb-3">
-            <div className="col-md-6">
-              <label htmlFor="password" className="form-label">
-                <img src={contrasena} alt="icon" className="icon-sm me-2" />Contraseña<span>*</span>
-              </label>
-              <input
-                type="password"
-                id="password"
-                className="form-control"
-                required
-              />
-            </div>
 
-            <div className="col-md-6">
-              <label htmlFor="confirmPassword" className="form-label">
-                <img src={contrasena} alt="icon" className="icon-sm me-2" />Confirmar contraseña<span>*</span>
-              </label>
-              <input
-                type="password"
-                id="confirmPassword"
-                className="form-control"
-                required
-              />
-            </div>
-          </div>
 
-          <div className="text-end mt-4">
-            <BlueButton>Registrar nuevo</BlueButton>
-          </div>
-        </form>
+        </div>
+
+
       </div>
     </div>
   );

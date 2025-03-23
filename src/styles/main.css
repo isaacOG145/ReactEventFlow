@@ -23,11 +23,11 @@
   height: 100vh;
   width: 100vw;
 }
+/* Estilos para el logo */
 .logo {
-  margin-top: 20px;
-  margin-bottom: 50px;
-  height: 156px;
-  width: 266px;
+  height: auto; /* Mantiene la proporción de la imagen */
+  max-height: 100px; /* Altura máxima del logo */
+  width: auto; /* Ancho automático para mantener la proporción */
 }
 
 .login-container {
@@ -130,6 +130,7 @@ h1 {
 }
 
 /*header principal*/
+/* Estilos para el root-header */
 .root-header {
   position: fixed;
   top: 0;
@@ -137,7 +138,7 @@ h1 {
   right: 0;
   z-index: 1000;
   padding: 20px;
-  height: 150px;  /* Ajusta según la altura de tu header */
+  height: 150px; /* Altura fija de la cabecera */
   border-bottom: 2px solid #8005A3;
   background-color: #ffffff;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -163,4 +164,14 @@ h1 {
   height: calc(100vh - 150px);
   overflow-y: auto;
   background-color: #F2F6F9;
+}
+
+/* Asegura que el contenedor ocupe el 100% de la altura */
+.container-fluid.h-100 {
+  height: 100%;
+}
+
+/* Asegura que la fila ocupe el 100% de la altura */
+.row.h-100 {
+  height: 100%;
 }

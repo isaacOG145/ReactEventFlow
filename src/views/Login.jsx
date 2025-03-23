@@ -68,8 +68,8 @@ export default function Login() {
         if (!password) {
             setPasswordError("La contraseña es requerida");
             isValid = false;
-        } else if (password.length < 6) {
-            setPasswordError("La contraseña debe tener al menos 6 caracteres");
+        } else if (password.length < 8) {
+            setPasswordError("La contraseña debe tener al menos 8 caracteres");
             isValid = false;
         }
 
@@ -85,10 +85,15 @@ export default function Login() {
                 console.log('Autenticación exitosa:', userData);
 
                 // Guardar el token en localStorage
-                localStorage.setItem('token', userData.token);
+                localStorage.setItem('token', userData.jwt);
+                localStorage.setItem('userId', userData.userId);
+                localStorage.setItem('role', userData.role);
 
-                // Redirigir al dashboard
-                navigate('/dashboard');
+                if(userData.role != 'ADMIN' || userData.role != "SUPER_ADMIN"){
+                    navigate('/');
+                }
+                navigate('/dashboard/mis-talleres');
+
             } catch (error) {
                 console.error('Error en la autenticación:', error);
                 setPasswordError('Correo electrónico o contraseña incorrectos');

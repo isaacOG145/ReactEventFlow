@@ -19,7 +19,7 @@ export default function NewChecker() {
 
   const registerChecker = async (formData) => {
     try {
-      const sentByUserId = 2; // Supongamos que el ID del usuario que envía el formulario es 2
+      let sentByUserId = localStorage.getItem('userId');
   
       const response = await fetch('http://localhost:8080/user/saveChecker', {
         method: 'POST',

@@ -1,15 +1,16 @@
 import React, { useState } from "react";
-import eyeOpen from "../assets/icons/show.png"; // Ícono de ojo abierto
-import eyeClosed from "../assets/icons/dontShow.png"; // Ícono de ojo cerrado
-import '../styles/main.css'; // Importa los estilos
+import eyeOpen from "../assets/icons/show.png"; 
+import eyeClosed from "../assets/icons/dontShow.png"; 
+import '../styles/main.css'; 
 
 export default function CustomPasswordInput({
-    type = "password", // Por defecto es un campo de contraseña
+    type = "password", 
     value = "",
     onChange = () => {},
     label = "",
     id = "",
-    required = false
+    required = false,
+    error = "" 
 }) {
     const [showPassword, setShowPassword] = useState(false);
 
@@ -26,16 +27,16 @@ export default function CustomPasswordInput({
             )}
             <div style={{ position: "relative", width: "100%" }}>
                 <input
-                    type={showPassword ? "text" : type} // Cambia el tipo de input
+                    type={showPassword ? "text" : type} 
                     value={value}
                     onChange={onChange}
                     id={id}
                     className="input-field"
                     required={required}
-                    style={{ paddingRight: "40px" }} // Espacio para el ícono
+                    style={{ paddingRight: "40px" }} 
                 />
                 <button
-                    type="button" // Evita que el botón envíe el formulario
+                    type="button" 
                     onClick={togglePasswordVisibility}
                     style={{
                         position: "absolute",
@@ -50,12 +51,14 @@ export default function CustomPasswordInput({
                     aria-label={showPassword ? "Ocultar contraseña" : "Mostrar contraseña"}
                 >
                     <img
-                        src={showPassword ? eyeOpen : eyeClosed} // Cambia el ícono según el estado
+                        src={showPassword ? eyeOpen : eyeClosed} 
                         alt={showPassword ? "Ocultar contraseña" : "Mostrar contraseña"}
-                        style={{ width: "24px", height: "24px" }} // Tamaño del ícono
+                        style={{ width: "24px", height: "24px" }} 
                     />
                 </button>
             </div>
+        
+            {error && <span className="error-message">{error}</span>}
         </div>
     );
 }

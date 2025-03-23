@@ -7,7 +7,8 @@ export default function InputComponent({
     onChange = () => {}, 
     label = "", 
     id = "", 
-    required = false 
+    required = false,
+    error = "" 
 }) {
     return (
         <div className="input-container">
@@ -24,6 +25,8 @@ export default function InputComponent({
                 className="input-field"
                 required={required}
             />
+            
+            {error && <span className="error-message">{error}</span>}
         </div>
     );
 }

@@ -8,6 +8,8 @@ import BlueButton from "../components/BlueButton";
 import galleryIcon from "../assets/icons/galeria-de-imagenes.png";
 import addIcon from "../assets/icons/mas.png";
 
+
+
 export default function NewEvent() {
   const [eventName, setEventName] = useState("");
   const [eventDate, setEventDate] = useState("");

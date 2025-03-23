@@ -1,12 +1,17 @@
 import React, { useState } from "react";
 import 'bootstrap/dist/css/bootstrap.min.css';
+import '../styles/iconStyles.css'
 import '../styles/main.css';
 
 import CustomerRootHeader from "../components/CustomerRootHeader";
 import AdminNav from "../components/AdminNav";
 import BlueButton from "../components/BlueButton";
-import galleryIcon from "../assets/icons/galeria-de-imagenes.png";
-import addIcon from "../assets/icons/mas.png";
+
+// mis iconos
+import contrasena from '../assets/icons/llave.png';
+import telefono from '../assets/icons/telefono-inteligente.png';
+import sobre from '../assets/icons/sobres.png';
+import usuario from '../assets/icons/usuario.png';
 
 export default function NewEvent() {
   const [eventName, setEventName] = useState("");
@@ -33,7 +38,9 @@ export default function NewEvent() {
         <form className="register-form">
           <div className="row mb-3">
             <div className="col-md-6">
-              <label htmlFor="eventName" className="form-label">Nombre<span>*</span></label>
+              <label htmlFor="eventName" className="form-label">
+                <img src={usuario} alt="icon" className="icon-sm me-2" />Nombre<span>*</span>
+              </label>
               <input
                 type="text"
                 id="eventName"
@@ -45,9 +52,11 @@ export default function NewEvent() {
             </div>
 
             <div className="col-md-6">
-              <label htmlFor="eventDate" className="form-label">Fecha<span>*</span></label>
+              <label htmlFor="eventDate" className="form-label">
+                <img src={usuario} alt="icon" className="icon-sm me-2" />Apellido<span>*</span>
+              </label>
               <input
-                type="date"
+                type="text"
                 id="eventDate"
                 value={eventDate}
                 onChange={(e) => setEventDate(e.target.value)}
@@ -59,7 +68,9 @@ export default function NewEvent() {
 
           <div className="row mb-3">
             <div className="col-md-6">
-              <label htmlFor="eventDescription" className="form-label">Email<span>*</span></label>
+              <label htmlFor="eventDescription" className="form-label">
+                <img src={sobre} alt="icon" className="icon-sm me-2" />Email<span>*</span>
+              </label>
               <input
                 type="email"
                 id="eventDescription"
@@ -71,7 +82,9 @@ export default function NewEvent() {
             </div>
 
             <div className="col-md-6">
-              <label htmlFor="phone" className="form-label">Teléfono<span>*</span></label>
+              <label htmlFor="phone" className="form-label">
+                <img src={telefono} alt="icon" className="icon-sm me-2" />Teléfono<span>*</span>
+              </label>
               <input
                 type="tel"
                 id="phone"
@@ -83,7 +96,9 @@ export default function NewEvent() {
 
           <div className="row mb-3">
             <div className="col-md-6">
-              <label htmlFor="password" className="form-label">Contraseña<span>*</span></label>
+              <label htmlFor="password" className="form-label">
+                <img src={contrasena} alt="icon" className="icon-sm me-2" />Contraseña<span>*</span>
+              </label>
               <input
                 type="password"
                 id="password"
@@ -93,7 +108,9 @@ export default function NewEvent() {
             </div>
 
             <div className="col-md-6">
-              <label htmlFor="confirmPassword" className="form-label">Confirmar contraseña<span>*</span></label>
+              <label htmlFor="confirmPassword" className="form-label">
+                <img src={contrasena} alt="icon" className="icon-sm me-2" />Confirmar contraseña<span>*</span>
+              </label>
               <input
                 type="password"
                 id="confirmPassword"

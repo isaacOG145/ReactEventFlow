@@ -45,11 +45,8 @@
     border-bottom: 1px solid #000;
 }
 
-.profile-body {
-    padding: 15px;
-}
-
 .profile-action {
+    color: #000;
     background-color: #fff;
     border: 1px solid #000;
     width: 100%;

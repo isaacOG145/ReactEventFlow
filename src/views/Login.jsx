@@ -76,6 +76,10 @@ export default function Login() {
         return isValid;
     };
 
+    const handleForgotPassword = () => {
+        navigate('/recover-password'); // Redirige a la página de recuperación de contraseña
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
 
@@ -152,7 +156,7 @@ export default function Login() {
                 </form>
             </div>
 
-            <a href="*" className="pass-message">¿Has olvidado la contraseña?</a>
+            <a onClick={handleForgotPassword} className="pass-message">¿Has olvidado la contraseña?</a>
         </div>
     );
 }

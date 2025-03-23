@@ -1,34 +1,23 @@
 import React, { useState } from "react";
 import 'bootstrap/dist/css/bootstrap.min.css';
-
-import '../styles/iconStyles.css';
 import '../styles/main.css';
 
 import CustomerRootHeader from "../components/CustomerRootHeader";
 import AdminNav from "../components/AdminNav";
 import BlueButton from "../components/BlueButton";
-import InputComponent from "../components/InputComponent";
+import galleryIcon from "../assets/icons/galeria-de-imagenes.png";
+import addIcon from "../assets/icons/mas.png";
 
+export default function NewEvent() {
+  const [eventName, setEventName] = useState("");
+  const [eventDate, setEventDate] = useState("");
+  const [eventDescription, setEventDescription] = useState("");
+  const [gallery, setGallery] = useState([null, null, null]);
 
-// iconos 
-import telefono from "../assets/icons/telefono-inteligente.png"
-import llave from "../assets/icons/llave.png";
-
-export default function NewChecker() {
-  const [formData, setFormData] = useState({
-    firstName: "",
-    lastName: "",
-    email: "",
-    phone: "",
-    password: "",
-    confirmPassword: ""
-  });
-
-  const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
+  const handleImageChange = (index, file) => {
+    const newGallery = [...gallery];
+    newGallery[index] = file;
+    setGallery(newGallery);
   };
 
   return (
@@ -37,75 +26,88 @@ export default function NewChecker() {
       <div className="admin-nav">
         <AdminNav />
       </div>
+
       <div className="content">
-        <h1>Registrar Checador</h1>
+        <h1 className="text-center mb-4">Registrar checador</h1>
+
         <form className="register-form">
-          <InputComponent
-            label="Nombre"
-            type="text"
-            id="firstName"
-            name="firstName"
-            value={formData.firstName}
-            onChange={handleChange}
-            required
-          />
-          
-          <InputComponent
-            label="Apellido"
-            type="text"
-            id="lastName"
-            name="lastName"
-            value={formData.lastName}
-            onChange={handleChange}
-            required
-          />
+          <div className="row mb-3">
+            <div className="col-md-6">
+              <label htmlFor="eventName" className="form-label">Nombre<span>*</span></label>
+              <input
+                type="text"
+                id="eventName"
+                value={eventName}
+                onChange={(e) => setEventName(e.target.value)}
+                className="form-control"
+                required
+              />
+            </div>
 
-          <InputComponent
-            
-            label="Email"
-            type="email"
-            id="email"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-            required
-          />
-          <img src={telefono} class="icon-sm" />
-          <InputComponent
-            label="Teléfono"
-            type="tel"
-            id="phone"
-            name="phone"
-            value={formData.phone}
-            onChange={handleChange}
-            required
-          />
-           <img src={llave} class="icon-sm" />
-          <InputComponent
-          
-            label="Contraseña"
-            type="password"
-            id="password"
-            name="password"
-            value={formData.password}
-            onChange={handleChange}
-            required
-          />
-          <img src={llave} class="icon-sm"/>
-          <InputComponent
-            label="Confirmar Contraseña"
-            type="password"
-            id="confirmPassword"
-            name="confirmPassword"
-            value={formData.confirmPassword}
-            onChange={handleChange}
-            required
-          />
+            <div className="col-md-6">
+              <label htmlFor="eventDate" className="form-label">Fecha<span>*</span></label>
+              <input
+                type="date"
+                id="eventDate"
+                value={eventDate}
+                onChange={(e) => setEventDate(e.target.value)}
+                className="form-control"
+                required
+              />
+            </div>
+          </div>
 
-          <BlueButton>Registrar Nuevo</BlueButton>
+          <div className="row mb-3">
+            <div className="col-md-6">
+              <label htmlFor="eventDescription" className="form-label">Email<span>*</span></label>
+              <input
+                type="email"
+                id="eventDescription"
+                value={eventDescription}
+                onChange={(e) => setEventDescription(e.target.value)}
+                className="form-control"
+                required
+              />
+            </div>
+
+            <div className="col-md-6">
+              <label htmlFor="phone" className="form-label">Teléfono<span>*</span></label>
+              <input
+                type="tel"
+                id="phone"
+                className="form-control"
+                required
+              />
+            </div>
+          </div>
+
+          <div className="row mb-3">
+            <div className="col-md-6">
+              <label htmlFor="password" className="form-label">Contraseña<span>*</span></label>
+              <input
+                type="password"
+                id="password"
+                className="form-control"
+                required
+              />
+            </div>
+
+            <div className="col-md-6">
+              <label htmlFor="confirmPassword" className="form-label">Confirmar contraseña<span>*</span></label>
+              <input
+                type="password"
+                id="confirmPassword"
+                className="form-control"
+                required
+              />
+            </div>
+          </div>
+
+          <div className="text-end mt-4">
+            <BlueButton>Registrar nuevo</BlueButton>
+          </div>
         </form>
       </div>
     </div>
   );
 }
-

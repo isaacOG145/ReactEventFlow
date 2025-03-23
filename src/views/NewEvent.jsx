@@ -5,8 +5,8 @@ import '../styles/main.css';
 import CustomerRootHeader from "../components/CustomerRootHeader";
 import AdminNav from "../components/AdminNav";
 import BlueButton from "../components/BlueButton";
-import InputComponent from "../components/InputComponent";
-import NavigateButton from "../components/NavigateButton";
+import galleryIcon from "../assets/icons/galeria-de-imagenes.png";
+import addIcon from "../assets/icons/mas.png";
 
 export default function NewEvent() {
   const [eventName, setEventName] = useState("");
@@ -26,55 +26,73 @@ export default function NewEvent() {
       <div className="admin-nav">
         <AdminNav />
       </div>
+
       <div className="content">
-        <h1>Crear Evento</h1>
+        <h1>Crear evento</h1>
+
         <form className="event-form">
-          <InputComponent
-            label="Nombre del Evento"
-            type="text"
-            id="eventName"
-            value={eventName}
-            onChange={(e) => setEventName(e.target.value)}
-            required
-          />
+          <div className="mb-3 d-flex justify-content-between">
+            <div className="w-50 me-3">
+              <label htmlFor="eventName" className="form-label">Nombre del evento<span>*</span></label>
+              <input
+                type="text"
+                id="eventName"
+                value={eventName}
+                onChange={(e) => setEventName(e.target.value)}
+                className="form-control"
+                required
+              />
+            </div>
 
-          <InputComponent
-            label="Fecha"
-            type="date"
-            id="eventDate"
-            value={eventDate}
-            onChange={(e) => setEventDate(e.target.value)}
-            required
-          />
+            <div className="w-50">
+              <label htmlFor="eventDate" className="form-label">Fecha<span>*</span></label>
+              <input
+                type="date"
+                id="eventDate"
+                value={eventDate}
+                onChange={(e) => setEventDate(e.target.value)}
+                className="form-control"
+                required
+              />
+            </div>
+          </div>
 
-          <div className="input-container">
-            <label htmlFor="eventDescription" className="input-label">Descripción</label>
+          <div className="mb-3">
+            <label htmlFor="eventDescription" className="form-label">Descripción<span>*</span></label>
             <textarea
               id="eventDescription"
-              className="input-field"
               value={eventDescription}
               onChange={(e) => setEventDescription(e.target.value)}
+              className="form-control"
               required
             />
           </div>
 
-          <div className="gallery-container">
-            <label className="input-label">Galería (mínimo 3 imágenes)</label>
-            <div className="gallery-inputs">
+          <div className="mb-3">
+            <label className="form-label">Galería (mínimo 3 imágenes)</label>
+            <div className="d-flex gap-3">
               {gallery.map((image, index) => (
-                <input
-                  key={index}
-                  type="file"
-                  accept="image/*"
-                  onChange={(e) => handleImageChange(index, e.target.files[0])}
-                  className="input-field"
-                  required
-                />
+                <div key={index} className="position-relative">
+                  {image ? (
+                    <img src={URL.createObjectURL(image)} alt="preview" className="img-thumbnail" style={{ width: '100px', height: '100px', objectFit: 'cover' }} />
+                  ) : (
+                    <img src={index === gallery.length - 1 ? addIcon : galleryIcon} alt="icon" className="img-thumbnail" style={{ width: '100px', height: '100px' }} />
+                  )}
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => handleImageChange(index, e.target.files[0])}
+                    className="position-absolute top-0 start-0 w-100 h-100 opacity-0"
+                    required
+                  />
+                </div>
               ))}
             </div>
           </div>
 
-          <BlueButton>Crear Evento</BlueButton>
+          <div className="text-center mt-4">
+            <BlueButton>Crear nuevo</BlueButton>
+          </div>
         </form>
       </div>
     </div>

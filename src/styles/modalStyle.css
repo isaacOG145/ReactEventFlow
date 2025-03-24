@@ -1,0 +1,41 @@
+/* Estilos para el fondo del modal */
+.modal-overlay {
+    position: fixed; /* Asegura que se mantenga sobre todo */
+    top: 0;
+    left: 0;
+    width: 100vw; /* Ocupa todo el ancho */
+    height: 100vh; /* Ocupa toda la altura */
+    background-color: rgba(0, 0, 0, 0.5); /* Fondo oscuro semitransparente */
+    display: flex; /* Asegura que sea visible */
+    justify-content: center; /* Centra horizontalmente */
+    align-items: center; /* Centra verticalmente */
+    z-index: 1050; /* Mayor que el navbar de Bootstrap */
+  }
+  
+  /* Estilos para la tarjeta del modal */
+  .modal-card {
+    width: 90%;
+    max-width: 400px; /* Limita el tamaño */
+    animation: fadeIn 0.3s ease-in-out;
+  }
+  
+  /* Animación de entrada */
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: scale(0.9);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+  
+  /* Asegura que la card no tenga margen o padding extra */
+  .card {
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    background-color: white;
+  }
+  

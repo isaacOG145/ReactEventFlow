@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../styles/main.css';
 import '../styles/tableStyles.css';
@@ -11,6 +11,7 @@ import iconEdit from '../assets/icons/editar.png';
 
 import CustomerRootHeader from "../components/CustomerRootHeader";
 import AdminNav from "../components/AdminNav";
+import DeleteModal from "../modal/DeleteModal"; // Importar el modal
 
 const events = [
   { id: 1, name: "Feria de ciencias", description: "Evento con concursos y exposiciones", asociado: "Evento_1" },
@@ -18,6 +19,24 @@ const events = [
 ];
 
 export default function MyWorkshops() {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedEventId, setSelectedEventId] = useState(null);
+
+  const handleDeleteClick = (eventId) => {
+    setSelectedEventId(eventId);
+    setIsModalOpen(true);
+  };
+
+  const handleConfirmDelete = () => {
+    // Aquí puedes agregar la lógica para eliminar el evento
+    console.log(`Eliminar evento con ID: ${selectedEventId}`);
+    setIsModalOpen(false);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+  };
+
   return (
     <div className="app-container">
       <CustomerRootHeader />
@@ -48,7 +67,9 @@ export default function MyWorkshops() {
                     <div>
                       <button><img className="icon-md" src={iconDetails} alt="Detalles" /></button>
                       <button><img className="icon-md" src={iconEdit} alt="Editar" /></button>
-                      <button><img className="icon-md" src={iconStatus} alt="Eliminar" /></button>
+                      <button onClick={() => handleDeleteClick(event.id)}>
+                        <img className="icon-md" src={iconStatus} alt="Eliminar" />
+                      </button>
                     </div>
                   </td>
                 </tr>
@@ -57,6 +78,11 @@ export default function MyWorkshops() {
           </table>
         </div>
       </div>
+      <DeleteModal
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+        onConfirm={handleConfirmDelete}
+      />
     </div>
   );
 }

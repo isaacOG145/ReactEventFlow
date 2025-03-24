@@ -10,6 +10,7 @@ import MyChechers from './views/MyCheckers';
 import RecoverUserPassword from './views/RecoverUserPassword';
 import RecoverPasswordCode from './views/recoverpasswordcode'; 
 import NewPassword from './views/newpassword';
+import CreateAccount from './views/CreateAccount';
 
 function App() {
     return (
@@ -26,7 +27,8 @@ function App() {
                 <Route path='/dashboard/mis-checadores' element={<MyChechers />} />
                 <Route path="/recover-password" element={<RecoverUserPassword />} />
                 <Route path="/recover-password-code" element={<RecoverPasswordCode />} /> 
-                <Route path='/new-password' element={<NewPassword/>}/>
+                <Route path='/nueva-contraseña' element={<NewPassword/>}/>
+                <Route path= '/crear-cuenta'element={<CreateAccount/>}/>
 
             </Routes>
         </Router>

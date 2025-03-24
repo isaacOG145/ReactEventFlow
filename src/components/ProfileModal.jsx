@@ -153,7 +153,7 @@ const ProfileModal = () => {
                                 </div>
                                 <div className="row">
                                     <div className="col-12">
-                                        <button className="profile-action" onClick={() => navigate("/register")}>
+                                        <button className="profile-action" onClick={() => navigate("/crear-cuenta")}>
                                             Crear cuenta
                                         </button>
                                     </div>

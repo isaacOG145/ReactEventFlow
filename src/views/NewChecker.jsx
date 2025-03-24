@@ -270,7 +270,7 @@ export default function NewChecker() {
 
               <div className="col-md-3">
                 <div className="form-block p-2">
-                  <BlueButton type="submit">Registrar nuevo</BlueButton>
+                  <BlueButton type="submit">Registrar</BlueButton>
                 </div>
               </div>
             </div>

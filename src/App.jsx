@@ -10,7 +10,7 @@ import MyChechers from './views/MyCheckers';
 import RecoverUserPassword from './views/RecoverUserPassword';
 import RecoverPasswordCode from './views/recoverpasswordcode'; 
 import NewPassword from './views/newpassword';
-
+// 
 function App() {
     return (
 

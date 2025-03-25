@@ -1,19 +1,26 @@
 import React from "react";
-import { Modal, Button } from "react-bootstrap";
+import { Modal } from "react-bootstrap";
+import '../styles/modalStyles.css';
 
-const SuccessModal = ({ show, handleClose }) => {
+import BlueButton from './button/EventBlueButton';
+import PurpleButton from './button/EventPurpleButton';
+
+const SuccessModal = ({ show, handleClose, onConfirm }) => {
   return (
     <Modal show={show} onHide={handleClose} centered>
       <Modal.Header closeButton>
-        <Modal.Title>Registro Exitoso</Modal.Title>
+        <Modal.Title>Confirmar creación</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <p>¡El checador ha sido registrado exitosamente!</p>
+        <p>¿Estás seguro de crear este elemento?</p>
       </Modal.Body>
       <Modal.Footer>
-        <Button variant="primary" onClick={handleClose}>
-          Aceptar
-        </Button>
+        <BlueButton onClick={onConfirm}>
+          Crear
+        </BlueButton>
+        <PurpleButton onClick={handleClose}>
+          Cancelar
+        </PurpleButton>
       </Modal.Footer>
     </Modal>
   );

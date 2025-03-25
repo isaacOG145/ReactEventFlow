@@ -1,18 +1,18 @@
-import React, { useState } from "react";
-import 'bootstrap/dist/css/bootstrap.min.css';
-import '../styles/main.css';
-import '../styles/tableStyles.css';
-import '../styles/iconStyles.css';
+import React, { useState } from "react"; 
+import 'bootstrap/dist/css/bootstrap.min.css'; 
+import '../styles/main.css'; 
+import '../styles/tableStyles.css'; 
+import '../styles/iconStyles.css'; 
 
-// Importación de iconos locales
-import iconDetails from '../assets/icons/mas-detalles.png';
-import iconStatus from '../assets/icons/boton-de-play.png';
-import iconStatusoff from '../assets/icons/boton-red.png';
-import iconEdit from '../assets/icons/editar.png';
+// Importación de iconos locales 
+import iconDetails from '../assets/icons/mas-detalles.png'; 
+import iconStatus from '../assets/icons/boton-de-play.png'; 
+import iconStatusoff from '../assets/icons/boton-red.png'; 
+import iconEdit from '../assets/icons/editar.png'; 
 
-import CustomerRootHeader from "../components/CustomerRootHeader";
-import AdminNav from "../components/AdminNav";
-import DeleteModal from "../modal/DeleteModal";
+import CustomerRootHeader from "../components/CustomerRootHeader"; 
+import AdminNav from "../components/AdminNav"; 
+import DeleteModal from "../modal/DeleteModal"; 
 
 export default function MyEvents() {
   const [events, setEvents] = useState([
@@ -31,7 +31,10 @@ export default function MyEvents() {
   const handleConfirmDelete = () => {
     setEvents(prevEvents =>
       prevEvents.map(event =>
-        event.id === selectedEventId ? { ...event, icon: iconStatusoff } : event
+        event.id === selectedEventId ? { 
+          ...event, 
+          icon: event.icon === iconStatus ? iconStatusoff : iconStatus // Alterna entre los iconos
+        } : event
       )
     );
     setIsDeleteModalOpen(false);
@@ -93,7 +96,7 @@ export default function MyEvents() {
       <DeleteModal
         isOpen={isDeleteModalOpen}
         onClose={handleCloseDeleteModal}
-        onConfirm={handleConfirmDelete} // Se pasa la función onConfirm que maneja la actualización
+        onConfirm={handleConfirmDelete} // Confirmar alternar entre iconos
       />
     </div>
   );

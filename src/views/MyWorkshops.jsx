@@ -7,6 +7,7 @@ import '../styles/iconStyles.css';
 // Importación de iconos locales
 import iconDetails from '../assets/icons/mas-detalles.png';
 import iconStatus from '../assets/icons/boton-de-play.png';
+import iconStatusoff from '../assets/icons/boton-red.png';
 import iconEdit from '../assets/icons/editar.png';
 
 import CustomerRootHeader from "../components/CustomerRootHeader";
@@ -14,8 +15,8 @@ import AdminNav from "../components/AdminNav";
 import DeleteModal from "../modal/DeleteModal";
 
 const events = [
-  { id: 1, name: "Feria de ciencias", description: "Evento con concursos y exposiciones", asociado: "Evento_1" },
-  { id: 2, name: "Concurso de arte", description: "Evento anual para exposiciones artísticas", asociado: "Evento_1" }
+  { id: 1, name: "Feria de ciencias", description: "Evento con concursos y exposiciones", asociado: "Evento_1", icon: iconStatus },
+  { id: 2, name: "Concurso de arte", description: "Evento anual para exposiciones artísticas", asociado: "Evento_1", icon: iconStatus }
 ];
 
 export default function MyWorkshops() {
@@ -29,8 +30,13 @@ export default function MyWorkshops() {
   };
 
   const handleConfirmDelete = () => {
-    // Filtramos el array para eliminar el taller seleccionado
-    setWorkshops(workshops.filter(workshop => workshop.id !== selectedEventId));
+    setWorkshops(prevWorkshops =>
+      prevWorkshops.map(workshop =>
+        workshop.id === selectedEventId
+          ? { ...workshop, icon: workshop.icon === iconStatus ? iconStatusoff : iconStatus }
+          : workshop
+      )
+    );
     setIsModalOpen(false);
   };
 
@@ -58,12 +64,12 @@ export default function MyWorkshops() {
               </tr>
             </thead>
             <tbody>
-              {workshops.map((event, index) => (
-                <tr key={event.id}>
+              {workshops.map((workshop, index) => (
+                <tr key={workshop.id}>
                   <td className="td-blue">{index + 1}</td>
-                  <td>{event.name}</td>
-                  <td className="td-blue">{event.description}</td>
-                  <td>{event.asociado}</td>
+                  <td>{workshop.name}</td>
+                  <td className="td-blue">{workshop.description}</td>
+                  <td>{workshop.asociado}</td>
                   <td className="actions">
                     <div>
                       <button className="btn-icon">
@@ -74,9 +80,9 @@ export default function MyWorkshops() {
                       </button>
                       <button 
                         className="btn-icon" 
-                        onClick={() => handleDeleteClick(event.id)}
+                        onClick={() => handleDeleteClick(workshop.id)}
                       >
-                        <img className="icon-md" src={iconStatus} alt="Eliminar" />
+                        <img className="icon-md" src={workshop.icon} alt="Estado" />
                       </button>
                     </div>
                   </td>

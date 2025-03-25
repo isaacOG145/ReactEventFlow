@@ -12,7 +12,11 @@ import iconEdit from '../assets/icons/editar.png';
 import CustomerRootHeader from "../components/CustomerRootHeader";
 import AdminNav from "../components/AdminNav";
 import DeleteModal from "../modal/DeleteModal";
+<<<<<<< HEAD
 
+=======
+import SuccessModal from "../modal/SuccessfulRegistration";
+>>>>>>> c611f6671ea30d521324f2d5e57b0574785461fd
 
 export default function MyEvents() {
   const [events, setEvents] = useState([
@@ -39,9 +43,21 @@ export default function MyEvents() {
     setIsDeleteModalOpen(false);
   };
 
+<<<<<<< HEAD
 
 
 
+=======
+  const handleCloseSuccessModal = () => {
+    setIsSuccessModalOpen(false);
+  };
+
+  // Función simulada para registrar nuevo evento
+  const handleRegisterEvent = () => {
+    // Lógica de registro aquí...
+    setIsSuccessModalOpen(true); // Mostrar modal de éxito después de registrar
+  };
+>>>>>>> c611f6671ea30d521324f2d5e57b0574785461fd
 
   return (
     <div className="app-container">
@@ -52,7 +68,19 @@ export default function MyEvents() {
       <div className="content">
         <h1>Mis eventos</h1>
         
+<<<<<<< HEAD
      
+=======
+        {/* Botón para registrar nuevo evento SIN ícono */}
+        <div className="mb-3">
+          <button 
+            className="btn btn-primary"
+            onClick={handleRegisterEvent}
+          >
+            Registrar nuevo evento
+          </button>
+        </div>
+>>>>>>> c611f6671ea30d521324f2d5e57b0574785461fd
         
         <div className="table-container">
           <table>
@@ -102,7 +130,15 @@ export default function MyEvents() {
         onConfirm={handleConfirmDelete}
       />
 
+<<<<<<< HEAD
       
+=======
+      {/* Modal de registro exitoso */}
+      <SuccessModal 
+        show={isSuccessModalOpen} 
+        handleClose={handleCloseSuccessModal}
+      />
+>>>>>>> c611f6671ea30d521324f2d5e57b0574785461fd
     </div>
   );
 }

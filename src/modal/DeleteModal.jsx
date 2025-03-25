@@ -17,22 +17,12 @@ const DeleteModal = ({ isOpen, onClose, onConfirm }) => {
         <p>¿Estás seguro que deseas eliminar este elemento?</p>
       </Modal.Body>
       <Modal.Footer>
-<<<<<<< HEAD
-         <BlueButton variant="danger" onClick={onConfirm}>
-          Eliminar
+        <BlueButton variant="secondary" onClick={onClose}>
+          Cancelar
         </BlueButton>
-        <PurpleButton variant="secondary" onClick={onClose}>
-          Cancelar
-        </PurpleButton>
-       
-=======
-        <Button variant="secondary" onClick={onClose}>
-          Cancelar
-        </Button>
-        <Button variant="danger" onClick={onConfirm}>
+        <PurpleButton variant="danger" onClick={onConfirm}>
           Eliminar
-        </Button>
->>>>>>> c611f6671ea30d521324f2d5e57b0574785461fd
+        </PurpleButton>
       </Modal.Footer>
     </Modal>
   );

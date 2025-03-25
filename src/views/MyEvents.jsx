@@ -6,13 +6,12 @@ import '../styles/iconStyles.css';
 
 // Importación de iconos locales (solo los que tienes)
 import iconDetails from '../assets/icons/mas-detalles.png';
-import iconStatus from '../assets/icons/eliminar.png';
+import iconStatus from '../assets/icons/boton-de-play.png';
 import iconEdit from '../assets/icons/editar.png';
 
 import CustomerRootHeader from "../components/CustomerRootHeader";
 import AdminNav from "../components/AdminNav";
-
-import SuccessModal from "../modal/SuccessfulRegistration";
+import DeleteModal from "../modal/DeleteModal";
 
 export default function MyEvents() {
   const [events, setEvents] = useState([
@@ -21,23 +20,24 @@ export default function MyEvents() {
   ]);
 
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false); // Added this state for the delete modal
   const [selectedEventId, setSelectedEventId] = useState(null);
 
   const handleDeleteClick = (eventId) => {
     setSelectedEventId(eventId);
-  
+    setIsDeleteModalOpen(true); // Open the delete modal
   };
 
   const handleConfirmDelete = () => {
     setEvents(events.filter(event => event.id !== selectedEventId));
-    setIsSuccessModalOpen(true); // Mostrar modal de éxito después de eliminar
+    setIsSuccessModalOpen(true); // Show success modal after delete
+    setIsDeleteModalOpen(false); // Close the delete modal after confirming delete
   };
 
-  
+  const handleCloseDeleteModal = () => {
+    setIsDeleteModalOpen(false); // Close the delete modal
+  };
 
- 
-
-  // Función simulada para registrar nuevo evento
   const handleRegisterEvent = () => {
     // Lógica de registro aquí...
     setIsSuccessModalOpen(true); // Mostrar modal de éxito después de registrar
@@ -51,9 +51,6 @@ export default function MyEvents() {
       </div>
       <div className="content">
         <h1>Mis eventos</h1>
-        
-        
-        
         <div className="table-container">
           <table>
             <thead>
@@ -95,14 +92,11 @@ export default function MyEvents() {
         </div>
       </div>
 
-      
       <DeleteModal
-        isOpen={isDeleteModalOpen}
-        onClose={handleCloseDeleteModal}
-        onConfirm={handleConfirmDelete}
+        isOpen={isDeleteModalOpen} // Pass the correct state
+        onClose={handleCloseDeleteModal} // Pass the close function
+        onConfirm={handleConfirmDelete} 
       />
-
-      
     </div>
   );
 }

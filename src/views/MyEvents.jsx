@@ -4,7 +4,7 @@ import '../styles/main.css';
 import '../styles/tableStyles.css';
 import '../styles/iconStyles.css';
 
-// Importación de iconos locales (solo los que tienes)
+// Importación de iconos locales
 import iconDetails from '../assets/icons/mas-detalles.png';
 import iconStatus from '../assets/icons/boton-de-play.png';
 import iconStatusoff from '../assets/icons/boton-red.png';
@@ -16,32 +16,29 @@ import DeleteModal from "../modal/DeleteModal";
 
 export default function MyEvents() {
   const [events, setEvents] = useState([
-    { id: 1, name: "Feria de ciencias", description: "Evento con concursos y exposiciones", date: "12/jun/2025" },
-    { id: 2, name: "Concurso de arte", description: "Evento anual para exposiciones artísticas", date: "01/oct/2025" }
+    { id: 1, name: "Feria de ciencias", description: "Evento con concursos y exposiciones", date: "12/jun/2025", icon: iconStatus },
+    { id: 2, name: "Concurso de arte", description: "Evento anual para exposiciones artísticas", date: "01/oct/2025", icon: iconStatus }
   ]);
 
-  const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false); // Added this state for the delete modal
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [selectedEventId, setSelectedEventId] = useState(null);
 
   const handleDeleteClick = (eventId) => {
     setSelectedEventId(eventId);
-    setIsDeleteModalOpen(true); // Open the delete modal
+    setIsDeleteModalOpen(true);
   };
 
   const handleConfirmDelete = () => {
-    setEvents(events.filter(event => event.id !== selectedEventId));
-    setIsSuccessModalOpen(true); // Show success modal after delete
-    setIsDeleteModalOpen(false); // Close the delete modal after confirming delete
+    setEvents(prevEvents =>
+      prevEvents.map(event =>
+        event.id === selectedEventId ? { ...event, icon: iconStatusoff } : event
+      )
+    );
+    setIsDeleteModalOpen(false);
   };
 
   const handleCloseDeleteModal = () => {
-    setIsDeleteModalOpen(false); // Close the delete modal
-  };
-
-  const handleRegisterEvent = () => {
-    // Lógica de registro aquí...
-    setIsSuccessModalOpen(true); // Mostrar modal de éxito después de registrar
+    setIsDeleteModalOpen(false);
   };
 
   return (
@@ -78,11 +75,11 @@ export default function MyEvents() {
                       <button className="btn-icon">
                         <img className="icon-md" src={iconEdit} alt="Editar" />
                       </button>
-                      <button 
-                        className="btn-icon" 
+                      <button
+                        className="btn-icon"
                         onClick={() => handleDeleteClick(event.id)}
                       >
-                        <img className="icon-md" src={iconStatus} alt="Eliminar" />
+                        <img className="icon-md" src={event.icon} alt="Estado" />
                       </button>
                     </div>
                   </td>
@@ -94,9 +91,9 @@ export default function MyEvents() {
       </div>
 
       <DeleteModal
-        isOpen={isDeleteModalOpen} // Pass the correct state
-        onClose={handleCloseDeleteModal} // Pass the close function
-        onConfirm={handleConfirmDelete} 
+        isOpen={isDeleteModalOpen}
+        onClose={handleCloseDeleteModal}
+        onConfirm={handleConfirmDelete} // Se pasa la función onConfirm que maneja la actualización
       />
     </div>
   );

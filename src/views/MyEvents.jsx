@@ -7,6 +7,7 @@ import '../styles/iconStyles.css';
 // Importación de iconos locales (solo los que tienes)
 import iconDetails from '../assets/icons/mas-detalles.png';
 import iconStatus from '../assets/icons/boton-de-play.png';
+import iconStatusoff from '../assets/icons/boton-red.png';
 import iconEdit from '../assets/icons/editar.png';
 
 import CustomerRootHeader from "../components/CustomerRootHeader";

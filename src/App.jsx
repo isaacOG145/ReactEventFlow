@@ -11,6 +11,7 @@ import RecoverUserPassword from './views/RecoverUserPassword';
 import RecoverPasswordCode from './views/recoverpasswordcode'; 
 import NewPassword from './views/newpassword';
 import CreateAccount from './views/CreateAccount';
+import NewWorkshop from './views/NewWorkshops';
 
 function App() {
     return (
@@ -22,6 +23,7 @@ function App() {
                 <Route path="/dashboard" element={<Dashboard />} />
                 <Route path='/dashboard/nuevo-evento' element={<NewEvent />} />
                 <Route path='/dashboard/nuevo-checador' element={<NewChecker />} />
+                <Route path='/dashboard/nuevo-taller' element={<NewWorkshop/>}/>
                 <Route path='/dashboard/mis-talleres' element={<MyWorkshops />} />
                 <Route path='/dashboard/mis-eventos' element={<MyEvents />} />
                 <Route path='/dashboard/mis-checadores' element={<MyChechers />} />

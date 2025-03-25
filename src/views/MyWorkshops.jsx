@@ -12,6 +12,8 @@ import iconEdit from '../assets/icons/editar.png';
 import CustomerRootHeader from "../components/CustomerRootHeader";
 import AdminNav from "../components/AdminNav";
 
+
+
 export default function MyWorkshops() {
   const [workshops, setWorkshops] = useState([]);
   const [loading, setLoading] = useState(true);

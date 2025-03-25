@@ -2,6 +2,7 @@ import React from "react";
 import InputComponent from "../components/InputComponent";
 import CustomPasswordInput from "../components/CustomPasswordInput";
 import BlueButton from "../components/BlueButton";
+import { useState } from "react";
 // Estilos
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../styles/main.css';
@@ -17,6 +18,106 @@ import passwordIcon from '../assets/icons/llave.png';
 
 export default function CreateAccount() {
 
+    const registerChecker = async (formData) => {
+        try {
+
+            const response = await fetch('http://localhost:8080/user/saveAdmin', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    ...formData, // Incluye todos los datos del formulario
+                }),
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.message || 'Error en el registro');
+            }
+
+            const data = await response.json();
+            return data;
+        } catch (error) {
+            console.error('Error:', error);
+            throw error;
+        }
+    };
+
+    const [formData, setFormData] = useState({
+        name: "",
+        lastName: "",
+        password: "",
+        email: "",
+        phone: "",
+        company: ""
+    });
+
+    const [errors, setErrors] = useState({
+        name: "",
+        lastName: "",
+        password: "",
+        email: "",
+        phone: "",
+        rePassword: "",
+        company: ""
+    });
+
+    const handleInputChange = (e) => {
+        const { id, value } = e.target;
+        setFormData({
+            ...formData,
+            [id]: value,
+        });
+    };
+
+    const validateForm = () => {
+        const newErrors = {};
+
+        if (!formData.name) newErrors.name = "El nombre es obligatorio.";
+        if (!formData.lastName) newErrors.lastName = "El apellido es obligatorio.";
+        if (!formData.email.includes("@")) newErrors.email = "Ingresa un email válido.";
+        if (formData.password.length < 8) newErrors.password = "La contraseña debe tener al menos 8 caracteres.";
+        if (formData.password !== formData.rePassword) newErrors.rePassword = "Las contraseñas no coinciden.";
+        // Validación del teléfono
+        if (!formData.phone) {
+            newErrors.phone = "El teléfono es obligatorio.";
+        } else if (!/^\d+$/.test(formData.phone)) {
+            newErrors.phone = "El teléfono solo puede contener números.";
+        }
+
+        setErrors(newErrors);
+        return Object.keys(newErrors).length === 0;
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        if (validateForm()) {
+            try {
+                const response = await registerChecker(formData);
+                console.log("Respuesta del servidor:", response);
+                alert("Administrador registrado exitosamente");
+
+                // Limpiar el formulario
+                setFormData({
+                    name: "",
+                    lastName: "",
+                    password: "",
+                    email: "",
+                    phone: "",
+                    company: ""
+
+                });
+            } catch (error) {
+                console.error("Error al registrar al administrador:", error);
+                alert(error.message);
+            }
+        } else {
+            console.log("Formulario con errores");
+        }
+    };
+
     return (
         <div className="background-container" style={{ backgroundImage: `url(${backgroundSecondary})` }}>
 
@@ -28,13 +129,14 @@ export default function CreateAccount() {
 
                 <h1 className="login-title">Crear cuenta</h1>
 
-                <form>
+                <form onSubmit={handleSubmit}>
                     <div className="row">
                         {/* Primera columna */}
                         <div className="col-md-6">
                             <div className="form-block p-3">
                                 <InputComponent
-
+                                    value={formData.name}
+                                    onChange={handleInputChange}
                                     type="text"
                                     label={
                                         <>
@@ -44,6 +146,7 @@ export default function CreateAccount() {
                                         </>
                                     }
                                     id="name"
+                                    error={errors.name}
 
                                 />
 
@@ -54,7 +157,8 @@ export default function CreateAccount() {
                         <div className="col-md-6">
                             <div className="form-block p-3">
                                 <InputComponent
-
+                                    value={formData.lastName}
+                                    onChange={handleInputChange} 
                                     type="text"
                                     label={
                                         <>
@@ -63,6 +167,7 @@ export default function CreateAccount() {
                                             <span className="required-asterisk">*</span>
                                         </>
                                     }
+                                    error={errors.lastName}
                                     id="lastName"
 
                                 />
@@ -74,6 +179,8 @@ export default function CreateAccount() {
                         <div className="col-md-6">
                             <div className="form-block p-2">
                                 <InputComponent
+                                value={formData.email}
+                                onChange={handleInputChange}
 
                                     type="text"
                                     label={
@@ -84,6 +191,7 @@ export default function CreateAccount() {
                                         </>
                                     }
                                     id="email"
+                                    error={errors.email}
 
                                 />
                             </div>
@@ -94,6 +202,8 @@ export default function CreateAccount() {
                             <div className="form-block p-2">
                                 <div className="form-block p-2">
                                     <InputComponent
+                                    value={formData.phone}
+                                    onChange={handleInputChange}
 
                                         type="text"
                                         label={
@@ -104,7 +214,7 @@ export default function CreateAccount() {
                                             </>
                                         }
                                         id="phone"
-
+                                        error={errors.phone}
                                     />
                                 </div>
                             </div>
@@ -115,6 +225,8 @@ export default function CreateAccount() {
                         <div className="col-md-6">
                             <div className="form-block p-2">
                                 <CustomPasswordInput
+                                value={formData.password}
+                                onChange={handleInputChange}
 
                                     label={
                                         <>
@@ -124,6 +236,7 @@ export default function CreateAccount() {
                                         </>
                                     }
                                     id="password"
+                                    error={errors.password}
 
                                 />
                             </div>
@@ -133,6 +246,8 @@ export default function CreateAccount() {
                         <div className="col-md-6">
                             <div className="form-block p-2">
                                 <CustomPasswordInput
+                                value={formData.rePassword}
+                                onChange={handleInputChange}
 
                                     label={
                                         <>
@@ -142,7 +257,7 @@ export default function CreateAccount() {
                                         </>
                                     }
                                     id="rePassword"
-
+                                    error={errors.rePassword}
                                 />
 
                             </div>
@@ -150,6 +265,8 @@ export default function CreateAccount() {
                     </div>
                     <div className="row mb-3">
                         <InputComponent
+                        value={formData.company}
+                        onChange={handleInputChange}
                             label={
                                 <>
                                     <img className="icon-md" src={passwordIcon} alt="Icono" />
@@ -158,6 +275,7 @@ export default function CreateAccount() {
                                 </>
                             }
                             id="company"
+                            error={errors.company}
                         />
                     </div>
                     <div className="mb-3">

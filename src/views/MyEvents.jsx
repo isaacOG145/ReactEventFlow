@@ -93,7 +93,7 @@ export default function MyEvents() {
       </div>
 
       <DeleteModal
-        isOpen={isDeleteModalOpen} // Pass the correct state
+        isOpen={isDeleteModalOpen} // Pass the correct stat
         onClose={handleCloseDeleteModal} // Pass the close function
         onConfirm={handleConfirmDelete} 
       />

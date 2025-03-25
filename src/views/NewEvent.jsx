@@ -7,19 +7,35 @@ import AdminNav from "../components/AdminNav";
 import BlueButton from "../components/BlueButton";
 import galleryIcon from "../assets/icons/galeria-de-imagenes.png";
 import addIcon from "../assets/icons/mas.png";
-
-
+import SuccessModal from "../modal/SuccessfulRegistration";
 
 export default function NewEvent() {
   const [eventName, setEventName] = useState("");
   const [eventDate, setEventDate] = useState("");
   const [eventDescription, setEventDescription] = useState("");
   const [gallery, setGallery] = useState([null, null, null]);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
 
   const handleImageChange = (index, file) => {
     const newGallery = [...gallery];
     newGallery[index] = file;
     setGallery(newGallery);
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    // Aquí iría la lógica para enviar los datos del evento al servidor
+    // Por ahora, solo mostraremos el modal de éxito
+    setShowSuccessModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setShowSuccessModal(false);
+    // Opcional: resetear el formulario después de cerrar el modal
+    setEventName("");
+    setEventDate("");
+    setEventDescription("");
+    setGallery([null, null, null]);
   };
 
   return (
@@ -32,7 +48,7 @@ export default function NewEvent() {
       <div className="content">
         <h1>Crear evento</h1>
 
-        <form className="event-form">
+        <form className="event-form" onSubmit={handleSubmit}>
           <div className="mb-3 d-flex justify-content-between">
             <div className="w-50 me-3">
               <label htmlFor="eventName" className="form-label">Nombre del evento<span>*</span></label>
@@ -93,10 +109,15 @@ export default function NewEvent() {
           </div>
 
           <div className="text-center mt-4">
-            <BlueButton>Crear nuevo</BlueButton>
+            <BlueButton type="submit">Crear nuevo</BlueButton>
           </div>
         </form>
       </div>
+
+      <SuccessModal 
+        show={showSuccessModal} 
+        handleClose={handleCloseModal}
+      />
     </div>
   );
 }

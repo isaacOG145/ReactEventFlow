@@ -18,10 +18,10 @@ const DeleteModal = ({ isOpen, onClose, onConfirm }) => {
       </Modal.Body>
       <Modal.Footer>
         <BlueButton variant="secondary" onClick={onClose}>
-          Cancelar
+            Eliminar
         </BlueButton>
         <PurpleButton variant="danger" onClick={onConfirm}>
-          Eliminar
+        Cancelar
         </PurpleButton>
       </Modal.Footer>
     </Modal>

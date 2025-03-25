@@ -12,7 +12,7 @@ import iconEdit from '../assets/icons/editar.png';
 
 import CustomerRootHeader from "../components/CustomerRootHeader";
 import AdminNav from "../components/AdminNav";
-import DeleteModal from "../modal/DeleteModal";
+import ChangeStatus from "../modal/ChangeStatus";
 
 const events = [
   { id: 1, name: "Feria de ciencias", description: "Evento con concursos y exposiciones", asociado: "Evento_1", icon: iconStatus },
@@ -93,7 +93,7 @@ export default function MyWorkshops() {
         </div>
       </div>
       
-      <DeleteModal
+      <ChangeStatus
         isOpen={isModalOpen}
         onClose={handleCloseModal}
         onConfirm={handleConfirmDelete}

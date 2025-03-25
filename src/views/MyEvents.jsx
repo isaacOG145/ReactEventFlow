@@ -12,7 +12,7 @@ import iconEdit from '../assets/icons/editar.png';
 
 import CustomerRootHeader from "../components/CustomerRootHeader"; 
 import AdminNav from "../components/AdminNav"; 
-import DeleteModal from "../modal/DeleteModal"; 
+import ChangeStatus from "../modal/ChangeStatus"; 
 
 export default function MyEvents() {
   const [events, setEvents] = useState([
@@ -93,7 +93,7 @@ export default function MyEvents() {
         </div>
       </div>
 
-      <DeleteModal
+      <ChangeStatus
         isOpen={isDeleteModalOpen}
         onClose={handleCloseDeleteModal}
         onConfirm={handleConfirmDelete} // Confirmar alternar entre iconos

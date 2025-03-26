@@ -5,9 +5,8 @@ import '../styles/main.css';
 import CustomerRootHeader from "../components/CustomerRootHeader";
 import AdminNav from "../components/AdminNav";
 import BlueButton from "../components/BlueButton";
-import galleryIcon from "../assets/icons/galeria-de-imagenes.png";
-import addIcon from "../assets/icons/mas.png";
 import SuccessModal from "../modal/SuccessfulRegistration";
+import ImageGallery from "../components/ImageGallery"; // Importar el nuevo componente
 
 export default function NewEvent() {
   const [eventName, setEventName] = useState("");
@@ -24,14 +23,11 @@ export default function NewEvent() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Aquí iría la lógica para enviar los datos del evento al servidor
-    // Por ahora, solo mostraremos el modal de éxito
     setShowSuccessModal(true);
   };
 
   const handleCloseModal = () => {
     setShowSuccessModal(false);
-    // Opcional: resetear el formulario después de cerrar el modal
     setEventName("");
     setEventDate("");
     setEventDescription("");
@@ -86,27 +82,12 @@ export default function NewEvent() {
             />
           </div>
 
-          <div className="mb-3">
-            <label className="form-label">Galería (mínimo 3 imágenes)</label>
-            <div className="d-flex gap-3">
-              {gallery.map((image, index) => (
-                <div key={index} className="position-relative">
-                  {image ? (
-                    <img src={URL.createObjectURL(image)} alt="preview" className="img-thumbnail" style={{ width: '100px', height: '100px', objectFit: 'cover' }} />
-                  ) : (
-                    <img src={index === gallery.length - 1 ? addIcon : galleryIcon} alt="icon" className="img-thumbnail" style={{ width: '100px', height: '100px' }} />
-                  )}
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={(e) => handleImageChange(index, e.target.files[0])}
-                    className="position-absolute top-0 start-0 w-100 h-100 opacity-0"
-                    required
-                  />
-                </div>
-              ))}
-            </div>
-          </div>
+          {/* Usar el componente ImageGallery */}
+          <ImageGallery 
+            gallery={gallery} 
+            handleImageChange={handleImageChange} 
+            required 
+          />
 
           <div className="text-center mt-4">
             <BlueButton type="submit">Crear nuevo</BlueButton>

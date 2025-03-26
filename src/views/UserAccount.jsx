@@ -6,7 +6,7 @@ import '../styles/iconStyles.css';
 
 import backgroundSecondary from '../assets/backgroundSecondary.png';
 
-export default function CreateAccount() {
+export default function UserAccount() {
   const navigate = useNavigate(); // Hook para la navegación
 
   return (

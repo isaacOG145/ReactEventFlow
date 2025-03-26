@@ -7,7 +7,7 @@ import NewChecker from './views/NewChecker';
 import MyEvents from './views/MyEvents';
 import MyWorkshops from './views/MyWorkshops';
 import MyChechers from './views/MyCheckers';
-import CreateAccount from './views/CreateAccount';
+import UserAccount from './views/UserAccount';
 import LandingPage from './views/landingpage';
 import EventDetails from './views/EventDetails';
 

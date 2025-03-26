@@ -4,16 +4,15 @@ import '../styles/main.css';
 import '../styles/tableStyles.css';
 import '../styles/iconStyles.css';
 
-// Importación de componentes de iconos
+// Importación de componentes
 import IconDetails from '../components/icons/iconDetails';
 import IconEdit from '../components/icons/iconEdit';
-
 import iconStatus from '../assets/icons/boton-de-play.png';
 import iconStatusoff from '../assets/icons/boton-red.png';
-
 import CustomerRootHeader from "../components/CustomerRootHeader";
 import AdminNav from "../components/AdminNav";
 import ChangeStatus from "../modal/ChangeStatus";
+import EditEventModal from "../modal/EditEvent"; // Nuevo modal de edición
 
 export default function MyEvents() {
   const [events, setEvents] = useState([
@@ -22,6 +21,7 @@ export default function MyEvents() {
   ]);
 
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [selectedEventId, setSelectedEventId] = useState(null);
 
   const handleDeleteClick = (eventId) => {
@@ -29,12 +29,17 @@ export default function MyEvents() {
     setIsDeleteModalOpen(true);
   };
 
+  const handleEditClick = (eventId) => {
+    setSelectedEventId(eventId);
+    setIsEditModalOpen(true);
+  };
+
   const handleConfirmDelete = () => {
     setEvents(prevEvents =>
       prevEvents.map(event =>
         event.id === selectedEventId ? { 
           ...event, 
-          icon: event.icon === iconStatus ? iconStatusoff : iconStatus // Alterna entre los iconos
+          icon: event.icon === iconStatus ? iconStatusoff : iconStatus
         } : event
       )
     );
@@ -43,6 +48,10 @@ export default function MyEvents() {
 
   const handleCloseDeleteModal = () => {
     setIsDeleteModalOpen(false);
+  };
+
+  const handleCloseEditModal = () => {
+    setIsEditModalOpen(false);
   };
 
   return (
@@ -60,7 +69,7 @@ export default function MyEvents() {
                 <th>No.</th>
                 <th>Nombre</th>
                 <th>Descripción</th>
-                <th>Hora</th>
+                <th>Fecha</th>
                 <th>Acciones</th>
               </tr>
             </thead>
@@ -74,7 +83,7 @@ export default function MyEvents() {
                   <td className="actions">
                     <div>
                       <IconDetails onClick={() => console.log("Ver detalles de", event.id)} />
-                      <IconEdit onClick={() => console.log("Editar", event.id)} />
+                      <IconEdit onClick={() => handleEditClick(event.id)} />
                       <button
                         className="btn-icon"
                         onClick={() => handleDeleteClick(event.id)}
@@ -93,10 +102,14 @@ export default function MyEvents() {
       <ChangeStatus
         isOpen={isDeleteModalOpen}
         onClose={handleCloseDeleteModal}
-        onConfirm={handleConfirmDelete} // Confirmar alternar entre iconos
+        onConfirm={handleConfirmDelete}
+      />
+
+      <EditEventModal
+        show={isEditModalOpen}
+        handleClose={handleCloseEditModal}
+        eventId={selectedEventId}
       />
     </div>
   );
 }
-
-

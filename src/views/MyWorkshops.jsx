@@ -4,11 +4,12 @@ import '../styles/main.css';
 import '../styles/tableStyles.css';
 import '../styles/iconStyles.css';
 
-// Importación de iconos locales
-import iconDetails from '../assets/icons/mas-detalles.png';
+// Importación de componentes de iconos
+import IconDetails from "../components/icons/iconDetails";
+import IconEdit from "../components/icons/iconEdit";
+
 import iconStatus from '../assets/icons/boton-de-play.png';
 import iconStatusoff from '../assets/icons/boton-red.png';
-import iconEdit from '../assets/icons/editar.png';
 
 import CustomerRootHeader from "../components/CustomerRootHeader";
 import AdminNav from "../components/AdminNav";
@@ -72,14 +73,10 @@ export default function MyWorkshops() {
                   <td>{workshop.asociado}</td>
                   <td className="actions">
                     <div>
-                      <button className="btn-icon">
-                        <img className="icon-md" src={iconDetails} alt="Detalles" />
-                      </button>
-                      <button className="btn-icon">
-                        <img className="icon-md" src={iconEdit} alt="Editar" />
-                      </button>
-                      <button 
-                        className="btn-icon" 
+                      <IconDetails onClick={() => console.log("Ver detalles de", workshop.id)} />
+                      <IconEdit onClick={() => console.log("Editar", workshop.id)} />
+                      <button
+                        className="btn-icon"
                         onClick={() => handleDeleteClick(workshop.id)}
                       >
                         <img className="icon-md" src={workshop.icon} alt="Estado" />
@@ -92,7 +89,7 @@ export default function MyWorkshops() {
           </table>
         </div>
       </div>
-      
+
       <ChangeStatus
         isOpen={isModalOpen}
         onClose={handleCloseModal}

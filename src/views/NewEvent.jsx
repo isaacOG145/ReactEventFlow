@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../styles/main.css';
 
@@ -6,9 +7,10 @@ import CustomerRootHeader from "../components/CustomerRootHeader";
 import AdminNav from "../components/AdminNav";
 import BlueButton from "../components/BlueButton";
 import SuccessModal from "../modal/SuccessfulRegistration";
-import ImageGallery from "../components/ImageGallery"; // Importar el nuevo componente
+import ImageGallery from "../components/ImageGallery";
 
 export default function NewEvent() {
+  const navigate = useNavigate();
   const [eventName, setEventName] = useState("");
   const [eventDate, setEventDate] = useState("");
   const [eventDescription, setEventDescription] = useState("");
@@ -32,6 +34,14 @@ export default function NewEvent() {
     setEventDate("");
     setEventDescription("");
     setGallery([null, null, null]);
+  };
+
+  const handleConfirmCreate = () => {
+    // Simular creación del evento y obtener ID
+    const newEventId = Math.floor(Math.random() * 1000);
+    
+    // Redirigir a la página de edición con el nuevo ID
+    navigate(`/dashboard/mis-eventos/editar/${newEventId}`);
   };
 
   return (
@@ -82,7 +92,6 @@ export default function NewEvent() {
             />
           </div>
 
-          {/* Usar el componente ImageGallery */}
           <ImageGallery 
             gallery={gallery} 
             handleImageChange={handleImageChange} 
@@ -98,6 +107,7 @@ export default function NewEvent() {
       <SuccessModal 
         show={showSuccessModal} 
         handleClose={handleCloseModal}
+        onConfirm={handleConfirmCreate} // Añadimos el manejador de confirmación
       />
     </div>
   );

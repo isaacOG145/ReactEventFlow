@@ -10,10 +10,10 @@ import MyChechers from './views/MyCheckers';
 import RecoverUserPassword from './views/RecoverUserPassword';
 import RecoverPasswordCode from './views/recoverpasswordcode'; 
 import NewPassword from './views/newpassword';
-// 
+import EditEvent from '../src/views/EditEvents';
+
 function App() {
     return (
-
         <Router>
             <Routes>
                 <Route path="/" element={<Index />} />
@@ -23,15 +23,13 @@ function App() {
                 <Route path='/dashboard/nuevo-checador' element={<NewChecker />} />
                 <Route path='/dashboard/mis-talleres' element={<MyWorkshops />} />
                 <Route path='/dashboard/mis-eventos' element={<MyEvents />} />
+                <Route path='/dashboard/mis-eventos/editar/:id' element={<EditEvent />} />
                 <Route path='/dashboard/mis-checadores' element={<MyChechers />} />
                 <Route path="/recover-password" element={<RecoverUserPassword />} />
-                <Route path="/recover-password-code" element={<RecoverPasswordCode />} /> 
+                <Route path="/recover-password-code" element={<RecoverPasswordCode />} />
                 <Route path='/new-password' element={<NewPassword/>}/>
-
             </Routes>
         </Router>
-
-
     );
 }
 

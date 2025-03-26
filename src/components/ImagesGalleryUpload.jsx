@@ -1,18 +1,22 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
+import '../styles/imagesStyles.css';
 
 export default function ImageGalleryUpload({
   label = "Galería (mínimo 3 imágenes)",
-  images = [],                     // Array de File objects o URLs (pre-cargadas)
-  onChange = () => {},             // Función al cambiar imágenes: (newImages) => {}
-  minImages = 3,                   // Mínimo requerido
-  error = "",                      // Mensaje de error
+  images = [],
+  onChange = () => { },
+  minImages = 3,
+  error = "",
   required = false,
+  maxImages = 10,
 }) {
-  // Liberar memoria de las URLs al desmontar el componente
+  const fileInputRefs = useRef([]);
+
+  // Clean up object URLs
   useEffect(() => {
     return () => {
       images.forEach((image) => {
-        if (typeof image === "object" && image.preview) {
+        if (image && typeof image === "object" && image.preview) {
           URL.revokeObjectURL(image.preview);
         }
       });
@@ -20,51 +24,77 @@ export default function ImageGalleryUpload({
   }, [images]);
 
   const handleImageChange = (index, file) => {
-    const newImages = [...images];
+    let newImages = [...images]; // Hacer una copia del array
+
     if (file) {
-      newImages[index] = {
-        file,
-        preview: URL.createObjectURL(file), // Previsualización
-      };
+      // Verificar que el archivo sea una imagen
+      if (file.type.startsWith('image/')) {
+        // Revoke previous URL if exists
+        if (newImages[index]?.preview) {
+          URL.revokeObjectURL(newImages[index].preview);
+        }
+
+        newImages[index] = {
+          file,
+          preview: URL.createObjectURL(file),
+        };
+      } else {
+        alert("Por favor, selecciona solo archivos de imagen.");
+        return;
+      }
     } else {
-      newImages.splice(index, 1); // Eliminar imagen si no hay archivo
+      // Eliminar imagen si el archivo es null
+      if (newImages[index]?.preview) {
+        URL.revokeObjectURL(newImages[index].preview);
+      }
+      // Crear un nuevo array sin el elemento en la posición index
+      newImages = newImages.filter((_, i) => i !== index);
     }
-    onChange(newImages);
+
+    onChange(newImages); // Actualizar el estado con la nueva lista de imágenes
   };
 
   const handleAddMore = () => {
-    onChange([...images, null]); // Añadir espacio para nueva imagen
+    if (images.length < maxImages) {
+      onChange([...images, null]); // Agregar un espacio vacío para nueva imagen
+    }
+  };
+
+  const triggerFileInput = (index) => {
+    if (fileInputRefs.current[index]) {
+      fileInputRefs.current[index].click();
+    }
   };
 
   return (
-    <div className="mb-3">
-      <label className="form-label">
-        {label} {required && <span className="text-danger">*</span>}
+    <div className="image-gallery-upload-container">
+      <label className="image-gallery-upload-label">
+        {label} {required && <span className="image-gallery-upload-required">*</span>}
       </label>
-      
-      <div className="d-flex flex-wrap gap-3">
+
+      <div className="image-gallery-upload-gallery">
         {images.map((image, index) => (
-          <div key={index} className="position-relative">
+          <div key={index} className="image-gallery-upload-wrapper">
             {image ? (
-              <img
-                src={image.preview || image} // Soporta tanto Files como URLs strings
-                alt={`Preview ${index + 1}`}
-                className="img-thumbnail"
-                style={{
-                  width: "100px",
-                  height: "100px",
-                  objectFit: "cover",
-                }}
-              />
+              <>
+                <img
+                  src={image.preview || image}
+                  alt={`Preview ${index + 1}`}
+                  className="image-gallery-upload-thumbnail"
+                />
+                <button
+                  type="button"
+                  className="image-gallery-upload-delete btn btn-danger btn-sm"
+                  onClick={() => handleImageChange(index, null)} // Llamar para eliminar la imagen
+                  aria-label={`Eliminar imagen ${index + 1}`}
+                >
+                  ×
+                </button>
+              </>
             ) : (
               <div
-                className="img-thumbnail d-flex justify-content-center align-items-center"
-                style={{
-                  width: "100px",
-                  height: "100px",
-                  cursor: "pointer",
-                  background: "#f8f9fa",
-                }}
+                className="image-gallery-upload-placeholder"
+                onClick={() => triggerFileInput(index)}
               >
                 <span>+</span>
               </div>
@@ -74,30 +104,36 @@ export default function ImageGalleryUpload({
               type="file"
               accept="image/*"
               onChange={(e) => handleImageChange(index, e.target.files?.[0])}
-              className="position-absolute top-0 start-0 w-100 h-100 opacity-0"
+              className="image-gallery-upload-input"
               aria-label={`Subir imagen ${index + 1}`}
+              ref={el => fileInputRefs.current[index] = el}
             />
           </div>
         ))}
 
-        {/* Botón para añadir más imágenes */}
-        {images.length < 10 && ( // Límite opcional
+        {/* Add more button */}
+        {images.length < maxImages && (
           <button
             type="button"
-            className="btn btn-outline-primary"
-            style={{ width: "100px", height: "100px" }}
+            className="image-gallery-upload-add"
             onClick={handleAddMore}
+            disabled={images.length >= maxImages}
           >
             +
           </button>
         )}
       </div>
 
-      {/* Validación y errores */}
-      {error && <div className="text-danger small mt-2">{error}</div>}
+      {/* Validation messages */}
+      {error && <div className="image-gallery-upload-error">{error}</div>}
       {required && images.length < minImages && (
-        <div className="text-danger small mt-2">
-          Mínimo {minImages} imágenes requeridas.
+        <div className="image-gallery-upload-error">
+          Mínimo {minImages} imágenes requeridas. Subidas: {images.length}
+        </div>
+      )}
+      {images.length >= maxImages && (
+        <div className="image-gallery-upload-info">
+          Máximo {maxImages} imágenes permitidas.
         </div>
       )}
     </div>

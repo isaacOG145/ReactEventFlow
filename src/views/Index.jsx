@@ -1,15 +1,15 @@
-import React from "react";
-import 'bootstrap/dist/css/bootstrap.min.css';
-import '../styles/main.css';
+ import React from "react";
+ import 'bootstrap/dist/css/bootstrap.min.css';
+ import '../styles/main.css';
 
 
-import CustomerRootHeader from "../components/CustomerRootHeader";
+ import CustomerRootHeader from "../components/CustomerRootHeader";
 
-export default function Index() {
-  return (
+ export default function Index() {
+   return (
     <div className="app-container">
-      <CustomerRootHeader />
+   <CustomerRootHeader />
       
-    </div>
-  );
-} 
+   </div>
+   );
+ } 

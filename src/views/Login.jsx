@@ -74,7 +74,7 @@ export default function Login() {
         }
 
         return isValid;
-    };
+    };    
 
     const handleSubmit = async (e) => {
         e.preventDefault();

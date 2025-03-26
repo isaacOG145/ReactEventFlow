@@ -1,6 +1,10 @@
 import React, { useEffect, useRef } from "react";
 import '../styles/imagesStyles.css';
 
+
+import VoidImage from '../assets/icons/galeria-de-imagenes.png';
+import MoreImages from '../assets/icons/mas.png'
+
 export default function ImageGalleryUpload({
   label = "Galería (mínimo 3 imágenes)",
   images = [],
@@ -66,6 +70,16 @@ export default function ImageGalleryUpload({
     }
   };
 
+  // Eliminar imagen por index
+  const handleDeleteImage = (index) => {
+    let newImages = [...images];
+    if (newImages[index]?.preview) {
+      URL.revokeObjectURL(newImages[index].preview);
+    }
+    newImages = newImages.filter((_, i) => i !== index); // Filtramos la imagen en el índice
+    onChange(newImages); // Actualizamos el estado
+  };
+
   return (
     <div className="image-gallery-upload-container">
       <label className="image-gallery-upload-label">
@@ -85,7 +99,7 @@ export default function ImageGalleryUpload({
                 <button
                   type="button"
                   className="image-gallery-upload-delete btn btn-danger btn-sm"
-                  onClick={() => handleImageChange(index, null)} // Llamar para eliminar la imagen
+                  onClick={() => handleDeleteImage(index)} // Llamar para eliminar la imagen
                   aria-label={`Eliminar imagen ${index + 1}`}
                 >
                   ×
@@ -94,9 +108,9 @@ export default function ImageGalleryUpload({
             ) : (
               <div
                 className="image-gallery-upload-placeholder"
-                onClick={() => triggerFileInput(index)}
+                onClick={() => triggerFileInput(index)} // Al hacer clic, abre el selector de archivos
               >
-                <span>+</span>
+                <img className="img-icon" src={VoidImage} alt="img" />
               </div>
             )}
 
@@ -107,11 +121,12 @@ export default function ImageGalleryUpload({
               className="image-gallery-upload-input"
               aria-label={`Subir imagen ${index + 1}`}
               ref={el => fileInputRefs.current[index] = el}
+              style={{ display: "none" }} // Ocultar el input de archivo
             />
           </div>
         ))}
 
-        {/* Add more button */}
+        {/* Botón de agregar nueva imagen */}
         {images.length < maxImages && (
           <button
             type="button"
@@ -119,16 +134,16 @@ export default function ImageGalleryUpload({
             onClick={handleAddMore}
             disabled={images.length >= maxImages}
           >
-            +
+            <img className="more-icon" src={MoreImages} alt="icon" />
           </button>
         )}
       </div>
 
-      {/* Validation messages */}
+      {/* Mensajes de validación */}
       {error && <div className="image-gallery-upload-error">{error}</div>}
       {required && images.length < minImages && (
         <div className="image-gallery-upload-error">
-          Mínimo {minImages} imágenes requeridas. Subidas: {images.length}
+          Mínimo {minImages} imágenes requeridas.
         </div>
       )}
       {images.length >= maxImages && (

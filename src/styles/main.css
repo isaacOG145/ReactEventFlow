@@ -85,6 +85,20 @@ h1 {
   color: #141414 !important;
 }
 
+/* styles/main.css */
+.select-field {
+  appearance: none;       /* Elimina el estilo por defecto del navegador */
+  padding: 0.5rem;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  background-color: white;
+}
+
+.select-field:focus {
+  outline: none;
+  border-color: #007bff;
+}
+
 /* Estilos para el texto dentro del label */
 .label-text {
   margin-right: 4px; /* Espacio entre el texto y el asterisco */

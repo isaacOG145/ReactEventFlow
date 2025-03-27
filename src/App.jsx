@@ -32,6 +32,8 @@ function App() {
                 <Route path='/nueva-contraseña' element={<NewPassword/>}/>
                 <Route path= '/crear-cuenta'element={<CreateAccount/>}/>
 
+                
+
             </Routes>
         </Router>
 

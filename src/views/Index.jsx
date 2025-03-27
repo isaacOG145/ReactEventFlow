@@ -1,14 +1,18 @@
 import React from "react";
+import { Carousel } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../styles/main.css';
 import '../styles/modalStyles.css';
 import '../styles/iconStyles.css';
+
 import CustomerRootHeader from "../components/CustomerRootHeader";
+import ActivityCard from "../components/ActivityCard";
 
 import Admin from '../assets/icons/administrator.png';
 import UserAvatar from '../assets/icons/user-avatar.png';
 import QRImg from '../assets/icons/qr.png';
 import Enrollment from '../assets/icons/enrollment.png';
+
 
 export default function Index() {
   return (
@@ -61,11 +65,9 @@ export default function Index() {
             </div>
           </div>
         </div>
-        <div className="row justify-content-center">
-          <div className="card-actitity col-4">
-            <div>{/**Aqui ira una seccion que sera un pequeño carrusel */}</div>
-            <div className="card-activity-content">contenido</div>
-          </div>
+        <div className="row justify-content-center mt-4">
+        <ActivityCard /><ActivityCard /> <ActivityCard /><ActivityCard /> 
+        
         </div>
 
 

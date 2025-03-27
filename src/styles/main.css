@@ -8,7 +8,7 @@
 .app-container {
   display: flex;
   flex-direction: column;
-  min-height: 100%;
+  min-height: 100vh;
   width: 100vw;
   background-color: #F2F6F9;
 }
@@ -26,13 +26,10 @@
 }
 
 .content-container {
+  margin-top: 150px; /* Espacio para el header fijo */
   width: 100%;
-  flex: 1;
-  display: fixed;
-  justify-content: center;
-  position: fixed;
-  top: 150px;
-  background-color: #F2F6F9;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .presentation-block {
@@ -46,7 +43,7 @@
   padding: 20px;
 }
 
-.about-us h2 {
+h2 {
   font-weight: bold;
   font-size: 40px;
   margin-bottom: 20px;
@@ -97,6 +94,16 @@
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   text-align: center;
   width: 90%; /* Ocupa el ancho completo del contenedor padre */
+  margin: 0 auto;
+}
+
+.form-asign{
+  background-color: white;
+  padding: 30px;
+  border-radius: 15px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  width: 60%; /* Ocupa el ancho completo del contenedor padre */
   margin: 0 auto;
 }
 
@@ -239,12 +246,93 @@ h1 {
   height: 100%;
 }
 
-.card-actitity{
-  background-color: #fff;
-  border-radius: 15px;
-  margin-top: 20px;
+
+/* Contenedor principal */
+.card-activity {
+  margin: 10px 40px;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  margin-bottom: 2rem;
+  background: white;
 }
 
-.card-actitity-content{
-  padding: 10px;
+.card-activity:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.12);
+}
+
+/* Carrusel */
+.activity-carousel {
+  max-height: 350px;
+  overflow: hidden;
+}
+
+.carousel-image-container {
+  height: 350px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f8f9fa; /* Fondo mientras carga */
+}
+
+.carousel-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  transition: transform 0.5s ease;
+}
+
+/* Controles del carrusel */
+.carousel-control-prev,
+.carousel-control-next {
+  width: 40px;
+  height: 40px;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 50%;
+  top: 50%;
+  transform: translateY(-50%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.card-activity:hover .carousel-control-prev,
+.card-activity:hover .carousel-control-next {
+  opacity: 1;
+}
+
+/* Contenido */
+.card-activity-content {
+  padding: 1.5rem;
+}
+
+.card-activity-content h3 {
+  color: #2c3e50;
+  font-weight: 600;
+}
+
+.card-activity-content p {
+  color: #141414;
+  line-height: 1.6;
+  font-size: 24px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .card-activity {
+    margin-bottom: 1rem;
+  }
+  
+  .carousel-image-container {
+    height: 250px;
+  }
+}
+
+.date-text{
+  font-weight: bold;
+  color: #909497;
+  line-height: 1.6;
+  font-size: 24px;
 }

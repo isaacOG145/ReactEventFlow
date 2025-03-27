@@ -13,6 +13,8 @@ import NewPassword from './views/newpassword';
 import CreateAccount from './views/CreateAccount';
 import NewWorkshop from './views/NewWorkshops';
 
+import AssignmentChecker from './views/AssignmentCheckers';
+
 function App() {
     return (
 
@@ -27,10 +29,13 @@ function App() {
                 <Route path='/dashboard/mis-talleres' element={<MyWorkshops />} />
                 <Route path='/dashboard/mis-eventos' element={<MyEvents />} />
                 <Route path='/dashboard/mis-checadores' element={<MyChechers />} />
+                <Route path='/dashboard/asignar-checadores' element={<AssignmentChecker/>} />
                 <Route path="/recover-password" element={<RecoverUserPassword />} />
                 <Route path="/recover-password-code" element={<RecoverPasswordCode />} /> 
                 <Route path='/nueva-contraseña' element={<NewPassword/>}/>
                 <Route path= '/crear-cuenta'element={<CreateAccount/>}/>
+                
+                
 
                 
 

@@ -15,6 +15,7 @@ export default function AdminNav() {
             <NavigateButton to="/dashboard/mis-checadores">Mis checadores</NavigateButton>
             <NavigateButton to="/dashboard/mis-eventos">Mis eventos</NavigateButton>
             <NavigateButton to="/dashboard/mis-talleres">Mis talleres</NavigateButton>
+            <NavigateButton to='/dashboard/asignar-checadores'>Asignar checadores</NavigateButton>
         </div>
     );
 }

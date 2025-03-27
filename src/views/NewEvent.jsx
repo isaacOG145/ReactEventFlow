@@ -1,10 +1,13 @@
 import React, { useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "../styles/main.css";
+import "../styles/iconStyles.css";
 
 import CustomerRootHeader from "../components/CustomerRootHeader";
 import AdminNav from "../components/AdminNav";
 import BlueButton from "../components/BlueButton";
+
+import DetailsImg from '../assets/icons/details.png';
 import galleryIcon from "../assets/icons/galeria-de-imagenes.png";
 import addIcon from "../assets/icons/mas.png";
 import InputComponent from "../components/InputComponent";
@@ -33,14 +36,17 @@ export default function NewEvent() {
       </div>
 
       <div className="content">
-        <h1>Crear evento</h1>
+       
 
         <div className="form">
+
           <form className="event-form">
+
+          <h1>Crear evento</h1>
             <div className="row">
               {/* Primera columna */}
               <div className="col-md-6">
-                <div className="form-block p-3">
+                <div className="form-block">
                   <InputComponent
                     type="text"
                     label={
@@ -56,7 +62,7 @@ export default function NewEvent() {
 
               {/* Segunda columna */}
               <div className="col-md-6">
-                <div className="form-block p-3">
+                <div className="form-block">
                   <InputComponent
                     type="text"
                     label={
@@ -71,16 +77,17 @@ export default function NewEvent() {
               </div>
             </div>
 
-            <div className="mb-3">
-              <label htmlFor="eventDescription" className="form-label">
-                Descripción<span>*</span>
-              </label>
-              <textarea
-                id="eventDescription"
-                value={eventDescription}
-                onChange={(e) => setEventDescription(e.target.value)}
-                className="form-control"
-                required
+            <div className="row">
+              <InputComponent 
+                type="text"
+                label={
+                  <>
+                  <img className="icon-sm" src={DetailsImg} alt="" />
+                  <span className="label-text">Descripción</span>
+                  <span className="required-asterisk">*</span>
+                  </>
+                }
+              
               />
             </div>
 

@@ -11,21 +11,26 @@ import DetailsImg from '../assets/icons/details.png';
 import galleryIcon from "../assets/icons/galeria-de-imagenes.png";
 import addIcon from "../assets/icons/mas.png";
 import InputComponent from "../components/InputComponent";
+import DateInputComponent from "../components/DateInputComponent"; // Importamos el nuevo componente
 import ImageGalleryUpload from "../components/ImagesGalleryUpload";
 
 export default function NewEvent() {
   const [eventName, setEventName] = useState("");
-  const [eventDate, setEventDate] = useState("");
+  const [eventDate, setEventDate] = useState(""); // Este estado será para la fecha
   const [eventDescription, setEventDescription] = useState("");
   const [gallery, setGallery] = useState([null, null, null]);
 
-	{/**temporal para prueba */}
+  // temporal para prueba
   const [images, setImages] = React.useState([]);
 
   const handleImageChange = (index, file) => {
     const newGallery = [...gallery];
     newGallery[index] = file;
     setGallery(newGallery);
+  };
+
+  const handleDateChange = (e) => {
+    setEventDate(e.target.value); // Actualiza el estado con la fecha seleccionada
   };
 
   return (
@@ -36,13 +41,9 @@ export default function NewEvent() {
       </div>
 
       <div className="content">
-       
-
         <div className="form">
-
           <form className="event-form">
-
-          <h1>Crear evento</h1>
+            <h1>Crear evento</h1>
             <div className="row">
               {/* Primera columna */}
               <div className="col-md-6">
@@ -60,34 +61,36 @@ export default function NewEvent() {
                 </div>
               </div>
 
-              {/* Segunda columna */}
+              {/* Segunda columna con el input para la fecha usando DateInputComponent */}
               <div className="col-md-6">
                 <div className="form-block">
-                  <InputComponent
-                    type="text"
+                  <DateInputComponent
+                    value={eventDate}
+                    onChange={handleDateChange} // Maneja el cambio de fecha
                     label={
                       <>
-                        <span className="label-text">Nombre del ponente</span>
+                        <span className="label-text">Fecha</span>
                         <span className="required-asterisk">*</span>
                       </>
                     }
-                    id="speaker"
+                    id="event-date"
+                    required={true}
+                    error={eventDate === "" ? "La fecha es obligatoria" : ""}
                   />
                 </div>
               </div>
             </div>
 
             <div className="row">
-              <InputComponent 
+              <InputComponent
                 type="text"
                 label={
                   <>
-                  <img className="icon-sm" src={DetailsImg} alt="" />
-                  <span className="label-text">Descripción</span>
-                  <span className="required-asterisk">*</span>
+                    <img className="icon-sm" src={DetailsImg} alt="" />
+                    <span className="label-text">Descripción</span>
+                    <span className="required-asterisk">*</span>
                   </>
                 }
-              
               />
             </div>
 

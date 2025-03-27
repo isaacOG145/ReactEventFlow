@@ -37,7 +37,7 @@ export default function Index() {
               </div>
               <div className="card-presentation col-2">
                 <img className="icon-presentation" src={UserAvatar} alt="" />
-                <h3>asigna responsabilidades</h3>
+                <h3>asigna cargos</h3>
                 <p>Asigna tus empleados<br />
                   en tus eventos para<br />
                   tener un mejor control<br />

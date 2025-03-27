@@ -1,4 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import 'react-datetime/css/react-datetime.css';
+
 import Index from './views/Index';
 import Login from './views/Login';
 import Dashboard from './views/Dashboard';

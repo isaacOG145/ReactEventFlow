@@ -18,7 +18,8 @@ import passwordIcon from '../assets/icons/llave.png';
 
 export default function CreateAccount() {
 
-    const registerChecker = async (formData) => {
+
+    const registerAdmin = async (formData) => {
         try {
 
             const response = await fetch('http://localhost:8080/user/saveAdmin', {
@@ -95,7 +96,7 @@ export default function CreateAccount() {
 
         if (validateForm()) {
             try {
-                const response = await registerChecker(formData);
+                const response = await registerAdmin(formData);
                 console.log("Respuesta del servidor:", response);
                 alert("Administrador registrado exitosamente");
 

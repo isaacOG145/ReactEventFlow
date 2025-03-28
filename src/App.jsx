@@ -16,6 +16,7 @@ import CreateAccount from './views/CreateAccount';
 import NewWorkshop from './views/NewWorkshops';
 
 import AssignmentChecker from './views/AssignmentCheckers';
+import EventDetails from './views/EventDetails';
 
 function App() {
     return (
@@ -37,7 +38,7 @@ function App() {
                 <Route path='/nueva-contraseña' element={<NewPassword/>}/>
                 <Route path= '/crear-cuenta'element={<CreateAccount/>}/>
                 
-                
+                <Route path='/detalles-evento/:id' element={<EventDetails />} />
 
                 
 

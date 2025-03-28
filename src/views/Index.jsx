@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { useNavigate } from 'react-router-dom';  // Agregamos useNavigate
 import { Carousel } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../styles/main.css';
@@ -13,8 +14,36 @@ import UserAvatar from '../assets/icons/user-avatar.png';
 import QRImg from '../assets/icons/qr.png';
 import Enrollment from '../assets/icons/enrollment.png';
 
-
 export default function Index() {
+  const [activities, setActivities] = useState([]); // Estado para almacenar las actividades
+  const navigate = useNavigate();  // Inicializamos la función de navegación
+
+  useEffect(() => {
+    // Realizamos la solicitud GET usando fetch
+    fetch('http://localhost:8080/activity/findAll')
+      .then((response) => {
+        // Verificamos si la respuesta fue exitosa
+        if (!response.ok) {
+          throw new Error('Error al obtener las actividades');
+        }
+        return response.json(); // Convertimos la respuesta a JSON
+      })
+      .then((data) => {
+        if (data.type === 'SUCCESS') {
+          setActivities(data.result); // Almacenamos las actividades en el estado
+        }
+      })
+      .catch((error) => {
+        console.error("Hubo un error al cargar las actividades:", error);
+      });
+  }, []); // Este efecto solo se ejecuta una vez al montar el componente
+
+  // Función para manejar el clic del botón y redirigir
+  const handleDetailsClick = (activityId) => {
+    // Aquí pasamos el ID de la actividad como parte de la URL
+    navigate(`/detalles-evento/${activityId}`);
+  };
+
   return (
     <div className="app-container">
       <CustomerRootHeader />
@@ -51,7 +80,6 @@ export default function Index() {
                   de interes e inscribete<br />
                   a ellos en linea
                 </p>
-
               </div>
               <div className="card-presentation col-2">
                 <img className="icon-presentation" src={QRImg} alt="" />
@@ -66,11 +94,18 @@ export default function Index() {
           </div>
         </div>
         <div className="row justify-content-center mt-4">
-        <ActivityCard /><ActivityCard /> <ActivityCard /><ActivityCard /> 
-        
+          {activities.length > 0 ? (
+            activities.map((activity) => (
+              <ActivityCard 
+                key={activity.id} 
+                activity={activity} 
+                onDetailsClick={() => handleDetailsClick(activity.id)} // Pasamos la función aquí
+              />
+            ))
+          ) : (
+            <p>No hay actividades disponibles.</p>
+          )}
         </div>
-
-
       </div>
     </div>
   );

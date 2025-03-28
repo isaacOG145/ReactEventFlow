@@ -4,6 +4,7 @@ import '../styles/imagesStyles.css';
 
 import VoidImage from '../assets/icons/galeria-de-imagenes.png';
 import MoreImages from '../assets/icons/mas.png'
+import GalleryIcon from '../assets/icons/img-icon.png'
 
 export default function ImageGalleryUpload({
   label = "Galería (mínimo 3 imágenes)",
@@ -83,6 +84,11 @@ export default function ImageGalleryUpload({
   return (
     <div className="image-gallery-upload-container">
       <label className="image-gallery-upload-label">
+        <img
+          src={GalleryIcon}
+          alt="Icono galería"
+          className="label-icon" 
+        />
         {label} {required && <span className="image-gallery-upload-required">*</span>}
       </label>
 
@@ -139,18 +145,7 @@ export default function ImageGalleryUpload({
         )}
       </div>
 
-      {/* Mensajes de validación */}
-      {error && <div className="image-gallery-upload-error">{error}</div>}
-      {required && images.length < minImages && (
-        <div className="image-gallery-upload-error">
-          Mínimo {minImages} imágenes requeridas.
-        </div>
-      )}
-      {images.length >= maxImages && (
-        <div className="image-gallery-upload-info">
-          Máximo {maxImages} imágenes permitidas.
-        </div>
-      )}
+
     </div>
   );
 }

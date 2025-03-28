@@ -6,31 +6,78 @@ import "../styles/iconStyles.css";
 import CustomerRootHeader from "../components/CustomerRootHeader";
 import AdminNav from "../components/AdminNav";
 import BlueButton from "../components/BlueButton";
-
-import DetailsImg from '../assets/icons/details.png';
-import galleryIcon from "../assets/icons/galeria-de-imagenes.png";
-import addIcon from "../assets/icons/mas.png";
 import InputComponent from "../components/InputComponent";
-import DateInputComponent from "../components/DateInputComponent"; // Importamos el nuevo componente
+import DateInputComponent from "../components/DateInputComponent";
 import ImageGalleryUpload from "../components/ImagesGalleryUpload";
+
+import Event from '../assets/icons/event-name.png';
+import EventDate from '../assets/icons/event-date.png';
+import DetailsImg from '../assets/icons/details.png';
 
 export default function NewEvent() {
   const [eventName, setEventName] = useState("");
-  const [eventDate, setEventDate] = useState(""); // Este estado será para la fecha
+  const [eventDate, setEventDate] = useState("");
   const [eventDescription, setEventDescription] = useState("");
-  const [gallery, setGallery] = useState([null, null, null]);
-
-  // temporal para prueba
-  const [images, setImages] = React.useState([]);
-
-  const handleImageChange = (index, file) => {
-    const newGallery = [...gallery];
-    newGallery[index] = file;
-    setGallery(newGallery);
-  };
+  const [images, setImages] = useState([]); // Un solo estado para imágenes
 
   const handleDateChange = (e) => {
-    setEventDate(e.target.value); // Actualiza el estado con la fecha seleccionada
+    setEventDate(e.target.value);
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    // Verificación de campos requeridos
+    if (!eventName || !eventDate || !eventDescription || images.length < 3) {
+      alert("Por favor, completa todos los campos y sube al menos 3 imágenes.");
+      return;
+    }
+
+    const formData = new FormData();
+
+    // Crear el objeto activityDTO
+    const activityDTO = {
+      ownerActivity: { id: 1 }, // Asegúrate de usar el ID correcto
+      name: eventName,
+      description: eventDescription,
+      date: eventDate
+    };
+
+    // Agregar el JSON como string
+    formData.append("activity", new Blob([JSON.stringify(activityDTO)], {
+      type: "application/json"
+    }));
+
+    // Agregar las imágenes (extraer solo el file de cada objeto imagen)
+    images.forEach((imageObj) => {
+      if (imageObj && imageObj.file) {
+        formData.append("images", imageObj.file);
+      }
+    });
+
+    try {
+      const response = await fetch('http://localhost:8080/activity/saveEvent', {
+        method: 'POST',
+        body: formData,
+        // No agregues headers Content-Type, FormData lo maneja automáticamente
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Error al crear el evento');
+      }
+
+      const result = await response.json();
+      alert("Evento creado con éxito");
+      // Opcional: resetear el formulario
+      setEventName("");
+      setEventDate("");
+      setEventDescription("");
+      setImages([]);
+    } catch (error) {
+      console.error("Error:", error);
+      alert(error.message || "Hubo un error al crear el evento.");
+    }
   };
 
   return (
@@ -42,33 +89,36 @@ export default function NewEvent() {
 
       <div className="content">
         <div className="form">
-          <form className="event-form">
+          <form className="event-form" onSubmit={handleSubmit}>
             <h1>Crear evento</h1>
             <div className="row">
-              {/* Primera columna */}
               <div className="col-md-6">
                 <div className="form-block">
                   <InputComponent
                     type="text"
                     label={
                       <>
-                        <span className="label-text">Nombre del taller</span>
+                        <img className="icon-sm" src={Event} alt="" />
+                        <span className="label-text">Nombre del evento</span>
                         <span className="required-asterisk">*</span>
                       </>
                     }
                     id="name"
+                    value={eventName}
+                    onChange={(e) => setEventName(e.target.value)}
+                    required
                   />
                 </div>
               </div>
 
-              {/* Segunda columna con el input para la fecha usando DateInputComponent */}
               <div className="col-md-6">
                 <div className="form-block">
                   <DateInputComponent
                     value={eventDate}
-                    onChange={handleDateChange} // Maneja el cambio de fecha
+                    onChange={handleDateChange}
                     label={
                       <>
+                        <img className="icon-sm" src={EventDate} alt="" />
                         <span className="label-text">Fecha</span>
                         <span className="required-asterisk">*</span>
                       </>
@@ -91,6 +141,9 @@ export default function NewEvent() {
                     <span className="required-asterisk">*</span>
                   </>
                 }
+                value={eventDescription}
+                onChange={(e) => setEventDescription(e.target.value)}
+                required
               />
             </div>
 
@@ -105,7 +158,7 @@ export default function NewEvent() {
             </div>
 
             <div className="text-center mt-4">
-              <BlueButton>Crear nuevo</BlueButton>
+              <BlueButton type="submit">Crear nuevo</BlueButton>
             </div>
           </form>
         </div>

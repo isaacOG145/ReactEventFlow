@@ -14,8 +14,16 @@
   }
   
   .image-gallery-upload-label {
-    display: block;
+    display: flex;
+    font-size: 20px;
     margin-bottom: 0.5rem;
+    text-align: left;
+  }
+
+  .label-icon {
+    margin-right: 8px;
+    width: 30px;
+    height: 30px;
   }
   
   .image-gallery-upload-required {

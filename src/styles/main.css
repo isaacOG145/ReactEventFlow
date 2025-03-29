@@ -336,3 +336,32 @@ h1 {
   line-height: 1.6;
   font-size: 24px;
 }
+
+/* Agrega esto al final de tu archivo CSS existente */
+
+/* Agrega esto a tu main.css */
+.time-input-container {
+  width: 100%;
+}
+
+.time-input-field {
+  width: 100%;
+  padding: 10px;
+  color: #141414;
+  background-color: #E5E7E9;
+  border: 1px solid #ccc;
+  border-radius: 15px;
+  font-size: 20px;
+  outline: none;
+  transition: border-color 0.3s ease;
+}
+
+.time-input-field:focus {
+  border-color: #007bff;
+}
+
+/* Estilo para el ícono del reloj en el input time */
+.time-input-field::-webkit-calendar-picker-indicator {
+  filter: invert(0.5);
+  cursor: pointer;
+}

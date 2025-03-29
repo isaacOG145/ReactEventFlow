@@ -9,28 +9,22 @@ export default function TimeInputComponent({
   required = false,
   error = "",
 }) {
-  const [localError, setLocalError] = useState(error); // Estado para gestionar los errores localmente
+  const [localError, setLocalError] = useState(error);
 
-  // Función para verificar si la hora es válida (formato correcto)
   const isValidTime = (timeString) => {
-    const time = timeString.split(":");
-    if (time.length !== 2) return false;
-    const hours = parseInt(time[0]);
-    const minutes = parseInt(time[1]);
-    return hours >= 0 && hours <= 23 && minutes >= 0 && minutes <= 59;
+    // Validación simple de formato de hora HH:MM
+    return /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/.test(timeString);
   };
 
   const handleChange = (e) => {
     const newValue = e.target.value;
 
-    // Verificamos si la hora es válida
     if (newValue && !isValidTime(newValue)) {
       setLocalError("Hora inválida");
     } else {
-      setLocalError(""); // Si la hora es válida, eliminamos el error
+      setLocalError("");
     }
 
-    // Llamamos a onChange con el valor nuevo
     onChange(e);
   };
 
@@ -44,14 +38,13 @@ export default function TimeInputComponent({
       <input
         type="time"
         value={value}
-        onChange={handleChange} // Llamamos a la nueva función handleChange
+        onChange={handleChange}
         id={id}
         className="input-field"
         required={required}
-        max="23:59" // Limita la hora a no superar las 23:59
+        step="300" // Incrementos de 5 minutos
       />
       
-      {/* Mostramos el error si existe */}
       {localError && <span className="error-message">{localError}</span>}
     </div>
   );

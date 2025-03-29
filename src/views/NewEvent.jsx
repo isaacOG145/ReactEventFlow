@@ -19,6 +19,7 @@ export default function NewEvent() {
   const [eventDate, setEventDate] = useState("");
   const [eventDescription, setEventDescription] = useState("");
   const [images, setImages] = useState([]); // Un solo estado para imágenes
+  const [loading, setLoading] = useState(false); // Agregar el estado de carga
 
   const handleDateChange = (e) => {
     setEventDate(e.target.value);
@@ -37,7 +38,7 @@ export default function NewEvent() {
 
     // Crear el objeto activityDTO
     const activityDTO = {
-      ownerActivity: { id: 1 }, // Asegúrate de usar el ID correcto
+      ownerActivity: { id: localStorage.getItem("userId") }, // Usa el ID de localStorage
       name: eventName,
       description: eventDescription,
       date: eventDate
@@ -56,6 +57,7 @@ export default function NewEvent() {
     });
 
     try {
+      setLoading(true); // Iniciar carga
       const response = await fetch('http://localhost:8080/activity/saveEvent', {
         method: 'POST',
         body: formData,
@@ -77,6 +79,8 @@ export default function NewEvent() {
     } catch (error) {
       console.error("Error:", error);
       alert(error.message || "Hubo un error al crear el evento.");
+    } finally {
+      setLoading(false); // Finalizar carga
     }
   };
 
@@ -158,7 +162,9 @@ export default function NewEvent() {
             </div>
 
             <div className="text-center mt-4">
-              <BlueButton type="submit">Crear nuevo</BlueButton>
+              <BlueButton type="submit" disabled={loading}>
+                {loading ? "Guardando..." : "Crear nuevo"}
+              </BlueButton>
             </div>
           </form>
         </div>

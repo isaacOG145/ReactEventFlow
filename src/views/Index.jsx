@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from "react";
+
+import React, { useEffect, useState } from "react"; 
 import { useNavigate } from 'react-router-dom';  // Agregamos useNavigate
 import { Carousel } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -13,6 +14,10 @@ import Admin from '../assets/icons/administrator.png';
 import UserAvatar from '../assets/icons/user-avatar.png';
 import QRImg from '../assets/icons/qr.png';
 import Enrollment from '../assets/icons/enrollment.png';
+import EventDate from '../assets/icons/calendario.png'; // Asegúrate de tener el ícono de fecha
+
+import { format } from 'date-fns'; // Importamos date-fns para formatear la fecha
+import { es } from 'date-fns/locale'; // Importamos la localización en español
 
 export default function Index() {
   const [activities, setActivities] = useState([]); // Estado para almacenar las actividades
@@ -20,7 +25,7 @@ export default function Index() {
 
   useEffect(() => {
     // Realizamos la solicitud GET usando fetch
-    fetch('http://localhost:8080/activity/findAll')
+    fetch('http://localhost:8080/activity/findAllEvents')
       .then((response) => {
         // Verificamos si la respuesta fue exitosa
         if (!response.ok) {
@@ -30,7 +35,15 @@ export default function Index() {
       })
       .then((data) => {
         if (data.type === 'SUCCESS') {
-          setActivities(data.result); // Almacenamos las actividades en el estado
+          // Formateamos la fecha antes de almacenarla en el estado
+          const formattedActivities = data.result.map((activity) => {
+            // Formateamos la fecha y la hora
+            const formattedDate = activity.date
+              ? format(new Date(activity.date), 'dd MMM yyyy', { locale: es }) // Cambia el formato de la fecha y hora, ahora en español
+              : 'Fecha no disponible';
+            return { ...activity, formattedDate };
+          });
+          setActivities(formattedActivities); // Almacenamos las actividades con las fechas formateadas
         }
       })
       .catch((error) => {
@@ -40,9 +53,10 @@ export default function Index() {
 
   // Función para manejar el clic del botón y redirigir
   const handleDetailsClick = (activityId) => {
-    // Aquí pasamos el ID de la actividad como parte de la URL
+    console.log("Redirigiendo a detalles del evento con ID:", activityId); // Verifica el ID
     navigate(`/detalles-evento/${activityId}`);
   };
+
 
   return (
     <div className="app-container">
@@ -93,13 +107,21 @@ export default function Index() {
             </div>
           </div>
         </div>
+
+        {/* Mostramos las actividades */}
         <div className="row justify-content-center mt-4">
           {activities.length > 0 ? (
             activities.map((activity) => (
-              <ActivityCard 
-                key={activity.id} 
-                activity={activity} 
+              <ActivityCard
+                key={activity.id}
+                activity={activity}
                 onDetailsClick={() => handleDetailsClick(activity.id)} // Pasamos la función aquí
+                label={  // Aquí pasamos el ícono y la fecha como label
+                  <label>
+                    <img className="icon-sm" src={EventDate} alt="Ícono de fecha" />
+                    <span className="date-text">{activity.formattedDate}</span>
+                  </label>
+                }
               />
             ))
           ) : (

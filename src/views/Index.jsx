@@ -1,6 +1,5 @@
-
-import React, { useEffect, useState } from "react"; 
-import { useNavigate } from 'react-router-dom';  // Agregamos useNavigate
+import React, { useEffect, useState } from "react";
+// Eliminamos useNavigate
 import { Carousel } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../styles/main.css';
@@ -14,18 +13,17 @@ import Admin from '../assets/icons/administrator.png';
 import UserAvatar from '../assets/icons/user-avatar.png';
 import QRImg from '../assets/icons/qr.png';
 import Enrollment from '../assets/icons/enrollment.png';
-import EventDate from '../assets/icons/calendario.png'; // Asegúrate de tener el ícono de fecha
+import EventDate from '../assets/icons/calendario.png';
 
-import { format } from 'date-fns'; // Importamos date-fns para formatear la fecha
-import { es } from 'date-fns/locale'; // Importamos la localización en español
+import { format } from 'date-fns'; 
+import { es } from 'date-fns/locale'; 
 
 export default function Index() {
-  const [activities, setActivities] = useState([]); // Estado para almacenar las actividades
-  const navigate = useNavigate();  // Inicializamos la función de navegación
-
+  const [activities, setActivities] = useState([]); // Mantiene el estado de las actividades
+  
   useEffect(() => {
     // Realizamos la solicitud GET usando fetch
-    fetch('http://localhost:8080/activity/findAllEvents')
+    fetch('http://localhost:8080/activity/findActiveEvents')
       .then((response) => {
         // Verificamos si la respuesta fue exitosa
         if (!response.ok) {
@@ -39,24 +37,24 @@ export default function Index() {
           const formattedActivities = data.result.map((activity) => {
             // Formateamos la fecha y la hora
             const formattedDate = activity.date
-              ? format(new Date(activity.date), 'dd MMM yyyy', { locale: es }) // Cambia el formato de la fecha y hora, ahora en español
+              ? format(new Date(activity.date), 'dd MMM yyyy', { locale: es }) 
               : 'Fecha no disponible';
             return { ...activity, formattedDate };
           });
-          setActivities(formattedActivities); // Almacenamos las actividades con las fechas formateadas
+          setActivities(formattedActivities); 
         }
       })
       .catch((error) => {
         console.error("Hubo un error al cargar las actividades:", error);
       });
-  }, []); // Este efecto solo se ejecuta una vez al montar el componente
+  }, []);  // Se ejecuta solo una vez al cargar el componente
 
-  // Función para manejar el clic del botón y redirigir
-  const handleDetailsClick = (activityId) => {
-    console.log("Redirigiendo a detalles del evento con ID:", activityId); // Verifica el ID
-    navigate(`/detalles-evento/${activityId}`);
+  // El handleDetailsClick se ha comentado, ya no navega a otras páginas.
+  const handleDetailsClick = (id) => {
+    console.log("Detalles del evento (navegación eliminada) con ID:", id);
+    // Aquí puedes agregar la lógica de navegación cuando la necesites
+    // navigate(`/detalles-evento/:${id}`);
   };
-
 
   return (
     <div className="app-container">
@@ -115,8 +113,8 @@ export default function Index() {
               <ActivityCard
                 key={activity.id}
                 activity={activity}
-                onDetailsClick={() => handleDetailsClick(activity.id)} // Pasamos la función aquí
-                label={  // Aquí pasamos el ícono y la fecha como label
+                onDetailsClick={() => handleDetailsClick(activity.id)}  // Llamamos a la función sin navegar
+                label={  
                   <label>
                     <img className="icon-sm" src={EventDate} alt="Ícono de fecha" />
                     <span className="date-text">{activity.formattedDate}</span>

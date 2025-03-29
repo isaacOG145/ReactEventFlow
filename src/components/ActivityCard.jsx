@@ -1,12 +1,10 @@
 import React, { useState } from 'react';
 import BlueButton from './BlueButton';
 import { Carousel, Modal } from 'react-bootstrap';
-import { useNavigate } from 'react-router-dom'; // Importamos useNavigate
 
-export default function ActivityCard({ activity, label, onDetailsClick }) {
+export default function ActivityCard({ activity, label }) {
   const [showModal, setShowModal] = useState(false); // Para mostrar el modal de imagen ampliada
   const [selectedImage, setSelectedImage] = useState(''); // Imagen seleccionada
-  const navigate = useNavigate(); // Inicializamos el hook de navegación
 
   // Función para abrir el modal con la imagen
   const handleImageClick = (imageUrl) => {
@@ -58,7 +56,7 @@ export default function ActivityCard({ activity, label, onDetailsClick }) {
         <p className="mb-4">{activity.description}</p>
 
         {/* Botón para ver detalles del evento */}
-        <BlueButton onClick={onDetailsClick}>Ver detalles</BlueButton>
+        <BlueButton onClick={() => console.log("Detalles del evento (navegación eliminada)")} >Ver detalles</BlueButton>
       </div>
 
       {/* Modal para mostrar la imagen ampliada */}

@@ -12,8 +12,6 @@ import iconEdit from '../assets/icons/editar.png';
 import CustomerRootHeader from "../components/CustomerRootHeader";
 import AdminNav from "../components/AdminNav";
 
-
-
 export default function MyWorkshops() {
   const [workshops, setWorkshops] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -27,7 +25,6 @@ export default function MyWorkshops() {
           throw new Error('No se encontró userId en el localStorage');
         }
 
-        // Realizamos la solicitud GET para obtener los talleres
         const response = await fetch(`http://localhost:8080/activity/workshops/byOwner/${userId}`);
 
         if (!response.ok) {
@@ -37,7 +34,7 @@ export default function MyWorkshops() {
         const data = await response.json();
 
         if (data.type === "SUCCESS") {
-          setWorkshops(data.result); // Accedemos a los talleres dentro de 'result'
+          setWorkshops(data.result);
         } else {
           throw new Error('No se encontraron talleres');
         }
@@ -85,9 +82,10 @@ export default function MyWorkshops() {
                 <tr>
                   <th>No.</th>
                   <th>Nombre</th>
-                  <th>Descripción</th>
+                  <th>Ponente</th>
+                  <th>Hora</th>
                   <th>Evento asociado</th>
-                  <th></th> {/* Columna de acciones */}
+                  <th>Acciones</th>
                 </tr>
               </thead>
               <tbody>
@@ -95,8 +93,18 @@ export default function MyWorkshops() {
                   <tr key={workshop.id}>
                     <td className="td-blue">{index + 1}</td>
                     <td>{workshop.name}</td>
-                    <td className="td-blue">{workshop.description}</td>
-                    <td>{workshop.ownerActivity ? workshop.ownerActivity.name : "Desconocido"}</td>
+                    <td className="td-blue">{workshop.speaker}</td>
+                    <td>{workshop.time}</td>
+                    <td>
+                      {workshop.fromActivity ? (
+                        <div>
+                          <strong>{workshop.fromActivity.name}</strong>
+                          <div className="text-muted small">
+                            {new Date(workshop.fromActivity.date).toLocaleDateString()}
+                          </div>
+                        </div>
+                      ) : "Sin evento asociado"}
+                    </td>
                     <td className="actions">
                       <div>
                         <button onClick={() => handleViewDetails(workshop.id)}>

@@ -19,7 +19,7 @@ export default function ActivityCard({ activity, label }) {
   };
 
   return (
-    <div className="card-activity col-md-8 col-lg-4">
+    <div className="card-activity col-md-9 col-lg-3">
       {/* Carrusel con las imágenes de la actividad */}
       <Carousel
         fade
@@ -49,14 +49,14 @@ export default function ActivityCard({ activity, label }) {
         {/* Aquí mostramos la etiqueta de fecha con el ícono */}
         {label && (
           <div className="d-flex align-items-center mb-3">
-            {label}  {/* Mostramos el label que contiene el ícono y la fecha */}
+            {label} {/* Mostramos el label que contiene el ícono y la fecha */}
           </div>
         )}
 
         <p className="mb-4">{activity.description}</p>
 
         {/* Botón para ver detalles del evento */}
-        <BlueButton onClick={() => console.log("Detalles del evento (navegación eliminada)")} >Ver detalles</BlueButton>
+        <BlueButton onClick={() => console.log("Detalles del evento (navegación eliminada)")}>Ver detalles</BlueButton>
       </div>
 
       {/* Modal para mostrar la imagen ampliada */}
@@ -71,5 +71,6 @@ export default function ActivityCard({ activity, label }) {
         </Modal.Body>
       </Modal>
     </div>
+
   );
 }

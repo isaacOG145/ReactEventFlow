@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom"; // Importa useNavigate
 import UserFrame from "../assets/icons/userFrame.png"; // Asegúrate de usar la ruta correcta de tu imagen
 
+import '../styles/main.css';
+
 const ProfileModal = () => {
     // Estado para manejar la visibilidad del modal
     const [isModalOpen, setIsModalOpen] = useState(false);

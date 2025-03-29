@@ -20,9 +20,9 @@ const Carrusel = ({ images }) => {
       style={{
         position: 'relative',
         width: '100%',
-        maxWidth: '800px',
+        maxWidth: '900px', // Aumenté el ancho máximo
         margin: 'auto',
-        perspective: '1000px', // Para efecto 3D
+        perspective: '1000px',
       }}
     >
       <div
@@ -30,8 +30,9 @@ const Carrusel = ({ images }) => {
           display: 'flex',
           justifyContent: 'center',
           alignItems: 'center',
-          height: '400px', // Altura fija para el contenedor
+          height: '300px',
           position: 'relative',
+          margin: '20px 0',
         }}
       >
         {/* Imagen anterior (a la izquierda) */}
@@ -51,9 +52,9 @@ const Carrusel = ({ images }) => {
               src={images[getCircularIndex(currentIndex - 1)]}
               alt={`Imagen anterior`}
               style={{
-                width: '200px',
-                height: '200px',
-                borderRadius: '10px',
+                width: '400px',  // Más ancha
+                height: '150px', // Más baja para efecto panorámico
+                borderRadius: '8px',
                 boxShadow: '0 4px 10px rgba(0, 0, 0, 0.2)',
                 objectFit: 'cover',
               }}
@@ -74,8 +75,8 @@ const Carrusel = ({ images }) => {
             src={images[currentIndex]}
             alt={`Imagen actual`}
             style={{
-              width: '320px',
-              height: '300px',
+              width: '500px',  // Más ancha
+              height: '200px', // Más baja para efecto panorámico
               borderRadius: '10px',
               boxShadow: '0 8px 20px rgba(0, 0, 0, 0.3)',
               objectFit: 'cover',
@@ -100,9 +101,9 @@ const Carrusel = ({ images }) => {
               src={images[getCircularIndex(currentIndex + 1)]}
               alt={`Imagen siguiente`}
               style={{
-                width: '320px',
-                height: '200px',
-                borderRadius: '10px',
+                width: '400px',  // Más ancha
+                height: '150px', // Más baja para efecto panorámico
+                borderRadius: '8px',
                 boxShadow: '0 4px 10px rgba(0, 0, 0, 0.2)',
                 objectFit: 'cover',
               }}

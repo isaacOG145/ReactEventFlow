@@ -15,12 +15,12 @@ import QRImg from '../assets/icons/qr.png';
 import Enrollment from '../assets/icons/enrollment.png';
 import EventDate from '../assets/icons/calendario.png';
 
-import { format } from 'date-fns'; 
-import { es } from 'date-fns/locale'; 
+import { format } from 'date-fns';
+import { es } from 'date-fns/locale';
 
 export default function Index() {
   const [activities, setActivities] = useState([]); // Mantiene el estado de las actividades
-  
+
   useEffect(() => {
     // Realizamos la solicitud GET usando fetch
     fetch('http://localhost:8080/activity/findActiveEvents')
@@ -37,11 +37,11 @@ export default function Index() {
           const formattedActivities = data.result.map((activity) => {
             // Formateamos la fecha y la hora
             const formattedDate = activity.date
-              ? format(new Date(activity.date), 'dd MMM yyyy', { locale: es }) 
+              ? format(new Date(activity.date), 'dd MMM yyyy', { locale: es })
               : 'Fecha no disponible';
             return { ...activity, formattedDate };
           });
-          setActivities(formattedActivities); 
+          setActivities(formattedActivities);
         }
       })
       .catch((error) => {
@@ -68,53 +68,39 @@ export default function Index() {
               para compañías y organizaciones. Además, ofrecemos la posibilidad de<br />
               dar a conocerlos e inscribirse al público en general.</p>
             <div className="row justify-content-center">
-              <div className="card-presentation col-2">
+              <div className="card-presentation col-12 col-sm-6 col-md-3 mb-4">
                 <img className="icon-presentation" src={Admin} alt="" />
-                <h3>Organiza tus
-                  eventos</h3>
-                <p>Como compañia organiza<br />
-                  tus eventos y publicalos<br />
-                  en nuestra plataforma</p>
+                <h3>Organiza tus eventos</h3>
+                <p>Como compañía organiza tus eventos y publícalos en nuestra plataforma</p>
               </div>
-              <div className="card-presentation col-2">
+              <div className="card-presentation col-12 col-sm-6 col-md-3 mb-4">
                 <img className="icon-presentation" src={UserAvatar} alt="" />
-                <h3>asigna cargos</h3>
-                <p>Asigna tus empleados<br />
-                  en tus eventos para<br />
-                  tener un mejor control<br />
-                  de acceso</p>
+                <h3>Asigna cargos</h3>
+                <p>Asigna tus empleados en tus eventos para tener un mejor control de acceso</p>
               </div>
-              <div className="card-presentation col-2">
+              <div className="card-presentation col-12 col-sm-6 col-md-3 mb-4">
                 <img className="icon-presentation" src={Enrollment} alt="" />
-                <h3>Inscribete a eventos</h3>
-                <p>
-                  Explora actividades<br />
-                  de interes e inscribete<br />
-                  a ellos en linea
-                </p>
+                <h3>Inscríbete a eventos</h3>
+                <p>Explora actividades de interés e inscríbete a ellos en línea</p>
               </div>
-              <div className="card-presentation col-2">
+              <div className="card-presentation col-12 col-sm-6 col-md-3 mb-4">
                 <img className="icon-presentation" src={QRImg} alt="" />
-                <h3>accede por QR
-                  desde tu télefono</h3>
-                <p>Accede a tu cuenta en<br />
-                  la aplicación móvil y<br />
-                  usa el QR para acceder<br />
-                  a tus eventos</p>
+                <h3>Accede por QR desde tu teléfono</h3>
+                <p>Accede a tu cuenta en la aplicación móvil y usa el QR para acceder a tus eventos</p>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Mostramos las actividades */}
-        <div className="row justify-content-center mt-4">
+
+        <div className="row mt-4 justify-content-center">
           {activities.length > 0 ? (
             activities.map((activity) => (
               <ActivityCard
                 key={activity.id}
                 activity={activity}
                 onDetailsClick={() => handleDetailsClick(activity.id)}  // Llamamos a la función sin navegar
-                label={  
+                label={
                   <label>
                     <img className="icon-sm" src={EventDate} alt="Ícono de fecha" />
                     <span className="date-text">{activity.formattedDate}</span>
@@ -126,6 +112,8 @@ export default function Index() {
             <p>No hay actividades disponibles.</p>
           )}
         </div>
+
+
       </div>
     </div>
   );

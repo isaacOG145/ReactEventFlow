@@ -36,6 +36,7 @@
   background-color: #E5E7E9;
   width: 100%;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  padding: 30px 15px; /* Padding adicional */
 }
 
 .about-us {
@@ -45,7 +46,7 @@
 
 h2 {
   font-weight: bold;
-  font-size: 40px;
+  font-size: 32px;
   margin-bottom: 20px;
   color: #141414;
 }
@@ -58,22 +59,81 @@ h2 {
 }
 
 .about-us p {
-  font-size: 24px;
+  font-size: 20px;
   line-height: 1.6;
   color: #141414;
+  margin-bottom: 20px; /* Espaciado adicional */
 }
 
-.card-presentation{
+/* Estilo para las tarjetas */
+.card-presentation {
   background-color: #fff;
   border-radius: 15px;
-  padding: 10px;
+  padding: 20px; /* Espaciado dentro de las tarjetas */
   margin: 10px;
+  text-align: center;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra más suave */
 }
-/* Estilos para el logo */
-.logo {
-  height: auto; /* Mantiene la proporción de la imagen */
-  max-height: 100px; /* Altura máxima del logo */
-  width: auto; /* Ancho automático para mantener la proporción */
+
+/* Asegurar que las imágenes de las tarjetas se ajusten bien */
+.icon-presentation {
+  width: 60px; /* Tamaño adecuado para las imágenes */
+  height: auto;
+  margin-bottom: 15px;
+}
+
+.card-presentation h3 {
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+.card-presentation p {
+  font-size: 16px;
+  line-height: 1.5;
+  color: #555;
+}
+
+/* Estilos responsivos para móviles */
+@media (max-width: 768px) {
+  .about-us h2 {
+    font-size: 28px; /* Tamaño de fuente más pequeño en pantallas pequeñas */
+  }
+
+  .about-us p {
+    font-size: 18px;
+  }
+
+  .card-presentation {
+    padding: 15px; /* Menos padding en pantallas pequeñas */
+  }
+
+  .card-presentation h3 {
+    font-size: 18px;
+  }
+
+  .card-presentation p {
+    font-size: 14px;
+  }
+}
+
+/* Agregar una mayor responsividad para pantallas muy pequeñas */
+@media (max-width: 576px) {
+  .card-presentation {
+    padding: 10px; /* Menos padding en pantallas más pequeñas */
+  }
+
+  .card-presentation h3 {
+    font-size: 16px; /* Reducir el tamaño de la fuente */
+  }
+
+  .card-presentation p {
+    font-size: 12px; /* Reducir el tamaño del texto */
+  }
+
+  .presentation-block {
+    padding: 20px 10px; /* Padding más pequeño */
+  }
 }
 
 .login-container {
@@ -87,7 +147,7 @@ h2 {
   margin: 0 auto; /* Centra el formulario horizontalmente */
 }
 
-.form{
+.form {
   background-color: white;
   padding: 30px;
   border-radius: 15px;
@@ -97,13 +157,23 @@ h2 {
   margin: 0 auto;
 }
 
-.form-asign{
+.form-asign {
   background-color: white;
   padding: 30px;
   border-radius: 15px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   text-align: center;
   width: 60%; /* Ocupa el ancho completo del contenedor padre */
+  margin: 0 auto;
+}
+
+.card-details {
+  background-color: white;
+  padding: 30px;
+  border-radius: 15px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  text-align: left;
+  width: 80%; /* Ocupa el ancho completo del contenedor padre */
   margin: 0 auto;
 }
 
@@ -116,10 +186,10 @@ h1 {
 
 .login-title {
   font-size: 40px;
-  margin-top: 30px; 
+  margin-top: 30px;
   margin-bottom: 50px;
   font-weight: 700;
-  font-style: bold; 
+  font-style: bold;
 }
 
 /* Estilos para el campo de entrada */
@@ -142,7 +212,7 @@ h1 {
 
 /* styles/main.css */
 .select-field {
-  appearance: none;       /* Elimina el estilo por defecto del navegador */
+  appearance: none; /* Elimina el estilo por defecto del navegador */
   padding: 0.5rem;
   border-radius: 4px;
   border: 1px solid #ccc;
@@ -185,7 +255,7 @@ h1 {
   border-color: #007bff; /* Cambia el color del borde al enfocar */
 }
 
-.pass-message{
+.pass-message {
   font-size: 20px;
   color: #8005A3;
   text-decoration: none;
@@ -198,21 +268,45 @@ h1 {
   margin-top: 0.25rem;
   text-align: start;
 }
-
-/*header principal*/
-/* Estilos para el root-header */
 .root-header {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   z-index: 1000;
-  padding: 20px;
-  height: 150px; /* Altura fija de la cabecera */
+  padding: 10px 20px; /* Ajuste de padding */
+  height: 100px; /* Altura ajustada */
   border-bottom: 2px solid #8005A3;
   background-color: #ffffff;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  display: flex;
+  justify-content: space-between; /* Asegura que el logo y el modal se distribuyan */
+  align-items: center;
 }
+
+.root-header .logo {
+  max-width: 100%;
+  height: auto;
+}
+
+@media (max-width: 576px) {
+  .root-header {
+      padding: 10px; /* Menos padding en pantallas pequeñas */
+      height: 80px; /* Altura ajustada en pantallas pequeñas */
+  }
+}
+
+@media (min-width: 768px) {
+  .root-header {
+      height: 120px; /* Aumenta la altura en pantallas medianas y grandes */
+  }
+}
+
+.ml-auto {
+  margin-left: auto; /* Esto empuja el contenido al final de la fila */
+}
+
+
 
 .admin-nav {
   position: fixed;
@@ -246,10 +340,9 @@ h1 {
   height: 100%;
 }
 
-
 /* Contenedor principal */
 .card-activity {
-  margin: 10px 40px;
+  margin: 10px 30px;
   border-radius: 12px;
   overflow: hidden;
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
@@ -265,7 +358,7 @@ h1 {
 
 /* Carrusel */
 .activity-carousel {
-  max-height: 350px;
+  max-height: 300px;
   overflow: hidden;
 }
 
@@ -324,40 +417,17 @@ h1 {
   .card-activity {
     margin-bottom: 1rem;
   }
-  
+
   .carousel-image-container {
     height: 250px;
   }
 }
 
-.date-text{
+.date-text {
   font-weight: normal;
   color: #909497;
   line-height: 1.6;
   font-size: 24px;
-}
-
-/* Agrega esto al final de tu archivo CSS existente */
-
-/* Agrega esto a tu main.css */
-.time-input-container {
-  width: 100%;
-}
-
-.time-input-field {
-  width: 100%;
-  padding: 10px;
-  color: #141414;
-  background-color: #E5E7E9;
-  border: 1px solid #ccc;
-  border-radius: 15px;
-  font-size: 20px;
-  outline: none;
-  transition: border-color 0.3s ease;
-}
-
-.time-input-field:focus {
-  border-color: #007bff;
 }
 
 /* Estilo para el ícono del reloj en el input time */

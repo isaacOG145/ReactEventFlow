@@ -18,7 +18,7 @@ export default function CustomerRootHeader() {
                     </div>
 
                     {/* Columna para el ProfileModal (alineada a la derecha) */}
-                    <div className="col-auto">
+                    <div className="col-auto ml-auto">
                         <ProfileModal />
                     </div>
                 </div>

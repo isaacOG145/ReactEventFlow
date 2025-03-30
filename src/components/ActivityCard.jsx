@@ -2,7 +2,12 @@ import React, { useState } from 'react';
 import BlueButton from './BlueButton';
 import { Carousel, Modal } from 'react-bootstrap';
 
-export default function ActivityCard({ activity, label }) {
+export default function ActivityCard({
+  activity,
+  label,
+  buttonText = 'Ver detalles',  // Valor por defecto para el texto del botón
+  buttonOnClick = () => {} // Función por defecto para el onClick del botón
+}) {
   const [showModal, setShowModal] = useState(false); // Para mostrar el modal de imagen ampliada
   const [selectedImage, setSelectedImage] = useState(''); // Imagen seleccionada
 
@@ -55,8 +60,12 @@ export default function ActivityCard({ activity, label }) {
 
         <p className="mb-4">{activity.description}</p>
 
-        {/* Botón para ver detalles del evento */}
-        <BlueButton onClick={() => console.log("Detalles del evento (navegación eliminada)")}>Ver detalles</BlueButton>
+        {/* Contenedor para el botón para que siempre se quede al fondo */}
+        <div className="blue-button-container">
+          <BlueButton onClick={buttonOnClick}>
+            {buttonText}
+          </BlueButton>
+        </div>
       </div>
 
       {/* Modal para mostrar la imagen ampliada */}
@@ -71,6 +80,5 @@ export default function ActivityCard({ activity, label }) {
         </Modal.Body>
       </Modal>
     </div>
-
   );
 }

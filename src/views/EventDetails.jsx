@@ -1,20 +1,61 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import Carrusel from "../components/Carrusel";
 import BlueButton from "../components/BlueButton";
 import '../styles/main.css';
 import CustomerRootHeader from "../components/CustomerRootHeader";
+import ActivityCard from "../components/ActivityCard";
+import Time from '../assets/icons/time-and-date.png';
 
 export default function EventDetails() {
-    const images = [
-        'https://m.media-amazon.com/images/S/pv-target-images/c1818c4c4de1a2d35550f21448aa0a2b233fe9d107cc353665efa25891f1988b._SX1080_FMjpg_.jpg',
-        'https://st1.uvnimg.com/dims4/default/571d1ed/2147483647/thumbnail/1024x576/quality/75/?url=https%3A%2F%2Fuvn-brightspot.s3.amazonaws.com%2Fassets%2Fvixes%2Fo%2Fone_punch_man_live_action_perfecto_fan_made.jpg',
-        'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTfux1WNBEyO403fo_IXfbTdDcFy2P8J4iaV0cR0hN63vxc5eIwHJY69LigcSeSaw4w0bk&usqp=CAU',
-    ];
+    // Estados para almacenar los datos
+    const [eventDetails, setEventDetails] = useState(null);
+    const [activities, setActivities] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const eventId = 2; // Este ID lo puedes obtener de la URL si es dinámico
 
-    // Datos de prueba solo para nombre y descripción
-    const eventName = "Convención Anime Xtreme 2023";
-    const eventDate = "25-27 de Noviembre, 2023";
-    const eventDescription = "El evento más esperado por los fans del anime en la región. Tendremos invitados especiales, competencias de cosplay, estrenos exclusivos, stands con merchandising oficial y mucho más. Una experiencia única para conectar con otros fans y celebrar nuestra pasión por la cultura japonesa.";
+    // Función para obtener los detalles del evento
+    const fetchEventDetails = async () => {
+        try {
+            const response = await fetch(`http://localhost:8080/activity/event/findById/${eventId}`);
+            const data = await response.json();
+            if (data.type === "SUCCESS") {
+                setEventDetails(data.result); // Guardamos el detalle del evento
+            }
+        } catch (error) {
+            console.error("Error al obtener detalles del evento:", error);
+        }
+    };
+
+    // Función para obtener las actividades del evento
+    const fetchActivities = async () => {
+        try {
+            const response = await fetch(`http://localhost:8080/activity/findByEvent/${eventId}`);
+            const data = await response.json();
+            if (data.type === "SUCCESS") {
+                setActivities(data.result); // Guardamos las actividades
+            }
+        } catch (error) {
+            console.error("Error al obtener actividades:", error);
+        }
+    };
+
+    // Usamos useEffect para hacer el fetch cuando se monte el componente
+    useEffect(() => {
+        fetchEventDetails();
+        fetchActivities();
+        setLoading(false); // Una vez que los datos han sido cargados
+    }, []); // El array vacío asegura que el efecto se ejecute solo una vez
+
+    if (loading) {
+        return <div>Loading...</div>; // Muestra un mensaje de carga mientras los datos se obtienen
+    }
+
+    // Si no se encuentran detalles del evento, mostramos un mensaje
+    if (!eventDetails) {
+        return <div>No se encontraron detalles para este evento.</div>;
+    }
+
+    const { name, date, description, imageUrls } = eventDetails; // Extraemos los detalles del evento
 
     return (
         <div className="app-container">
@@ -23,22 +64,38 @@ export default function EventDetails() {
             <div className="content-container">
                 <div className="row justify-content-center mt-4">
                     <div className="card-details">
-                        <h1>{eventName}</h1>
-
-                        <p><strong>Fecha:</strong> {eventDate}</p>
-
-                        <p><strong>Descripción:</strong> {eventDescription}</p>
-
-                        <Carrusel images={images}/>
+                        <h1>{name}</h1>
+                        <p><strong>Fecha:</strong> {date}</p>
+                        <p><strong>Descripción:</strong> {description}</p>
+                        <Carrusel images={imageUrls} />
 
                         <div className="row">
                             <div className="col-9"></div>
-                            
                             <div className="col-3">
                                 <BlueButton>Inscribirse</BlueButton>
                             </div>
                         </div>
                     </div>
+                </div>
+
+                <div className="row mt-4 justify-content-center">
+                    {activities.length > 0 ? (
+                        activities.map((activity) => (
+                            <ActivityCard
+                                key={activity.id}
+                                activity={activity}
+                                buttonText="Inscribirse"
+                                label={
+                                    <label>
+                                        <img className="icon-sm" src={Time} alt="Ícono de fecha" />
+                                        <span className="date-text">{activity.time}</span>
+                                    </label>
+                                }
+                            />
+                        ))
+                    ) : (
+                        <p>No hay actividades disponibles.</p>
+                    )}
                 </div>
             </div>
         </div>

@@ -118,7 +118,7 @@ const Carrusel = ({ images }) => {
         style={{
           position: 'absolute',
           top: '50%',
-          left: '10px',
+          left: '-180px',
           transform: 'translateY(-50%)',
           background: 'rgba(0, 0, 0, 0.5)',
           color: 'white',
@@ -137,7 +137,7 @@ const Carrusel = ({ images }) => {
         style={{
           position: 'absolute',
           top: '50%',
-          right: '10px',
+          right: '-180px',
           transform: 'translateY(-50%)',
           background: 'rgba(0, 0, 0, 0.5)',
           color: 'white',

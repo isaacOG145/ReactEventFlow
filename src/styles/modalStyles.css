@@ -64,3 +64,47 @@
     background-color: #f0f0f0;
     border-color: #000;
 }
+
+/* Modal principal */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: none; /* Inicialmente oculto */
+    justify-content: center;
+    align-items: center;
+    z-index: 1001; /* Asegura que el modal esté por encima del overlay */
+  }
+  
+  /* Modal cuando está visible */
+  .modal.show {
+    display: flex;
+  }
+  
+  /* Contenido del Modal */
+  .modal-content {
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    max-width: 500px;
+    width: 100%; /* Asegura que el modal no exceda el 100% del ancho */
+  }
+  
+  /* Botón de cierre */
+  .close-button {
+    font-size: 20px;
+    cursor: pointer;
+  }
+  
+  /* Cabecera del modal */
+  .modal-header {
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  /* Pie del modal */
+  .modal-footer {
+    text-align: right;
+  }

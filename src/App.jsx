@@ -16,13 +16,23 @@ import CreateAccount from './views/CreateAccount';
 import NewWorkshop from './views/NewWorkshops';
 import AssignmentChecker from './views/AssignmentCheckers';
 import EventDetails from './views/EventDetails';
+import AdminEventDetails from './views/AdminEventDetails';
 
 function App() {
     return (
         <Router>
             <Routes>
+                {/**Rutas publicas */}
                 <Route path="/" element={<Index />} />
                 <Route path="/login" element={<Login />} />
+                <Route path="/recover-password" element={<RecoverUserPassword />} />
+                <Route path="/recover-password-code" element={<RecoverPasswordCode />} />
+                <Route path='/nueva-contraseña' element={<NewPassword />} />
+                <Route path='/crear-cuenta' element={<CreateAccount />} />
+                <Route path="/detalles-evento/:id" element={<EventDetails />} />
+
+
+                {/**Rutas del administrador */}
                 <Route path="/dashboard" element={<Dashboard />} />
                 <Route path='/dashboard/nuevo-evento' element={<NewEvent />} />
                 <Route path='/dashboard/nuevo-checador' element={<NewChecker />} />
@@ -31,11 +41,8 @@ function App() {
                 <Route path='/dashboard/mis-eventos' element={<MyEvents />} />
                 <Route path='/dashboard/mis-checadores' element={<MyChechers />} />
                 <Route path='/dashboard/asignar-checadores' element={<AssignmentChecker />} />
-                <Route path="/recover-password" element={<RecoverUserPassword />} />
-                <Route path="/recover-password-code" element={<RecoverPasswordCode />} />
-                <Route path='/nueva-contraseña' element={<NewPassword />} />
-                <Route path='/crear-cuenta' element={<CreateAccount />} />
-                <Route path="/detalles-evento/:id" element={<EventDetails />} />
+
+                <Route path='/administrar/detalles-evento/:id' element={<AdminEventDetails/>}/>
 
             </Routes>
         </Router>

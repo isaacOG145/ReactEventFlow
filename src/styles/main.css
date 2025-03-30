@@ -1,3 +1,8 @@
+html {
+  font-size: 16px;
+  /* Define un tamaño base para la fuente */
+}
+
 * {
   font-family: "Montserrat", sans-serif;
   margin: 0;
@@ -22,11 +27,12 @@
   align-items: center;
   height: 100vh;
   width: 100vw;
-  background-color:#F2F6F9 ;
+  background-color: #F2F6F9;
 }
 
 .content-container {
-  margin-top: 150px; /* Espacio para el header fijo */
+  margin-top: 7.5rem;
+  /* 120px */
   width: 100%;
   margin-left: auto;
   margin-right: auto;
@@ -36,60 +42,74 @@
   background-color: #E5E7E9;
   width: 100%;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  padding: 30px 15px; /* Padding adicional */
+  padding: 1.875rem 0.9375rem;
+  /* 30px 15px */
 }
 
 .about-us {
   text-align: center;
-  padding: 20px;
+  padding: 1.25rem;
+  /* 20px */
 }
 
 h2 {
   font-weight: bold;
-  font-size: 32px;
-  margin-bottom: 20px;
+  font-size: 2rem;
+  /* 32px */
+  margin-bottom: 1.25rem;
+  /* 20px */
   color: #141414;
 }
 
 .about-us h2 {
   font-weight: bold;
-  font-size: 32px;
-  margin-bottom: 10px;
+  font-size: 2rem;
+  /* 32px */
+  margin-bottom: 0.625rem;
+  /* 10px */
   color: #141414;
 }
 
 .about-us p {
-  font-size: 20px;
+  font-size: 1.25rem;
+  /* 20px */
   line-height: 1.6;
   color: #141414;
-  margin-bottom: 20px; /* Espaciado adicional */
+  margin-bottom: 1.25rem;
+  /* 20px */
 }
 
 /* Estilo para las tarjetas */
 .card-presentation {
   background-color: #fff;
   border-radius: 15px;
-  padding: 20px; /* Espaciado dentro de las tarjetas */
-  margin: 10px;
+  padding: 1.25rem;
+  /* 20px */
+  margin: 0.625rem;
+  /* 10px */
   text-align: center;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra más suave */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-/* Asegurar que las imágenes de las tarjetas se ajusten bien */
 .icon-presentation {
-  width: 60px; /* Tamaño adecuado para las imágenes */
+  width: 3.75rem;
+  /* 60px */
   height: auto;
-  margin-bottom: 15px;
+  margin-bottom: 0.9375rem;
+  /* 15px */
 }
 
 .card-presentation h3 {
-  font-size: 20px;
+  font-size: 1.25rem;
+  /* 20px */
   font-weight: 600;
-  margin-bottom: 10px;
+  margin-bottom: 0.625rem;
+  /* 10px */
 }
 
 .card-presentation p {
-  font-size: 16px;
+  font-size: 1rem;
+  /* 16px */
   line-height: 1.5;
   color: #555;
 }
@@ -97,122 +117,145 @@ h2 {
 /* Estilos responsivos para móviles */
 @media (max-width: 768px) {
   .about-us h2 {
-    font-size: 28px; /* Tamaño de fuente más pequeño en pantallas pequeñas */
+    font-size: 1.75rem;
+    /* 28px */
   }
 
   .about-us p {
-    font-size: 18px;
+    font-size: 1.125rem;
+    /* 18px */
   }
 
   .card-presentation {
-    padding: 15px; /* Menos padding en pantallas pequeñas */
+    padding: 1rem;
+    /* 15px */
   }
 
   .card-presentation h3 {
-    font-size: 18px;
+    font-size: 1.125rem;
+    /* 18px */
   }
 
   .card-presentation p {
-    font-size: 14px;
+    font-size: 0.875rem;
+    /* 14px */
   }
 }
 
 /* Agregar una mayor responsividad para pantallas muy pequeñas */
 @media (max-width: 576px) {
   .card-presentation {
-    padding: 10px; /* Menos padding en pantallas más pequeñas */
+    padding: 0.625rem;
+    /* 10px */
   }
 
   .card-presentation h3 {
-    font-size: 16px; /* Reducir el tamaño de la fuente */
+    font-size: 1rem;
+    /* 16px */
   }
 
   .card-presentation p {
-    font-size: 12px; /* Reducir el tamaño del texto */
+    font-size: 0.75rem;
+    /* 12px */
   }
 
   .presentation-block {
-    padding: 20px 10px; /* Padding más pequeño */
+    padding: 1.25rem 0.625rem;
+    /* 20px 10px */
   }
 }
 
 .login-container {
   background-color: white;
-  padding: 30px;
+  padding: 1.875rem;
+  /* 30px */
   border-radius: 15px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   text-align: center;
-  width: 100%; /* Ocupa el ancho completo del contenedor padre */
-  max-width: 800px; /* Limita el ancho máximo del formulario */
-  margin: 0 auto; /* Centra el formulario horizontalmente */
+  width: 100%;
+  /* Ocupa el ancho completo del contenedor padre */
+  max-width: 50rem;
+  /* 800px */
+  margin: 0 auto;
+  /* Centra el formulario horizontalmente */
 }
 
 .form {
   background-color: white;
-  padding: 30px;
+  padding: 1.875rem;
+  /* 30px */
   border-radius: 15px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   text-align: center;
-  width: 90%; /* Ocupa el ancho completo del contenedor padre */
+  width: 90%;
+  /* Ocupa el ancho completo del contenedor padre */
   margin: 0 auto;
 }
 
 .form-asign {
   background-color: white;
-  padding: 30px;
+  padding: 1.875rem;
+  /* 30px */
   border-radius: 15px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   text-align: center;
-  width: 60%; /* Ocupa el ancho completo del contenedor padre */
+  width: 60%;
+  /* Ocupa el ancho completo del contenedor padre */
   margin: 0 auto;
 }
 
 .card-details {
   background-color: white;
-  padding: 30px;
+  padding: 1.875rem;
+  /* 30px */
   border-radius: 15px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   text-align: left;
-  width: 80%; /* Ocupa el ancho completo del contenedor padre */
+  width: 80%;
+  /* Ocupa el ancho completo del contenedor padre */
   margin: 0 auto;
 }
 
 h1 {
-  font-optical-sizing: auto;
   font-weight: 700;
-  font-style: bold;
+  font-size: 2.5rem;
+  /* 40px */
   color: #142EA9;
 }
 
 .login-title {
-  font-size: 40px;
-  margin-top: 30px;
-  margin-bottom: 50px;
+  font-size: 2.5rem;
+  /* 40px */
+  margin-top: 1.875rem;
+  /* 30px */
+  margin-bottom: 3.125rem;
+  /* 50px */
   font-weight: 700;
   font-style: bold;
 }
 
 /* Estilos para el campo de entrada */
-
-/* Estilos para el contenedor del input */
 .input-container {
-  margin-bottom: 15px; /* Espacio entre los campos */
-  width: 100%; /* Ocupa todo el ancho disponible */
+  margin-bottom: 0.9375rem;
+  /* 15px */
+  width: 100%;
 }
 
-/* Estilos para la etiqueta */
 .input-label {
   display: flex;
-  align-items: start; /* Alinea los elementos verticalmente */
-  margin-bottom: 5px;
-  font-size: 20px;
+  align-items: start;
+  /* Alinea los elementos verticalmente */
+  margin-bottom: 0.3125rem;
+  /* 5px */
+  font-size: 1.25rem;
+  /* 20px */
   font-weight: normal;
   color: #141414 !important;
 }
 
 /* styles/main.css */
 .select-field {
-  appearance: none; /* Elimina el estilo por defecto del navegador */
+  appearance: none;
   padding: 0.5rem;
   border-radius: 4px;
   border: 1px solid #ccc;
@@ -226,61 +269,74 @@ h1 {
 
 /* Estilos para el texto dentro del label */
 .label-text {
-  margin-right: 4px; /* Espacio entre el texto y el asterisco */
+  margin-right: 0.25rem;
+  /* 4px */
 }
 
-/* Estilos para el asterisco de color diferente */
 .required-asterisk {
-  color: #CC1212; /* Color del asterisco */
-  font-size: 20px;
+  color: #CC1212;
+  /* Color del asterisco */
+  font-size: 1.25rem;
+  /* 20px */
 }
 
 .input-field {
   width: 100%;
-  padding: 10px;
+  padding: 0.625rem;
+  /* 10px */
   color: #141414;
   background-color: #E5E7E9;
   border: 1px solid #ccc;
   border-radius: 15px;
-  font-size: 20px;
+  font-size: 1.25rem;
+  /* 20px */
   outline: none;
   transition: border-color 0.3s ease;
 }
 
 .input-field[type="password"] {
-  font-size: 20px !important; /* Asegúrate de que el tamaño de fuente sea el mismo que para otros campos */
+  font-size: 1.25rem !important;
+  /* Asegúrate de que el tamaño de fuente sea el mismo que para otros campos */
 }
 
 .input-field:focus {
-  border-color: #007bff; /* Cambia el color del borde al enfocar */
+  border-color: #007bff;
+  /* Cambia el color del borde al enfocar */
 }
 
 .pass-message {
-  font-size: 20px;
+  font-size: 1.25rem;
+  /* 20px */
   color: #8005A3;
   text-decoration: none;
-  margin-top: 50px;
+  margin-top: 3.125rem;
+  /* 50px */
 }
 
 .error-message {
   color: red;
   font-size: 0.875rem;
+  /* 14px */
   margin-top: 0.25rem;
+  /* 4px */
   text-align: start;
 }
+
 .root-header {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   z-index: 1000;
-  padding: 10px 20px; /* Ajuste de padding */
-  height: 100px; /* Altura ajustada */
+  padding: 0.625rem 1.25rem;
+  /* 10px 20px */
+  height: 6.25rem;
+  /* 100px */
   border-bottom: 2px solid #8005A3;
   background-color: #ffffff;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   display: flex;
-  justify-content: space-between; /* Asegura que el logo y el modal se distribuyan */
+  justify-content: space-between;
   align-items: center;
 }
 
@@ -291,59 +347,65 @@ h1 {
 
 @media (max-width: 576px) {
   .root-header {
-      padding: 10px; /* Menos padding en pantallas pequeñas */
-      height: 80px; /* Altura ajustada en pantallas pequeñas */
+    padding: 0.625rem;
+    /* 10px */
+    height: 5rem;
+    /* 80px */
   }
 }
 
 @media (min-width: 768px) {
   .root-header {
-      height: 120px; /* Aumenta la altura en pantallas medianas y grandes */
+    height: 7.5rem;
+    /* 120px */
   }
 }
 
 .ml-auto {
-  margin-left: auto; /* Esto empuja el contenido al final de la fila */
+  margin-left: auto;
 }
-
-
 
 .admin-nav {
   position: fixed;
-  top: 150px;  /* Empuja el nav hacia abajo para que esté debajo del header */
+  top: 7.5rem;
+  /* 120px */
   left: 0;
-  height: calc(100vh - 150px);  /* Resta la altura del header */
-  width: 320px;
+  height: calc(120vh - 9.375rem);
+  /* 150px */
+  width: 20rem;
+  /* 320px */
   background-color: #5C30B6;
   padding: 1rem;
-  z-index: 999;  /* Asegura que se quede debajo del header */
+  z-index: 999;
   box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
 }
 
 .content {
-  margin-left: 320px;
-  margin-top: 150px;
-  padding: 40px;
-  width: calc(100% - 320px);
-  height: calc(100vh - 150px);
+  margin-left: 20rem;
+  /* 320px */
+  margin-top: 7.5rem;
+  /* 120px */
+  padding: 2.5rem;
+  /* 40px */
+  width: calc(100% - 20rem);
+  /* 320px */
+  height: calc(100vh - 9.375rem);
+  /* 150px */
   overflow-y: auto;
   background-color: #F2F6F9;
 }
 
-/* Asegura que el contenedor ocupe el 100% de la altura */
 .container-fluid.h-100 {
   height: 100%;
 }
 
-/* Asegura que la fila ocupe el 100% de la altura */
 .row.h-100 {
   height: 100%;
 }
 
-
-/* Contenedor principal */
 .card-activity {
-  margin: 10px 30px;
+  margin: 0.625rem 1.875rem;
+  /* 10px 30px */
   border-radius: 12px;
   overflow: hidden;
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
@@ -357,18 +419,19 @@ h1 {
   box-shadow: 0 12px 24px rgba(0, 0, 0, 0.12);
 }
 
-/* Carrusel */
 .activity-carousel {
-  max-height: 300px;
+  max-height: 18.75rem;
+  /* 300px */
   overflow: hidden;
 }
 
 .carousel-image-container {
-  height: 350px;
+  height: 21.875rem;
+  /* 350px */
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #f8f9fa; /* Fondo mientras carga */
+  background: #f8f9fa;
 }
 
 .carousel-image {
@@ -379,11 +442,12 @@ h1 {
   transition: transform 0.5s ease;
 }
 
-/* Controles del carrusel */
 .carousel-control-prev,
 .carousel-control-next {
-  width: 40px;
-  height: 40px;
+  width: 2.5rem;
+  /* 40px */
+  height: 2.5rem;
+  /* 40px */
   background: rgba(0, 0, 0, 0.3);
   border-radius: 50%;
   top: 50%;
@@ -397,7 +461,6 @@ h1 {
   opacity: 1;
 }
 
-/* Contenido */
 .card-activity-content {
   padding: 1.5rem;
 }
@@ -410,17 +473,18 @@ h1 {
 .card-activity-content p {
   color: #141414;
   line-height: 1.6;
-  font-size: 24px;
+  font-size: 1.5rem;
+  /* 24px */
 }
 
-/* Responsive */
 @media (max-width: 768px) {
   .card-activity {
     margin-bottom: 1rem;
   }
 
   .carousel-image-container {
-    height: 250px;
+    height: 15.625rem;
+    /* 250px */
   }
 }
 
@@ -428,11 +492,26 @@ h1 {
   font-weight: normal;
   color: #909497;
   line-height: 1.6;
-  font-size: 24px;
+  font-size: 1.5rem;
+  /* 24px */
 }
 
-/* Estilo para el ícono del reloj en el input time */
 .time-input-field::-webkit-calendar-picker-indicator {
   filter: invert(0.5);
+  cursor: pointer;
+}
+
+.event-info {
+  color: #D1D1D1;
+  font-size: 1rem;
+  /* 20px */
+  font-weight: bold;
+  margin-right: 0.5rem;
+  text-decoration: none;
+  /* 8px */
+}
+
+.event-info:hover{
+  color: #909497;
   cursor: pointer;
 }

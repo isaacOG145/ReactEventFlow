@@ -35,7 +35,7 @@ function App() {
                 <Route path="/recover-password-code" element={<RecoverPasswordCode />} />
                 <Route path='/nueva-contraseña' element={<NewPassword />} />
                 <Route path='/crear-cuenta' element={<CreateAccount />} />
-                <Route path="/detalles-evento/" element={<EventDetails />} />
+                <Route path="/detalles-evento/:id" element={<EventDetails />} />
 
             </Routes>
         </Router>

@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from "react";
-// Eliminamos useNavigate
-import { Carousel } from 'react-bootstrap';
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom'; // Asegúrate de importar useNavigate
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../styles/main.css';
 import '../styles/modalStyles.css';
@@ -20,12 +19,12 @@ import { es } from 'date-fns/locale';
 
 export default function Index() {
   const [activities, setActivities] = useState([]); // Mantiene el estado de las actividades
+  const navigate = useNavigate(); // Usamos useNavigate
 
   useEffect(() => {
     // Realizamos la solicitud GET usando fetch
     fetch('http://localhost:8080/activity/findActiveEvents')
       .then((response) => {
-        // Verificamos si la respuesta fue exitosa
         if (!response.ok) {
           throw new Error('Error al obtener las actividades');
         }
@@ -33,9 +32,7 @@ export default function Index() {
       })
       .then((data) => {
         if (data.type === 'SUCCESS') {
-          // Formateamos la fecha antes de almacenarla en el estado
           const formattedActivities = data.result.map((activity) => {
-            // Formateamos la fecha y la hora
             const formattedDate = activity.date
               ? format(new Date(activity.date), 'dd MMM yyyy', { locale: es })
               : 'Fecha no disponible';
@@ -49,12 +46,6 @@ export default function Index() {
       });
   }, []);  // Se ejecuta solo una vez al cargar el componente
 
-  // El handleDetailsClick se ha comentado, ya no navega a otras páginas.
-  const handleDetailsClick = (id) => {
-    console.log("Detalles del evento (navegación eliminada) con ID:", id);
-    // Aquí puedes agregar la lógica de navegación cuando la necesites
-    // navigate(`/detalles-evento/:${id}`);
-  };
 
   return (
     <div className="app-container">
@@ -92,14 +83,14 @@ export default function Index() {
           </div>
         </div>
 
-
         <div className="row mt-4 justify-content-center">
           {activities.length > 0 ? (
             activities.map((activity) => (
               <ActivityCard
                 key={activity.id}
                 activity={activity}
-                onDetailsClick={() => handleDetailsClick(activity.id)}  // Llamamos a la función sin navegar
+                to = {`/detalles-evento/${activity.id}`}
+                buttonText="Ver detalles"
                 label={
                   <label>
                     <img className="icon-sm" src={EventDate} alt="Ícono de fecha" />
@@ -112,7 +103,6 @@ export default function Index() {
             <p>No hay actividades disponibles.</p>
           )}
         </div>
-
 
       </div>
     </div>

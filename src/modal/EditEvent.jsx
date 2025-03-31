@@ -16,7 +16,7 @@ export default function EditEvent({ show, handleClose }) {
 
   return (
     <div className={`modal fade ${show ? "show d-block" : "d-none"}`} tabIndex="-1">
-      <div className="modal-dialog">
+      <div className="modal-dialog modal-lg"> {/* Agregamos la clase "modal-lg" para hacerlo más grande */}
         <div className="modal-content">
           <div className="modal-header">
             <h5 className="modal-title">Crear Evento</h5>

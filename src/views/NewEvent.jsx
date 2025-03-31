@@ -14,18 +14,35 @@ import InputComponent from "../components/InputComponent";
 import ImageGalleryUpload from "../components/ImagesGalleryUpload";
 
 export default function NewEvent() {
-  const [eventName, setEventName] = useState("");
-  const [eventDate, setEventDate] = useState("");
-  const [eventDescription, setEventDescription] = useState("");
-  const [gallery, setGallery] = useState([null, null, null]);
+  const [formData, setFormData] = useState({
+    name: "",
+    speaker: "",
+    description: "",
+    date: ""
+  });
 
-	{/**temporal para prueba */}
-  const [images, setImages] = React.useState([]);
+  const [gallery, setGallery] = useState([null, null, null]);
+  const [images, setImages] = useState([]);
+
+  const handleInputChange = (e) => {
+    const { id, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [id]: value
+    }));
+  };
 
   const handleImageChange = (index, file) => {
     const newGallery = [...gallery];
     newGallery[index] = file;
     setGallery(newGallery);
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log("Datos del formulario:", formData);
+    console.log("Galería de imágenes:", gallery);
+    // Aquí iría la lógica para enviar los datos
   };
 
   return (
@@ -36,13 +53,10 @@ export default function NewEvent() {
       </div>
 
       <div className="content">
-       
-
         <div className="form">
-
-          <form className="event-form">
-
-          <h1>Crear evento</h1>
+          <form className="event-form" onSubmit={handleSubmit}>
+            <h1>Crear evento</h1>
+            
             <div className="row">
               {/* Primera columna */}
               <div className="col-md-6">
@@ -56,6 +70,8 @@ export default function NewEvent() {
                       </>
                     }
                     id="name"
+                    value={formData.name}
+                    onChange={handleInputChange}
                   />
                 </div>
               </div>
@@ -72,37 +88,59 @@ export default function NewEvent() {
                       </>
                     }
                     id="speaker"
+                    value={formData.speaker}
+                    onChange={handleInputChange}
                   />
                 </div>
               </div>
             </div>
 
             <div className="row">
-              <InputComponent 
-                type="text"
-                label={
-                  <>
-                  <img className="icon-sm" src={DetailsImg} alt="" />
-                  <span className="label-text">Descripción</span>
-                  <span className="required-asterisk">*</span>
-                  </>
-                }
-              
-              />
+              <div className="col-12">
+                <div className="form-block">
+                  <InputComponent 
+                    type="text"
+                    label={
+                      <>
+                        <img className="icon-sm" src={DetailsImg} alt="" />
+                        <span className="label-text">Descripción</span>
+                        <span className="required-asterisk">*</span>
+                      </>
+                    }
+                    id="description"
+                    value={formData.description}
+                    onChange={handleInputChange}
+                  />
+                </div>
+              </div>
             </div>
 
             <div className="row">
-              <ImageGalleryUpload
-                images={images}
-                onChange={setImages}
-                required
-                minImages={3}
-                error={images.length < 3 ? "Sube al menos 3 imágenes" : ""}
-              />
+              <div className="col-12">
+                <InputComponent
+                  type="date"
+                  label="Fecha del evento"
+                  id="date"
+                  value={formData.date}
+                  onChange={handleInputChange}
+                />
+              </div>
+            </div>
+
+            <div className="row">
+              <div className="col-12">
+                <ImageGalleryUpload
+                  images={images}
+                  onChange={setImages}
+                  required
+                  minImages={3}
+                  error={images.length < 3 ? "Sube al menos 3 imágenes" : ""}
+                />
+              </div>
             </div>
 
             <div className="text-center mt-4">
-              <BlueButton>Crear nuevo</BlueButton>
+              <BlueButton type="submit">Crear nuevo</BlueButton>
             </div>
           </form>
         </div>

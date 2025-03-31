@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useParams } from 'react-router-dom';
-import { useNavigate } from 'react-router-dom';
-
+import { useParams, useNavigate } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../styles/main.css';
 
@@ -10,10 +8,13 @@ import AdminNav from "../components/AdminNav";
 import Carrusel from "../components/Carrusel";
 import BlueButton from "../components/BlueButton";
 import NavigatePurpleButton from "../components/NavigatePurpleButton";
+import UpdateEventModal from "../components/modals/UpdateEventModal";
 
 export default function AdminEventDetails() {
   const { id } = useParams();
+  const navigate = useNavigate();
   const [eventData, setEventData] = useState({
+    id: "",
     name: "",
     description: "",
     date: "",
@@ -21,6 +22,30 @@ export default function AdminEventDetails() {
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [showModal, setShowModal] = useState(false);
+
+  const handleEdit = () => {
+    setShowModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+  };
+
+  const handleUpdateSuccess = (updatedEvent) => {
+    // Actualizar los datos locales con la respuesta del servidor
+    const formattedDate = new Date(updatedEvent.date).toLocaleDateString('es-ES', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
+    
+    setEventData({
+      ...updatedEvent,
+      date: formattedDate
+    });
+    setShowModal(false);
+  };
 
   useEffect(() => {
     const fetchEventData = async () => {
@@ -34,18 +59,23 @@ export default function AdminEventDetails() {
         const data = await response.json();
 
         if (data.type === "SUCCESS") {
-          // Formatear la fecha para mostrar solo la parte de la fecha (sin hora)
-          const formattedDate = new Date(data.result.date).toLocaleDateString('es-ES', {
+          // Guardar la fecha original para el modal
+          const eventDate = data.result.date;
+          
+          // Formatear la fecha para mostrar
+          const formattedDate = new Date(eventDate).toLocaleDateString('es-ES', {
             year: 'numeric',
             month: 'long',
             day: 'numeric'
           });
 
           setEventData({
+            id: data.result.id,
             name: data.result.name,
             description: data.result.description,
             date: formattedDate,
-            imageUrls: data.result.imageUrls
+            originalDate: eventDate, // Guardamos la fecha original sin formatear
+            imageUrls: data.result.imageUrls || []
           });
         } else {
           throw new Error(data.text || "Error al obtener los datos del evento");
@@ -59,7 +89,11 @@ export default function AdminEventDetails() {
     };
 
     fetchEventData();
-  }, []); // El array vacío significa que se ejecuta solo al montar el componente
+  }, [id]);
+
+  const handleReturn = () => {
+    navigate(-1);
+  }
 
   if (loading) {
     return (
@@ -92,16 +126,13 @@ export default function AdminEventDetails() {
             Error al cargar los datos: {error}
           </div>
           <div className="text-center">
-            <PurpleButton onClick={() => window.location.reload()}>Reintentar</PurpleButton>
+            <NavigatePurpleButton onClick={() => window.location.reload()}>
+              Reintentar
+            </NavigatePurpleButton>
           </div>
         </div>
       </div>
     );
-  }
-
-  const handleReturn = () => {
-    const navigate = useNavigate();
-    navigate(-1);
   }
 
   return (
@@ -121,7 +152,6 @@ export default function AdminEventDetails() {
             <a className="event-info">Ver talleres</a>
           </div>
 
-
           {eventData.imageUrls.length > 0 ? (
             <Carrusel images={eventData.imageUrls} />
           ) : (
@@ -131,14 +161,27 @@ export default function AdminEventDetails() {
           <div className="row mt-3">
             <div className="col-6"></div>
             <div className="col-3">
-              <NavigatePurpleButton to="/dashboard/mis-eventos">Volver</NavigatePurpleButton>
+              <NavigatePurpleButton onClick={handleReturn}>
+                Volver
+              </NavigatePurpleButton>
             </div>
             <div className="col-3">
-              <BlueButton >Actualizar</BlueButton>
+              <BlueButton onClick={handleEdit}>Actualizar</BlueButton>
             </div>
           </div>
         </div>
       </div>
+
+      {/* Modal para actualizar el evento */}
+      <UpdateEventModal
+        showModal={showModal}
+        eventData={{
+          ...eventData,
+          date: eventData.originalDate || eventData.date // Usamos la fecha sin formatear para el modal
+        }}
+        handleClose={handleCloseModal}
+        onUpdateSuccess={handleUpdateSuccess}
+      />
     </div>
   );
 }

@@ -36,69 +36,76 @@ const UpdateEventModal = ({ showModal, eventData, handleClose, onUpdateSuccess }
         setEventDate(e.target.value);
     };
 
+    
     const handleSubmit = async (e) => {
         e.preventDefault();
-
+    
         if (!eventName || !eventDate || !eventDescription) {
             setError("Por favor, completa todos los campos obligatorios.");
             return;
         }
-
+    
         setLoading(true);
         setError(null);
-
+    
         try {
-            // Determinar qué imágenes son nuevas (no están en originalImages)
-            const newImages = images.filter(img => 
-                typeof img === 'object' || !originalImages.includes(img)
-            );
-
-            // Determinar qué imágenes se eliminaron (están en originalImages pero no en images)
-            const deletedImages = originalImages.filter(img => 
+            // Identificar imágenes eliminadas
+            const deletedImages = originalImages.filter(originalImg => 
                 !images.some(currentImg => 
-                    typeof currentImg === 'string' && currentImg === img
+                    typeof currentImg === 'string' && currentImg === originalImg
                 )
             );
-
+    
+            // Identificar imágenes existentes que se conservan
+            const existingImages = images.filter(img => 
+                typeof img === 'string' && originalImages.includes(img)
+            );
+    
+            // Filtrar imágenes nuevas (archivos)
+            const newImages = images.filter(img => typeof img === 'object');
+    
             const formData = new FormData();
-
-            // Preparar datos del evento
+    
             const activityDTO = {
                 id: eventData.id,
                 name: eventName,
                 description: eventDescription,
                 date: eventDate,
-                deletedImages: deletedImages, // Imágenes a eliminar
-                // No incluimos las imágenes aquí, las mandamos como parte del FormData
+                deletedImages: deletedImages,
+                existingImages: existingImages
             };
-
+    
             formData.append("activity", new Blob([JSON.stringify(activityDTO)], {
                 type: "application/json"
             }));
-
-            // Agregar solo las imágenes nuevas al FormData
+    
+            // Agregar imágenes nuevas al FormData
             newImages.forEach((img) => {
-                if (typeof img === 'object' && img.file) {
+                if (img.file) {
                     formData.append("images", img.file);
                 }
             });
-
+    
             const response = await fetch('http://localhost:8080/activity/updateEvent', {
                 method: 'PUT',
                 body: formData,
+                headers: {
+                    // No incluir 'Content-Type': el navegador lo establecerá automáticamente con el boundary correcto
+                    'Authorization': `Bearer ${localStorage.getItem('token')}` // Si usas autenticación
+                }
             });
-
+    
             if (!response.ok) {
                 const errorData = await response.json();
                 throw new Error(errorData.message || 'Error al actualizar el evento');
             }
-
+    
             const result = await response.json();
             
             if (onUpdateSuccess) {
                 onUpdateSuccess(result.result);
             }
-
+    
             handleClose();
         } catch (error) {
             console.error("Error:", error);

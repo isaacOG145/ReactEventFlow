@@ -65,46 +65,110 @@
     border-color: #000;
 }
 
-/* Modal principal */
+/* Estilos para el modal */
 .modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    display: none; /* Inicialmente oculto */
-    justify-content: center;
-    align-items: center;
-    z-index: 1001; /* Asegura que el modal esté por encima del overlay */
-  }
-  
-  /* Modal cuando está visible */
-  .modal.show {
-    display: flex;
-  }
-  
-  /* Contenido del Modal */
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  overflow-y: auto; /* Permite scroll si el contenido es muy largo */
+}
+
+.modal.show {
+  display: flex;
+}
+
+/* Contenido del Modal - Ahora más ancho */
+.modal-content {
+  background-color: white;
+  padding: 30px;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 800px; /* Más ancho que antes (era 500px) */
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  position: relative;
+  margin: 20px;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+/* Cabecera del modal */
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.modal-header h1 {
+  margin: 0;
+  font-size: 24px;
+  color: #333;
+}
+
+/* Botón de cierre */
+.close-button {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: #666;
+  transition: color 0.2s;
+}
+
+.close-button:hover {
+  color: #333;
+}
+
+/* Cuerpo del modal */
+.modal-body {
+  padding: 15px 0;
+}
+
+/* Pie del modal */
+.modal-footer {
+  text-align: right;
+  padding-top: 20px;
+  margin-top: 20px;
+  border-top: 1px solid #e0e0e0;
+}
+
+/* Ajustes para los inputs en modal más ancho */
+.modal-body .row {
+  margin-bottom: 20px;
+}
+
+.modal-body .col-md-6 {
+  padding: 0 15px;
+}
+
+/* Ajustes para la galería de imágenes */
+.image-gallery-container {
+  margin-top: 20px;
+}
+
+/* Estilos responsivos */
+@media (max-width: 768px) {
   .modal-content {
-    background-color: white;
+    width: 95%;
     padding: 20px;
-    border-radius: 10px;
-    max-width: 500px;
-    width: 100%; /* Asegura que el modal no exceda el 100% del ancho */
   }
   
-  /* Botón de cierre */
-  .close-button {
-    font-size: 20px;
-    cursor: pointer;
+  .modal-body .row {
+    flex-direction: column;
   }
   
-  /* Cabecera del modal */
-  .modal-header {
-    display: flex;
-    justify-content: space-between;
+  .modal-body .col-md-6 {
+    width: 100%;
+    padding: 0;
+    margin-bottom: 15px;
   }
-  
-  /* Pie del modal */
-  .modal-footer {
-    text-align: right;
-  }
+}

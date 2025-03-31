@@ -4,6 +4,7 @@ import "../styles/main.css";
 import "../styles/iconStyles.css";
 
 import BlueButton from "../components/BlueButton";
+import PurpleButton from "../components/PurpleButton";
 import DetailsImg from "../assets/icons/details.png";
 import InputComponent from "../components/InputComponent";
 import ImageGalleryUpload from "../components/ImagesGalleryUpload";
@@ -16,10 +17,10 @@ export default function EditEvent({ show, handleClose }) {
 
   return (
     <div className={`modal fade ${show ? "show d-block" : "d-none"}`} tabIndex="-1">
-      <div className="modal-dialog modal-lg"> {/* Agregamos la clase "modal-lg" para hacerlo más grande */}
+      <div className="modal-dialog modal-lg"> {/* Modal más grande */}
         <div className="modal-content">
           <div className="modal-header">
-            <h5 className="modal-title">Crear Evento</h5>
+            <h5 className="modal-title">Actualizar Evento</h5>
             <button type="button" className="btn-close" onClick={handleClose}></button>
           </div>
           <div className="modal-body">
@@ -75,8 +76,10 @@ export default function EditEvent({ show, handleClose }) {
                   error={images.length < 3 ? "Sube al menos 3 imágenes" : ""}
                 />
               </div>
-              <div className="text-center mt-4">
-                <BlueButton>Crear nuevo</BlueButton>
+              {/* Botones uno debajo del otro */}
+              <div className="mt-4 d-grid gap-4">
+                <BlueButton className="w-100 mb-2">Actualizar evento</BlueButton> {/* Usamos w-100 para que los botones ocupen el 100% del contenedor y mb-2 para separarlos */}
+                <PurpleButton className="w-100">Cancelar</PurpleButton>
               </div>
             </form>
           </div>

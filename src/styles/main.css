@@ -23,11 +23,12 @@
   height: 100vh;
   width: 100vw;
 }
+
 /* Estilos para el logo */
 .logo {
-  height: auto; /* Mantiene la proporción de la imagen */
-  max-height: 100px; /* Altura máxima del logo */
-  width: auto; /* Ancho automático para mantener la proporción */
+  height: auto;
+  max-height: 100px;
+  width: auto;
 }
 
 .login-container {
@@ -36,18 +37,18 @@
   border-radius: 15px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   text-align: center;
-  width: 100%; /* Ocupa el ancho completo del contenedor padre */
-  max-width: 800px; /* Limita el ancho máximo del formulario */
-  margin: 0 auto; /* Centra el formulario horizontalmente */
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
 }
 
-.form{
+.form {
   background-color: white;
   padding: 30px;
   border-radius: 15px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   text-align: center;
-  width: 90%; /* Ocupa el ancho completo del contenedor padre */
+  width: 90%;
   margin: 0 auto;
 }
 
@@ -66,32 +67,27 @@ h1 {
   font-style: bold; 
 }
 
-/* Estilos para el campo de entrada */
-
-/* Estilos para el contenedor del input */
+/* Estilos para los inputs */
 .input-container {
-  margin-bottom: 15px; /* Espacio entre los campos */
-  width: 100%; /* Ocupa todo el ancho disponible */
+  margin-bottom: 15px;
+  width: 100%;
 }
 
-/* Estilos para la etiqueta */
 .input-label {
   display: flex;
-  align-items: start; /* Alinea los elementos verticalmente */
+  align-items: start;
   margin-bottom: 5px;
   font-size: 20px;
   font-weight: normal;
   color: #141414 !important;
 }
 
-/* Estilos para el texto dentro del label */
 .label-text {
-  margin-right: 4px; /* Espacio entre el texto y el asterisco */
+  margin-right: 4px;
 }
 
-/* Estilos para el asterisco de color diferente */
 .required-asterisk {
-  color: #CC1212; /* Color del asterisco */
+  color: #CC1212;
   font-size: 20px;
 }
 
@@ -107,15 +103,11 @@ h1 {
   transition: border-color 0.3s ease;
 }
 
-.input-field[type="password"] {
-  font-size: 20px !important; /* Asegúrate de que el tamaño de fuente sea el mismo que para otros campos */
-}
-
 .input-field:focus {
-  border-color: #007bff; /* Cambia el color del borde al enfocar */
+  border-color: #007bff;
 }
 
-.pass-message{
+.pass-message {
   font-size: 20px;
   color: #8005A3;
   text-decoration: none;
@@ -129,7 +121,6 @@ h1 {
   text-align: start;
 }
 
-/*header principal*/
 /* Estilos para el root-header */
 .root-header {
   position: fixed;
@@ -138,7 +129,7 @@ h1 {
   right: 0;
   z-index: 1000;
   padding: 20px;
-  height: 150px; /* Altura fija de la cabecera */
+  height: 150px;
   border-bottom: 2px solid #8005A3;
   background-color: #ffffff;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -146,13 +137,13 @@ h1 {
 
 .admin-nav {
   position: fixed;
-  top: 150px;  /* Empuja el nav hacia abajo para que esté debajo del header */
+  top: 150px;
   left: 0;
-  height: calc(100vh - 150px);  /* Resta la altura del header */
+  height: calc(100vh - 150px);
   width: 320px;
   background-color: #5C30B6;
   padding: 1rem;
-  z-index: 999;  /* Asegura que se quede debajo del header */
+  z-index: 999;
   box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
 }
 
@@ -166,12 +157,34 @@ h1 {
   background-color: #F2F6F9;
 }
 
-/* Asegura que el contenedor ocupe el 100% de la altura */
 .container-fluid.h-100 {
   height: 100%;
 }
 
-/* Asegura que la fila ocupe el 100% de la altura */
 .row.h-100 {
   height: 100%;
+}
+
+/* Estilos para los selectores */
+select {
+  width: 100%;
+  padding: 10px;
+  font-size: 16px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  background-color: #142EA9; /* Color azul */
+  color: white; /* Texto en blanco */
+  appearance: none; /* Oculta la flecha predeterminada en algunos navegadores */
+  cursor: pointer;
+}
+
+/* Para cambiar el color de la flecha en algunos navegadores */
+select::-ms-expand {
+  display: none;
+}
+
+/* Cambiar color al enfocar */
+select:focus {
+  border-color: #8005A3; /* Un morado llamativo */
+  outline: none;
 }

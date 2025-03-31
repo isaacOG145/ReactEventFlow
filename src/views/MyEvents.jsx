@@ -7,12 +7,15 @@ import '../styles/iconStyles.css';
 // Importación de componentes
 import IconDetails from '../components/icons/iconDetails';
 import IconEdit from '../components/icons/iconEdit';
+
 import iconStatus from '../assets/icons/boton-de-play.png';
 import iconStatusoff from '../assets/icons/boton-red.png';
+
 import CustomerRootHeader from "../components/CustomerRootHeader";
 import AdminNav from "../components/AdminNav";
 import ChangeStatus from "../modal/ChangeStatus";
-import EditEventModal from "../modal/EditEvent"; // Nuevo modal de edición
+import EditEventModal from "../modal/EditEvent";
+import EventDetailsModal from "../modal/EventDetails"; // Nuevo modal de detalles
 
 export default function MyEvents() {
   const [events, setEvents] = useState([
@@ -22,36 +25,34 @@ export default function MyEvents() {
 
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [selectedEventId, setSelectedEventId] = useState(null);
+  const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
+  const [selectedEvent, setSelectedEvent] = useState(null);
 
   const handleDeleteClick = (eventId) => {
-    setSelectedEventId(eventId);
+    setSelectedEvent(events.find(event => event.id === eventId));
     setIsDeleteModalOpen(true);
   };
 
   const handleEditClick = (eventId) => {
-    setSelectedEventId(eventId);
+    setSelectedEvent(events.find(event => event.id === eventId));
     setIsEditModalOpen(true);
+  };
+
+  const handleDetailsClick = (event) => {
+    setSelectedEvent(event);
+    setIsDetailsModalOpen(true);
   };
 
   const handleConfirmDelete = () => {
     setEvents(prevEvents =>
       prevEvents.map(event =>
-        event.id === selectedEventId ? { 
+        event.id === selectedEvent.id ? { 
           ...event, 
           icon: event.icon === iconStatus ? iconStatusoff : iconStatus
         } : event
       )
     );
     setIsDeleteModalOpen(false);
-  };
-
-  const handleCloseDeleteModal = () => {
-    setIsDeleteModalOpen(false);
-  };
-
-  const handleCloseEditModal = () => {
-    setIsEditModalOpen(false);
   };
 
   return (
@@ -82,7 +83,7 @@ export default function MyEvents() {
                   <td>{event.date}</td>
                   <td className="actions">
                     <div>
-                      <IconDetails onClick={() => console.log("Ver detalles de", event.id)} />
+                      <IconDetails onClick={() => handleDetailsClick(event)} />
                       <IconEdit onClick={() => handleEditClick(event.id)} />
                       <button
                         className="btn-icon"
@@ -101,14 +102,20 @@ export default function MyEvents() {
 
       <ChangeStatus
         isOpen={isDeleteModalOpen}
-        onClose={handleCloseDeleteModal}
+        onClose={() => setIsDeleteModalOpen(false)}
         onConfirm={handleConfirmDelete}
       />
 
       <EditEventModal
         show={isEditModalOpen}
-        handleClose={handleCloseEditModal}
-        eventId={selectedEventId}
+        handleClose={() => setIsEditModalOpen(false)}
+        event={selectedEvent}
+      />
+
+      <EventDetailsModal
+        show={isDetailsModalOpen}
+        handleClose={() => setIsDetailsModalOpen(false)}
+        event={selectedEvent}
       />
     </div>
   );

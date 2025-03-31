@@ -11,6 +11,8 @@ import iconEdit from '../assets/icons/editar.png';
 
 import CustomerRootHeader from "../components/CustomerRootHeader";
 import AdminNav from "../components/AdminNav";
+import ViewDetailsComponent from "../components/iconsComponent/ViewDetailsComponent";
+import EditComponent from "../components/iconsComponent/EditComponent";
 
 export default function MyWorkshops() {
   const [workshops, setWorkshops] = useState([]);

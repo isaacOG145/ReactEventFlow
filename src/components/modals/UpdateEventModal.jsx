@@ -12,38 +12,35 @@ import DetailsImg from '../../assets/icons/details.png';
 import "../../styles/modalStyles.css";
 
 const UpdateEventModal = ({ showModal, eventData, handleClose, onUpdateSuccess }) => {
-    const [formData, setFormData] = useState({
-        name: "",
-        description: "",
-        date: "",
-        images: []
-    });
+    const [eventName, setEventName] = useState("");
+    const [eventDescription, setEventDescription] = useState("");
+    const [eventDate, setEventDate] = useState("");
+    const [images, setImages] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
+    const [originalImages, setOriginalImages] = useState([]);
 
-    // Inicializar los datos del formulario
     useEffect(() => {
         if (eventData && showModal) {
-            setFormData({
-                name: eventData.name,
-                description: eventData.description,
-                date: eventData.date,
-                images: eventData.imageUrls.map(url => ({ url })) // Convertir URLs a objetos de imagen
-            });
+            setEventName(eventData.name || "");
+            setEventDescription(eventData.description || "");
+            setEventDate(eventData.date || "");
+            // Guardamos las imágenes originales por separado
+            const initialImages = eventData.imageUrls ? [...eventData.imageUrls] : [];
+            setOriginalImages(initialImages);
+            setImages(initialImages);
         }
     }, [eventData, showModal]);
 
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setFormData(prev => ({ ...prev, [name]: value }));
+    const handleDateChange = (e) => {
+        setEventDate(e.target.value);
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        // Validación básica
-        if (!formData.name || !formData.date || !formData.description || formData.images.length === 0) {
-            setError("Por favor, completa todos los campos y sube al menos una imagen.");
+        if (!eventName || !eventDate || !eventDescription) {
+            setError("Por favor, completa todos los campos obligatorios.");
             return;
         }
 
@@ -51,32 +48,44 @@ const UpdateEventModal = ({ showModal, eventData, handleClose, onUpdateSuccess }
         setError(null);
 
         try {
-            const requestData = new FormData();
+            // Determinar qué imágenes son nuevas (no están en originalImages)
+            const newImages = images.filter(img => 
+                typeof img === 'object' || !originalImages.includes(img)
+            );
 
-            // Crear el objeto activityDTO con el ID del eventoData
+            // Determinar qué imágenes se eliminaron (están en originalImages pero no en images)
+            const deletedImages = originalImages.filter(img => 
+                !images.some(currentImg => 
+                    typeof currentImg === 'string' && currentImg === img
+                )
+            );
+
+            const formData = new FormData();
+
+            // Preparar datos del evento
             const activityDTO = {
-                ...eventData, // Mantenemos todos los datos originales
-                name: formData.name,
-                description: formData.description,
-                date: formData.date,
-                // El ID y otros campos se mantienen del eventData original
+                id: eventData.id,
+                name: eventName,
+                description: eventDescription,
+                date: eventDate,
+                deletedImages: deletedImages, // Imágenes a eliminar
+                // No incluimos las imágenes aquí, las mandamos como parte del FormData
             };
 
-            // Agregar el JSON como string
-            requestData.append("activity", new Blob([JSON.stringify(activityDTO)], {
+            formData.append("activity", new Blob([JSON.stringify(activityDTO)], {
                 type: "application/json"
             }));
 
-            // Agregar solo las imágenes nuevas (que tienen file)
-            formData.images.forEach(imageObj => {
-                if (imageObj.file) {
-                    requestData.append("images", imageObj.file);
+            // Agregar solo las imágenes nuevas al FormData
+            newImages.forEach((img) => {
+                if (typeof img === 'object' && img.file) {
+                    formData.append("images", img.file);
                 }
             });
 
             const response = await fetch('http://localhost:8080/activity/updateEvent', {
                 method: 'PUT',
-                body: requestData,
+                body: formData,
             });
 
             if (!response.ok) {
@@ -87,10 +96,10 @@ const UpdateEventModal = ({ showModal, eventData, handleClose, onUpdateSuccess }
             const result = await response.json();
             
             if (onUpdateSuccess) {
-                onUpdateSuccess(result.result); // Pasar los datos actualizados al componente padre
+                onUpdateSuccess(result.result);
             }
-            
-            handleClose(); // Cerrar el modal
+
+            handleClose();
         } catch (error) {
             console.error("Error:", error);
             setError(error.message || "Hubo un error al actualizar el evento.");
@@ -121,79 +130,75 @@ const UpdateEventModal = ({ showModal, eventData, handleClose, onUpdateSuccess }
                     )}
                     
                     <form onSubmit={handleSubmit}>
-                        {/* Sección de Nombre y Fecha */}
                         <div className="row">
                             <div className="col-md-6">
-                                <InputComponent
-                                    type="text"
-                                    name="name"
-                                    label={
-                                        <>
-                                            <img className="icon-sm" src={Event} alt="Icono de evento" />
-                                            <span className="label-text">Nombre del evento</span>
-                                            <span className="required-asterisk">*</span>
-                                        </>
-                                    }
-                                    value={formData.name}
-                                    onChange={handleChange}
-                                    required
-                                    disabled={loading}
-                                />
+                                <div className="form-block">
+                                    <InputComponent
+                                        type="text"
+                                        label={
+                                            <>
+                                                <img className="icon-sm" src={Event} alt="Icono de evento" />
+                                                <span className="label-text">Nombre del evento</span>
+                                                <span className="required-asterisk">*</span>
+                                            </>
+                                        }
+                                        value={eventName}
+                                        onChange={(e) => setEventName(e.target.value)}
+                                        required
+                                    />
+                                </div>
                             </div>
 
                             <div className="col-md-6">
-                                <DateInputComponent
-                                    name="date"
-                                    label={
-                                        <>
-                                            <img className="icon-sm" src={EventDate} alt="Icono de fecha" />
-                                            <span className="label-text">Fecha</span>
-                                            <span className="required-asterisk">*</span>
-                                        </>
-                                    }
-                                    value={formData.date}
-                                    onChange={handleChange}
-                                    required
-                                    disabled={loading}
-                                />
+                                <div className="form-block">
+                                    <DateInputComponent
+                                        value={eventDate}
+                                        onChange={handleDateChange}
+                                        label={
+                                            <>
+                                                <img className="icon-sm" src={EventDate} alt="Icono de fecha" />
+                                                <span className="label-text">Fecha</span>
+                                                <span className="required-asterisk">*</span>
+                                            </>
+                                        }
+                                        required
+                                    />
+                                </div>
                             </div>
                         </div>
 
-                        {/* Sección de Descripción */}
                         <div className="row">
                             <div className="col-12">
-                                <InputComponent
-                                    type="text"
-                                    name="description"
-                                    label={
-                                        <>
-                                            <img className="icon-sm" src={DetailsImg} alt="Icono de detalles" />
-                                            <span className="label-text">Descripción</span>
-                                            <span className="required-asterisk">*</span>
-                                        </>
-                                    }
-                                    value={formData.description}
-                                    onChange={handleChange}
-                                    required
-                                    disabled={loading}
-                                />
+                                <div className="form-block">
+                                    <InputComponent
+                                        type="text"
+                                        label={
+                                            <>
+                                                <img className="icon-sm" src={DetailsImg} alt="Icono de detalles" />
+                                                <span className="label-text">Descripción</span>
+                                                <span className="required-asterisk">*</span>
+                                            </>
+                                        }
+                                        value={eventDescription}
+                                        onChange={(e) => setEventDescription(e.target.value)}
+                                        required
+                                    />
+                                </div>
                             </div>
                         </div>
 
-                        {/* Sección de Imágenes */}
                         <div className="row">
                             <div className="col-12">
                                 <ImageGalleryUpload
-                                    images={formData.images}
-                                    onChange={(newImages) => setFormData(prev => ({ ...prev, images: newImages }))}
+                                    images={images}
+                                    onChange={setImages}
                                     required
                                     minImages={1}
-                                    disabled={loading}
+                                    label="Galería de imágenes"
                                 />
                             </div>
                         </div>
 
-                        {/* Botón de Envío */}
                         <div className="row mt-4">
                             <div className="col-6"></div>
                             <div className="col-3">

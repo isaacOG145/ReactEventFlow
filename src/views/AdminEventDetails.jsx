@@ -134,7 +134,7 @@ export default function AdminEventDetails() {
               <NavigatePurpleButton to="/dashboard/mis-eventos">Volver</NavigatePurpleButton>
             </div>
             <div className="col-3">
-              <BlueButton>Actualizar</BlueButton>
+              <BlueButton >Actualizar</BlueButton>
             </div>
           </div>
         </div>

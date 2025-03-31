@@ -22,8 +22,12 @@ export default function NewEvent() {
   const [loading, setLoading] = useState(false); // Agregar el estado de carga
 
   const handleDateChange = (e) => {
-    setEventDate(e.target.value);
-  };
+    
+    const isoDate = e.target.value;
+
+    const dateOnly = isoDate.split('T')[0];
+    setEventDate(dateOnly);
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -41,7 +45,7 @@ export default function NewEvent() {
       ownerActivity: { id: localStorage.getItem("userId") }, // Usa el ID de localStorage
       name: eventName,
       description: eventDescription,
-      date: eventDate
+      date: eventDate + 'T00:00:00Z' // Asegura que es UTC
     };
 
     // Agregar el JSON como string

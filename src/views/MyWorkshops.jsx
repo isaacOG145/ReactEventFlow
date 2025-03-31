@@ -109,9 +109,7 @@ export default function MyWorkshops() {
                     </td>
                     <td className="actions">
                       <div>
-                        <button onClick={() => handleViewDetails(workshop.id)}>
-                          <img className="icon-md" src={iconDetails} alt="Detalles" />
-                        </button>
+                        <ViewDetailsComponent to={`/administrar/detalles-taller/${workshop.id}`} />
                         <button onClick={() => handleEdit(workshop.id)}>
                           <img className="icon-md" src={iconEdit} alt="Editar" />
                         </button>

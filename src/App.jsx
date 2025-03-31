@@ -17,6 +17,7 @@ import NewWorkshop from './views/NewWorkshops';
 import AssignmentChecker from './views/AssignmentCheckers';
 import EventDetails from './views/EventDetails';
 import AdminEventDetails from './views/AdminEventDetails';
+import AdminWorkshopDetails from './views/AdminWorkshopDetails';
 
 function App() {
     return (
@@ -43,6 +44,7 @@ function App() {
                 <Route path='/dashboard/asignar-checadores' element={<AssignmentChecker />} />
 
                 <Route path='/administrar/detalles-evento/:id' element={<AdminEventDetails/>}/>
+                <Route path='/administrar/detalles-taller/:id' element={<AdminWorkshopDetails/>} />
 
             </Routes>
         </Router>

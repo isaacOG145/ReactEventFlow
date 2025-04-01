@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from "react";
+import { format, parseISO } from 'date-fns';
+import { es } from 'date-fns/locale';  // Importamos el locale en español
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../styles/main.css';
 import '../styles/tableStyles.css';
@@ -16,8 +18,8 @@ export default function MyEvents() {
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [showModal, setShowModal] = useState(false); // Estado para controlar el modal
-  const [eventToEdit, setEventToEdit] = useState(null); // Estado para los datos del evento a editar
+  const [showModal, setShowModal] = useState(false);
+  const [eventToEdit, setEventToEdit] = useState(null);
 
   useEffect(() => {
     const fetchEvents = async () => {
@@ -51,7 +53,6 @@ export default function MyEvents() {
   }, []);
 
   const handleEdit = (event) => {
-    // Establecer el evento a editar y abrir el modal
     setEventToEdit(event);
     setShowModal(true);
   };
@@ -62,12 +63,11 @@ export default function MyEvents() {
 
   const handleCloseModal = () => {
     setShowModal(false);
-    setEventToEdit(null); // Limpiar los datos del evento cuando se cierre el modal
+    setEventToEdit(null); 
   };
 
   const handleUpdateEvent = async (updatedEvent) => {
     try {
-      // Aquí deberías hacer la llamada al backend para actualizar el evento
       const response = await fetch(`http://localhost:8080/activity/events/update`, {
         method: 'PUT',
         headers: {
@@ -80,13 +80,18 @@ export default function MyEvents() {
         throw new Error('Error al actualizar el evento');
       }
 
-      // Si la actualización fue exitosa, actualizamos la lista de eventos
       setEvents(events.map(event => event.id === updatedEvent.id ? updatedEvent : event));
       handleCloseModal();
     } catch (err) {
       console.error("Error updating event:", err);
       setError("Error al actualizar el evento");
     }
+  };
+
+  // Función para formatear la fecha en español
+  const formatDate = (dateString) => {
+    const date = parseISO(dateString);
+    return format(date, 'dd MMMM yyyy', { locale: es }); // Usamos el locale en español
   };
 
   return (
@@ -112,7 +117,7 @@ export default function MyEvents() {
                   <th>Nombre</th>
                   <th>Descripción</th>
                   <th>Fecha</th>
-                  <th></th> {/* Columna de acciones */}
+                  <th></th> 
                 </tr>
               </thead>
               <tbody>
@@ -121,7 +126,7 @@ export default function MyEvents() {
                     <td className="td-blue">{index + 1}</td>
                     <td>{event.name}</td>
                     <td className="td-blue">{event.description}</td>
-                    <td>{event.date}</td>
+                    <td>{formatDate(event.date)}</td> {/* Aquí formateamos la fecha en español */}
                     <td className="actions">
                       <div>
                         <ViewDetailsComponent to={`/administrar/detalles-evento/${event.id}`} />
@@ -139,7 +144,6 @@ export default function MyEvents() {
         )}
       </div>
 
-      {/* Modal para actualizar el evento */}
       {showModal && eventToEdit && (
         <UpdateEventModal
           showModal={showModal}

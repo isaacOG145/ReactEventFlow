@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
+import { format, parseISO } from 'date-fns';
+import { es } from 'date-fns/locale'; // Importamos el locale en español
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../styles/main.css';
 import '../styles/tableStyles.css';
 import '../styles/iconStyles.css';
 
-// Importación de iconos locales
 import iconDetails from '../assets/icons/mas-detalles.png';
 import iconStatus from '../assets/icons/eliminar.png';
 import iconEdit from '../assets/icons/editar.png';
@@ -13,11 +14,14 @@ import CustomerRootHeader from "../components/CustomerRootHeader";
 import AdminNav from "../components/AdminNav";
 import ViewDetailsComponent from "../components/iconsComponent/ViewDetailsComponent";
 import EditComponent from "../components/iconsComponent/EditComponent";
+import UpdateWorkshopModal from "../components/modals/UpdateWorkshopModal"; // Modal para editar talleres
 
 export default function MyWorkshops() {
   const [workshops, setWorkshops] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [showModal, setShowModal] = useState(false);
+  const [workshopToEdit, setWorkshopToEdit] = useState(null);
 
   useEffect(() => {
     const fetchWorkshops = async () => {
@@ -51,18 +55,59 @@ export default function MyWorkshops() {
     fetchWorkshops();
   }, []);
 
-  const handleViewDetails = (workshopId) => {
-    console.log("Ver detalles del taller:", workshopId);
-  };
-
-  const handleEdit = (workshopId) => {
-    console.log("Editar taller:", workshopId);
+  const handleEdit = (workshop) => {
+    setWorkshopToEdit(workshop);
+    setShowModal(true);
   };
 
   const handleDelete = (workshopId) => {
     console.log("Eliminar taller:", workshopId);
   };
 
+  const handleCloseModal = () => {
+    setShowModal(false);
+    setWorkshopToEdit(null);
+  };
+
+  const handleUpdateWorkshop = async (updatedWorkshop) => {
+    try {
+      const response = await fetch(`http://localhost:8080/activity/workshops/update`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(updatedWorkshop),
+      });
+
+      if (!response.ok) {
+        throw new Error('Error al actualizar el taller');
+      }
+
+      setWorkshops(workshops.map(workshop => workshop.id === updatedWorkshop.id ? updatedWorkshop : workshop));
+      handleCloseModal();
+    } catch (err) {
+      console.error("Error updating workshop:", err);
+      setError("Error al actualizar el taller");
+    }
+  };
+
+  // Función para formatear la hora en formato 'HH:mm'
+  const formatTime = (timeString) => {
+    if (!timeString) return 'Hora inválida';
+
+    const [hours, minutes] = timeString.split(':'); // Separamos las partes de la hora
+    const date = new Date();
+    date.setHours(hours);
+    date.setMinutes(minutes);
+    date.setSeconds(0); // Aseguramos que los segundos sean 0
+
+    // Verificamos si la fecha es válida
+    if (isNaN(date.getTime())) {
+      return 'Hora inválida';
+    }
+
+    return format(date, 'HH:mm'); // Formateamos la hora
+  };
   return (
     <div className="app-container">
       <CustomerRootHeader />
@@ -96,7 +141,7 @@ export default function MyWorkshops() {
                     <td className="td-blue">{index + 1}</td>
                     <td>{workshop.name}</td>
                     <td className="td-blue">{workshop.speaker}</td>
-                    <td>{workshop.time}</td>
+                    <td>{formatTime(workshop.time)}</td>
                     <td>
                       {workshop.fromActivity ? (
                         <div>
@@ -110,9 +155,7 @@ export default function MyWorkshops() {
                     <td className="actions">
                       <div>
                         <ViewDetailsComponent to={`/administrar/detalles-taller/${workshop.id}`} />
-                        <button onClick={() => handleEdit(workshop.id)}>
-                          <img className="icon-md" src={iconEdit} alt="Editar" />
-                        </button>
+                        <EditComponent onClick={() => handleEdit(workshop)} />
                         <button onClick={() => handleDelete(workshop.id)}>
                           <img className="icon-md" src={iconStatus} alt="Eliminar" />
                         </button>
@@ -125,6 +168,15 @@ export default function MyWorkshops() {
           </div>
         )}
       </div>
+
+      {showModal && workshopToEdit && (
+        <UpdateWorkshopModal
+          showModal={showModal}
+          workshopData={workshopToEdit}
+          handleClose={handleCloseModal}
+          handleUpdate={handleUpdateWorkshop}
+        />
+      )}
     </div>
   );
 }

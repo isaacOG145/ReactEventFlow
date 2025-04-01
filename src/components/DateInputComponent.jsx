@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { format, parseISO, isValid, addHours } from 'date-fns';
+import { format, isValid } from 'date-fns';
 import '../styles/main.css';
 
 export default function DateInputComponent({
@@ -12,50 +12,36 @@ export default function DateInputComponent({
 }) {
   const [localError, setLocalError] = useState("");
 
-  // Ajuste específico para GMT-6 (UTC-6)
-  const adjustForGMT6 = (date) => {
-    if (!date) return null;
-    try {
-      const d = typeof date === 'string' ? parseISO(date) : new Date(date);
-      return addHours(d, 6); // Añadimos 6 horas para compensar GMT-6
-    } catch {
-      return null;
-    }
-  };
-
+  // Convertir la fecha a formato 'YYYY-MM-DD' sin manipularla
   const toLocalDateString = (dateValue) => {
-    const date = adjustForGMT6(dateValue);
-    return date && isValid(date) ? format(date, 'yyyy-MM-dd') : "";
+    if (!dateValue) return "";
+    // Solo devolver la fecha en formato 'YYYY-MM-DD'
+    return dateValue.split('T')[0]; // Extraer solo la parte de la fecha (YYYY-MM-DD)
   };
 
   const handleChange = (e) => {
     const newValue = e.target.value;
-    
+
     if (!newValue) {
       onChange({ target: { value: "" } });
       setLocalError("");
       return;
     }
 
-    // Crear fecha en GMT-6 (restamos 6 horas para convertir a UTC)
-    const localDate = new Date(newValue);
-    const utcDate = new Date(localDate.getTime() - (6 * 60 * 60 * 1000));
-    
-    if (!isValid(utcDate)) {
-      setLocalError("Fecha inválida");
-      return;
-    }
-
+    // Validar si la fecha seleccionada no es anterior a hoy
     const today = new Date();
     today.setHours(0, 0, 0, 0);
-    
-    if (utcDate < today) {
+
+    const selectedDate = new Date(newValue);  // No convertimos ni ajustamos la zona horaria
+
+    if (selectedDate < today) {
       setLocalError("La fecha no puede ser anterior a hoy");
       return;
     }
 
+    // Enviar la fecha tal cual al backend (sin conversión adicional)
     setLocalError("");
-    onChange({ target: { value: utcDate.toISOString() } });
+    onChange({ target: { value: newValue } }); // Enviamos la fecha como está
   };
 
   return (
@@ -68,7 +54,7 @@ export default function DateInputComponent({
       )}
       <input
         type="date"
-        value={toLocalDateString(value)}
+        value={toLocalDateString(value)}  // Solo pasamos la fecha en formato 'YYYY-MM-DD'
         onChange={handleChange}
         id={id}
         className={`input-field ${localError || error ? 'input-error' : ''}`}

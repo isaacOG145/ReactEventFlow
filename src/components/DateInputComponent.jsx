@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { format, parseISO, isValid } from 'date-fns';
+import { format, parseISO, isValid, addHours } from 'date-fns';
 import '../styles/main.css';
 
 export default function DateInputComponent({
@@ -10,60 +10,52 @@ export default function DateInputComponent({
   required = false,
   error = "",
 }) {
-  const [localError, setLocalError] = useState(error);
+  const [localError, setLocalError] = useState("");
 
-  // Función para convertir a fecha local sin cambiar el día
-  const toLocalDateString = (dateValue) => {
-    if (!dateValue) return "";
-    
+  // Ajuste específico para GMT-6 (UTC-6)
+  const adjustForGMT6 = (date) => {
+    if (!date) return null;
     try {
-      let date;
-      
-      // Si es una cadena ISO (desde el backend)
-      if (typeof dateValue === 'string' && dateValue.includes('T')) {
-        date = new Date(dateValue);
-      } 
-      // Si ya está en formato YYYY-MM-DD
-      else if (typeof dateValue === 'string') {
-        date = new Date(dateValue + 'T12:00:00'); // Mediodía para evitar problemas de zona horaria
-      }
-      // Si es un objeto Date
-      else if (dateValue instanceof Date) {
-        date = new Date(dateValue);
-      } else {
-        return "";
-      }
-
-      if (!isValid(date)) return "";
-      
-      // Ajustar a la zona horaria local sin cambiar el día
-      const offset = date.getTimezoneOffset() * 60000;
-      const localDate = new Date(date.getTime() - offset);
-      
-      return localDate.toISOString().split('T')[0];
-    } catch (e) {
-      console.error('Error formateando fecha:', e);
-      return "";
+      const d = typeof date === 'string' ? parseISO(date) : new Date(date);
+      return addHours(d, 6); // Añadimos 6 horas para compensar GMT-6
+    } catch {
+      return null;
     }
+  };
+
+  const toLocalDateString = (dateValue) => {
+    const date = adjustForGMT6(dateValue);
+    return date && isValid(date) ? format(date, 'yyyy-MM-dd') : "";
   };
 
   const handleChange = (e) => {
     const newValue = e.target.value;
     
-    if (newValue && !isValid(new Date(newValue))) {
-      setLocalError("Fecha inválida");
-    } else {
+    if (!newValue) {
+      onChange({ target: { value: "" } });
       setLocalError("");
+      return;
     }
 
-    // Crear fecha en UTC para evitar problemas
-    const utcDate = new Date(newValue + 'T00:00:00Z');
+    // Crear fecha en GMT-6 (restamos 6 horas para convertir a UTC)
+    const localDate = new Date(newValue);
+    const utcDate = new Date(localDate.getTime() - (6 * 60 * 60 * 1000));
     
-    onChange({
-      target: {
-        value: utcDate.toISOString() // Enviamos la fecha en formato ISO
-      }
-    });
+    if (!isValid(utcDate)) {
+      setLocalError("Fecha inválida");
+      return;
+    }
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    
+    if (utcDate < today) {
+      setLocalError("La fecha no puede ser anterior a hoy");
+      return;
+    }
+
+    setLocalError("");
+    onChange({ target: { value: utcDate.toISOString() } });
   };
 
   return (
@@ -81,7 +73,7 @@ export default function DateInputComponent({
         id={id}
         className={`input-field ${localError || error ? 'input-error' : ''}`}
         required={required}
-        min={toLocalDateString(new Date())} // Fecha mínima = hoy
+        min={format(new Date(), 'yyyy-MM-dd')}
         max="2050-12-31"
       />
       

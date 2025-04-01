@@ -17,18 +17,19 @@ export default function ImageGalleryUpload({
   const fileInputRefs = useRef([]);
   const [processing, setProcessing] = useState(false);
 
-  // Clean up object URLs
+  // Limpieza de URLs de objeto
   useEffect(() => {
     return () => {
       images.forEach((image) => {
-        if (image && typeof image === "object" && image.preview) {
+        if (image?.preview) {
           URL.revokeObjectURL(image.preview);
         }
       });
     };
   }, [images]);
 
-  const resizeImageTo16_9 = (file) => {
+  // Función para redimensionar imágenes a 16:9
+  const resizeTo16_9 = (file) => {
     return new Promise((resolve) => {
       const reader = new FileReader();
       reader.onload = (event) => {
@@ -37,16 +38,13 @@ export default function ImageGalleryUpload({
           const canvas = document.createElement('canvas');
           const ctx = canvas.getContext('2d');
           
-          // Tamaño objetivo 16:9 (ejemplo: 800x450)
-          const targetWidth = 800;
-          const targetHeight = 450;
+          // Tamaño objetivo 16:9 (800x450)
+          canvas.width = 800;
+          canvas.height = 450;
           
-          canvas.width = targetWidth;
-          canvas.height = targetHeight;
-          
-          // Calculamos el ratio para cubrir completamente el área manteniendo aspecto
+          // Calculamos el recorte centrado
           const sourceAspect = img.width / img.height;
-          const targetAspect = targetWidth / targetHeight;
+          const targetAspect = 16 / 9;
           
           let drawWidth, drawHeight, offsetX = 0, offsetY = 0;
           
@@ -70,8 +68,8 @@ export default function ImageGalleryUpload({
             drawHeight,
             0,
             0,
-            targetWidth,
-            targetHeight
+            800,
+            450
           );
           
           canvas.toBlob((blob) => {
@@ -89,12 +87,8 @@ export default function ImageGalleryUpload({
 
   const handleImageChange = async (index, file) => {
     if (!file) {
-      // Eliminar imagen si el archivo es null
-      let newImages = [...images];
-      if (newImages[index]?.preview) {
-        URL.revokeObjectURL(newImages[index].preview);
-      }
-      newImages = newImages.filter((_, i) => i !== index);
+      // Eliminar imagen
+      const newImages = images.filter((_, i) => i !== index);
       onChange(newImages);
       return;
     }
@@ -106,25 +100,25 @@ export default function ImageGalleryUpload({
 
     setProcessing(true);
     try {
-      // Redimensionamos la imagen a 16:9 pero mantenemos la preview original
-      const resizedFile = await resizeImageTo16_9(file);
+      let processedFile = file;
       
-      let newImages = [...images];
-      
-      // Revoke previous URL if exists
-      if (newImages[index]?.preview) {
-        URL.revokeObjectURL(newImages[index].preview);
+      // Solo redimensionamos imágenes nuevas (no las existentes)
+      if (!images[index]?.existing) {
+        processedFile = await resizeTo16_9(file);
       }
 
+      const newImages = [...images];
       newImages[index] = {
-        file: resizedFile, // Guardamos la versión redimensionada
-        preview: URL.createObjectURL(file) // Mostramos la original para el thumbnail
+        ...newImages[index],
+        file: processedFile,
+        preview: URL.createObjectURL(file), // Mostrar preview original
+        existing: images[index]?.existing || false // Marcar si es imagen existente
       };
 
       onChange(newImages);
     } catch (error) {
-      console.error("Error processing image:", error);
-      alert("Ocurrió un error al procesar la imagen");
+      console.error("Error procesando imagen:", error);
+      alert("Error al procesar la imagen");
     } finally {
       setProcessing(false);
     }
@@ -137,28 +131,18 @@ export default function ImageGalleryUpload({
   };
 
   const triggerFileInput = (index) => {
-    if (fileInputRefs.current[index]) {
-      fileInputRefs.current[index].click();
-    }
+    fileInputRefs.current[index]?.click();
   };
 
   const handleDeleteImage = (index) => {
-    let newImages = [...images];
-    if (newImages[index]?.preview) {
-      URL.revokeObjectURL(newImages[index].preview);
-    }
-    newImages = newImages.filter((_, i) => i !== index);
+    const newImages = images.filter((_, i) => i !== index);
     onChange(newImages);
   };
 
   return (
     <div className="image-gallery-upload-container">
       <label className="image-gallery-upload-label">
-        <img
-          src={GalleryIcon}
-          alt="Icono galería"
-          className="label-icon" 
-        />
+        <img src={GalleryIcon} alt="Icono galería" className="label-icon" />
         {label} {required && <span className="image-gallery-upload-required">*</span>}
       </label>
 
@@ -176,7 +160,7 @@ export default function ImageGalleryUpload({
             {image ? (
               <>
                 <img
-                  src={image.preview}
+                  src={image.preview || image.url || image}
                   alt={`Preview ${index + 1}`}
                   className="image-gallery-upload-thumbnail"
                 />

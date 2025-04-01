@@ -147,7 +147,9 @@ export default function Login() {
                 </form>
             </div>
 
-            <a href="*" className="pass-message">¿Has olvidado la contraseña?</a>
+            <p onClick={CustomPasswordInput} style={{ color: 'blue', cursor: 'pointer' }}>
+                ¿Olvidaste tu contraseña?
+            </p>
         </div>
     );
 }

@@ -1,5 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Index from './views/Index';
+// import Index from './views/Index';
 import Login from './views/Login'
 import Dashboard from './views/Dashboard';
 import NewEvent from './views/NewEvent';
@@ -11,14 +11,13 @@ import UserAccount from './views/UserAccount';
 import LandingPage from './views/landingpage';
 import EventDetails from './views/EventDetails';
 
-
 function App() {
     return (
 
         <Router>
             <Routes>
                 <Route path="/" element={<Login />} />
-                <Route path="/Crear" element={<CreateAccount/>} />
+                <Route path="/Crear" element={<UserAccount/>} />
                 <Route path="/dashboard" element={<Dashboard />} />
                 <Route path='/dashboard/nuevo-evento' element={<NewEvent />} />
                 <Route path='/dashboard/nuevo-checador' element={<NewChecker />} />
@@ -27,6 +26,7 @@ function App() {
                 <Route path='/dashboard/mis-checadores' element={<MyChechers />} />
                 <Route path='/servicios' element={<LandingPage />} /> {LandingPage}
                 <Route path='/details' element={<EventDetails />} /> {EventDetails}
+               
 
             </Routes>
         </Router>

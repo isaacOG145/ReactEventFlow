@@ -13,12 +13,14 @@ import UserAvatar from '../assets/icons/user-avatar.png';
 import QRImg from '../assets/icons/qr.png';
 import Enrollment from '../assets/icons/enrollment.png';
 import EventDate from '../assets/icons/calendario.png';
+import Time from '../assets/icons/time-and-date.png';
 
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 
 export default function Index() {
   const [activities, setActivities] = useState([]); // Mantiene el estado de las actividades
+  const [workshops, setWorkshops] = useState([]); // Mantiene el estado de las actividades
   const navigate = useNavigate(); // Usamos useNavigate
 
   useEffect(() => {
@@ -43,6 +45,36 @@ export default function Index() {
       })
       .catch((error) => {
         console.error("Hubo un error al cargar las actividades:", error);
+      });
+  }, []);  // Se ejecuta solo una vez al cargar el componente
+
+  useEffect(() => {
+    // Realizamos la solicitud GET usando fetch
+    fetch('http://localhost:8080/activity/findActiveWorkshops')
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error('Error al obtener los talleres');
+        }
+        return response.json(); // Convertimos la respuesta a JSON
+      })
+      .then((data) => {
+        if (data.type === 'SUCCESS') {
+          const formattedWorkshops = data.result.map((workshop) => {
+            // Solo extraemos y formateamos la hora
+            const formattedTime = workshop.time
+              ? workshop.time.substring(0, 5) // Tomamos solo HH:MM (elimina los segundos)
+              : 'Hora no disponible';
+
+            return {
+              ...workshop,
+              formattedTime // Solo guardamos la hora formateada
+            };
+          });
+          setWorkshops(formattedWorkshops);
+        }
+      })
+      .catch((error) => {
+        console.error("Hubo un error al cargar los talleres:", error);
       });
   }, []);  // Se ejecuta solo una vez al cargar el componente
 
@@ -84,17 +116,48 @@ export default function Index() {
         </div>
 
         <div className="row mt-4 justify-content-center">
+          <div className="row p-4 text-center">
+            <h1>Eventos disponibles</h1>
+          </div>
           {activities.length > 0 ? (
+
             activities.map((activity) => (
+
               <ActivityCard
                 key={activity.id}
                 activity={activity}
-                to = {`/detalles-evento/${activity.id}`}
+                to={`/detalles-evento/${activity.id}`}
                 buttonText="Ver detalles"
                 label={
                   <label>
-                    <img className="icon-sm" src={EventDate} alt="Ícono de fecha" />
+                    <img className="icon-ssm" src={EventDate} alt="Ícono de fecha" />
                     <span className="date-text">{activity.formattedDate}</span>
+                  </label>
+                }
+              />
+            ))
+          ) : (
+            <p>No hay actividades disponibles.</p>
+          )}
+        </div>
+
+        <div className="row mt-4 justify-content-center">
+          <div className="row p-4 text-center">
+            <h1>Talleres Disponibles</h1>
+          </div>
+          {workshops.length > 0 ? (
+
+            workshops.map((workshop) => (
+
+              <ActivityCard
+                key={workshop.id}
+                activity={workshop}
+                to={`/detalles-taller/${workshop.id}`}
+                buttonText="Ver detalles"
+                label={
+                  <label>
+                    <img className="icon-ssm" src={Time} alt="Ícono de hora" />
+                    <span className="date-text">{workshop.formattedTime}</span>
                   </label>
                 }
               />

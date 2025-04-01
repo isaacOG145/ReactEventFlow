@@ -9,16 +9,14 @@ export default function ActivityCard({
   label,
   buttonText
 }) {
-  const [showModal, setShowModal] = useState(false); // Para mostrar el modal de imagen ampliada
-  const [selectedImage, setSelectedImage] = useState(''); // Imagen seleccionada
+  const [showModal, setShowModal] = useState(false);
+  const [selectedImage, setSelectedImage] = useState('');
 
-  // Función para abrir el modal con la imagen
   const handleImageClick = (imageUrl) => {
     setSelectedImage(imageUrl);
     setShowModal(true);
   };
 
-  // Función para cerrar el modal
   const handleCloseModal = () => {
     setShowModal(false);
     setSelectedImage('');
@@ -26,13 +24,12 @@ export default function ActivityCard({
 
   return (
     <div className="card-activity col-md-9 col-lg-3">
-      {/* Carrusel con las imágenes de la actividad */}
       <Carousel
         fade
         indicators={false}
         controls={true}
         className="activity-carousel"
-        interval={5000} // Cambia cada 5 segundos
+        interval={5000}
       >
         {activity.imageUrls.map((imageUrl, index) => (
           <Carousel.Item key={index}>
@@ -41,36 +38,58 @@ export default function ActivityCard({
                 src={imageUrl}
                 alt={`Imagen ${index + 1} de la actividad`}
                 className="carousel-image"
-                onClick={() => handleImageClick(imageUrl)} // Al hacer clic, se abre el modal
+                onClick={() => handleImageClick(imageUrl)}
               />
             </div>
           </Carousel.Item>
         ))}
       </Carousel>
 
-      {/* Contenido de la tarjeta */}
       <div className="card-activity-content p-4">
-        <h3 className="h2 mb-3">{activity.name}</h3>
+        {/* 1. Título */}
+        <h3 className="h2 mb-2">{activity.name}</h3>
 
-        {/* Aquí mostramos la etiqueta de fecha con el ícono */}
+        {/* 2. Fecha/Hora */}
         {label && (
-          <div className="d-flex align-items-center mb-3">
-            {label} {/* Mostramos el label que contiene el ícono y la fecha */}
+          <div className="d-flex align-items-center mb-2">
+            {label}
           </div>
         )}
 
-        <p className="mb-4">{activity.description}</p>
+        {/* 3. Evento asociado (solo para talleres) */}
+        {activity.typeActivity === 'WORKSHOP' && activity.fromActivity && (
+          <div className="mb-2">
+            <small className="text-muted">
+              Evento: <strong>{activity.fromActivity.name}</strong>
+            </small>
+          </div>
+        )}
 
-        {/* Contenedor para el botón para que siempre se quede al fondo */}
+        {/* 4. Cupo (solo para talleres) */}
+        {activity.typeActivity === 'WORKSHOP' && activity.quota && (
+          <div className="mb-2">
+            <small className="text-muted">
+              Cupo: <strong>{activity.quota} personas</strong>
+            </small>
+          </div>
+        )}
+
+        
+
+        {/* 5. Descripción */}
+        <div className="mb-2">
+          <small className='text-muted'> Descripción: <strong>{activity.description}</strong></small>
+        </div>
+        
+
+        {/* Botón */}
         <div className="blue-button-container">
           <NavigateBlueButton to={to}>
             {buttonText}
           </NavigateBlueButton>
-          
         </div>
       </div>
 
-      {/* Modal para mostrar la imagen ampliada */}
       <Modal show={showModal} onHide={handleCloseModal} centered>
         <Modal.Body>
           <img

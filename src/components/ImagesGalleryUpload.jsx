@@ -1,10 +1,9 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import '../styles/imagesStyles.css';
 
-
 import VoidImage from '../assets/icons/galeria-de-imagenes.png';
-import MoreImages from '../assets/icons/mas.png'
-import GalleryIcon from '../assets/icons/img-icon.png'
+import MoreImages from '../assets/icons/mas.png';
+import GalleryIcon from '../assets/icons/img-icon.png';
 
 export default function ImageGalleryUpload({
   label = "Galería (mínimo 3 imágenes)",
@@ -16,6 +15,7 @@ export default function ImageGalleryUpload({
   maxImages = 10,
 }) {
   const fileInputRefs = useRef([]);
+  const [processing, setProcessing] = useState(false);
 
   // Clean up object URLs
   useEffect(() => {
@@ -28,40 +28,111 @@ export default function ImageGalleryUpload({
     };
   }, [images]);
 
-  const handleImageChange = (index, file) => {
-    let newImages = [...images]; // Hacer una copia del array
-
-    if (file) {
-      // Verificar que el archivo sea una imagen
-      if (file.type.startsWith('image/')) {
-        // Revoke previous URL if exists
-        if (newImages[index]?.preview) {
-          URL.revokeObjectURL(newImages[index].preview);
-        }
-
-        newImages[index] = {
-          file,
-          preview: URL.createObjectURL(file),
+  const resizeImageTo16_9 = (file) => {
+    return new Promise((resolve) => {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          const ctx = canvas.getContext('2d');
+          
+          // Tamaño objetivo 16:9 (ejemplo: 800x450)
+          const targetWidth = 800;
+          const targetHeight = 450;
+          
+          canvas.width = targetWidth;
+          canvas.height = targetHeight;
+          
+          // Calculamos el ratio para cubrir completamente el área manteniendo aspecto
+          const sourceAspect = img.width / img.height;
+          const targetAspect = targetWidth / targetHeight;
+          
+          let drawWidth, drawHeight, offsetX = 0, offsetY = 0;
+          
+          if (sourceAspect > targetAspect) {
+            // Imagen más ancha - recortar lados
+            drawHeight = img.height;
+            drawWidth = drawHeight * targetAspect;
+            offsetX = (img.width - drawWidth) / 2;
+          } else {
+            // Imagen más alta - recortar arriba/abajo
+            drawWidth = img.width;
+            drawHeight = drawWidth / targetAspect;
+            offsetY = (img.height - drawHeight) / 2;
+          }
+          
+          ctx.drawImage(
+            img, 
+            offsetX,
+            offsetY,
+            drawWidth,
+            drawHeight,
+            0,
+            0,
+            targetWidth,
+            targetHeight
+          );
+          
+          canvas.toBlob((blob) => {
+            resolve(new File([blob], file.name, { 
+              type: 'image/jpeg',
+              lastModified: Date.now()
+            }));
+          }, 'image/jpeg', 0.85);
         };
-      } else {
-        alert("Por favor, selecciona solo archivos de imagen.");
-        return;
-      }
-    } else {
+        img.src = event.target.result;
+      };
+      reader.readAsDataURL(file);
+    });
+  };
+
+  const handleImageChange = async (index, file) => {
+    if (!file) {
       // Eliminar imagen si el archivo es null
+      let newImages = [...images];
       if (newImages[index]?.preview) {
         URL.revokeObjectURL(newImages[index].preview);
       }
-      // Crear un nuevo array sin el elemento en la posición index
       newImages = newImages.filter((_, i) => i !== index);
+      onChange(newImages);
+      return;
     }
 
-    onChange(newImages); // Actualizar el estado con la nueva lista de imágenes
+    if (!file.type.startsWith('image/')) {
+      alert("Por favor, selecciona solo archivos de imagen.");
+      return;
+    }
+
+    setProcessing(true);
+    try {
+      // Redimensionamos la imagen a 16:9 pero mantenemos la preview original
+      const resizedFile = await resizeImageTo16_9(file);
+      
+      let newImages = [...images];
+      
+      // Revoke previous URL if exists
+      if (newImages[index]?.preview) {
+        URL.revokeObjectURL(newImages[index].preview);
+      }
+
+      newImages[index] = {
+        file: resizedFile, // Guardamos la versión redimensionada
+        preview: URL.createObjectURL(file) // Mostramos la original para el thumbnail
+      };
+
+      onChange(newImages);
+    } catch (error) {
+      console.error("Error processing image:", error);
+      alert("Ocurrió un error al procesar la imagen");
+    } finally {
+      setProcessing(false);
+    }
   };
 
   const handleAddMore = () => {
     if (images.length < maxImages) {
-      onChange([...images, null]); // Agregar un espacio vacío para nueva imagen
+      onChange([...images, null]);
     }
   };
 
@@ -71,14 +142,13 @@ export default function ImageGalleryUpload({
     }
   };
 
-  // Eliminar imagen por index
   const handleDeleteImage = (index) => {
     let newImages = [...images];
     if (newImages[index]?.preview) {
       URL.revokeObjectURL(newImages[index].preview);
     }
-    newImages = newImages.filter((_, i) => i !== index); // Filtramos la imagen en el índice
-    onChange(newImages); // Actualizamos el estado
+    newImages = newImages.filter((_, i) => i !== index);
+    onChange(newImages);
   };
 
   return (
@@ -92,20 +162,28 @@ export default function ImageGalleryUpload({
         {label} {required && <span className="image-gallery-upload-required">*</span>}
       </label>
 
+      {processing && (
+        <div className="image-processing-overlay">
+          <div className="spinner-border text-primary" role="status">
+            <span className="visually-hidden">Procesando imagen...</span>
+          </div>
+        </div>
+      )}
+
       <div className="image-gallery-upload-gallery">
         {images.map((image, index) => (
           <div key={index} className="image-gallery-upload-wrapper">
             {image ? (
               <>
                 <img
-                  src={image.preview || image}
+                  src={image.preview}
                   alt={`Preview ${index + 1}`}
                   className="image-gallery-upload-thumbnail"
                 />
                 <button
                   type="button"
                   className="image-gallery-upload-delete btn btn-danger btn-sm"
-                  onClick={() => handleDeleteImage(index)} // Llamar para eliminar la imagen
+                  onClick={() => handleDeleteImage(index)}
                   aria-label={`Eliminar imagen ${index + 1}`}
                 >
                   ×
@@ -114,9 +192,9 @@ export default function ImageGalleryUpload({
             ) : (
               <div
                 className="image-gallery-upload-placeholder"
-                onClick={() => triggerFileInput(index)} // Al hacer clic, abre el selector de archivos
+                onClick={() => triggerFileInput(index)}
               >
-                <img className="img-icon" src={VoidImage} alt="img" />
+                <img className="img-icon" src={VoidImage} alt="Subir imagen" />
               </div>
             )}
 
@@ -127,25 +205,24 @@ export default function ImageGalleryUpload({
               className="image-gallery-upload-input"
               aria-label={`Subir imagen ${index + 1}`}
               ref={el => fileInputRefs.current[index] = el}
-              style={{ display: "none" }} // Ocultar el input de archivo
+              style={{ display: "none" }}
             />
           </div>
         ))}
 
-        {/* Botón de agregar nueva imagen */}
         {images.length < maxImages && (
           <button
             type="button"
             className="image-gallery-upload-add"
             onClick={handleAddMore}
-            disabled={images.length >= maxImages}
+            disabled={images.length >= maxImages || processing}
           >
-            <img className="more-icon" src={MoreImages} alt="icon" />
+            <img className="more-icon" src={MoreImages} alt="Añadir más imágenes" />
           </button>
         )}
       </div>
 
-
+      {error && <div className="image-gallery-upload-error">{error}</div>}
     </div>
   );
 }

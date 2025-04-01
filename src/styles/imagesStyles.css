@@ -1,4 +1,3 @@
-/* imagesStyles.css */
 .more-icon{
   width: 25px;
   height: 25px;
@@ -11,6 +10,7 @@
 
 .image-gallery-upload-container {
     margin-bottom: 1rem;
+    position: relative;
   }
   
   .image-gallery-upload-label {
@@ -89,6 +89,7 @@
     border: 1px solid #909497;
     background-color: #E5E7E9;
     border-radius: 0.25rem;
+    cursor: pointer;
   }
   
   .image-gallery-upload-add:hover {
@@ -101,8 +102,16 @@
     margin-top: 0.5rem;
   }
   
-  .image-gallery-upload-info {
-    color: #0dcaf0;
-    font-size: 0.875rem;
-    margin-top: 0.5rem;
+  /* Overlay de procesamiento */
+  .image-processing-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(255, 255, 255, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
   }

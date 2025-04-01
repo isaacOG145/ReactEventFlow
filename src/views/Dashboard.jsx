@@ -4,6 +4,7 @@ import '../styles/main.css';
 
 import CustomerRootHeader from "../components/CustomerRootHeader";
 import AdminNav from "../components/AdminNav";
+import CheckerCard from "../components/CheckerCard";
 
 export default function Dashboard() {
   return (
@@ -13,9 +14,8 @@ export default function Dashboard() {
         <AdminNav />
       </div>
       <div className="content">
-        <h1>Contenido Principal</h1>
-        <p>Este es el contenido principal del dashboard.</p>
-        <p>Puedes agregar más elementos aquí.</p>
+        
+        <CheckerCard/>
 
       </div>
     </div>

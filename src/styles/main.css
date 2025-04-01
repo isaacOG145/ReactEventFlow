@@ -15,7 +15,7 @@ html {
   flex-direction: column;
   min-height: 100vh;
   width: 100vw;
-  background-color: #F2F6F9;
+  background-color: #f2f6f9;
 }
 
 .background-container {
@@ -27,7 +27,7 @@ html {
   align-items: center;
   height: 100vh;
   width: 100vw;
-  background-color: #F2F6F9;
+  background-color: #f2f6f9;
 }
 
 .content-container {
@@ -39,7 +39,7 @@ html {
 }
 
 .presentation-block {
-  background-color: #E5E7E9;
+  background-color: #e5e7e9;
   width: 100%;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   padding: 1.875rem 0.9375rem;
@@ -220,7 +220,7 @@ h1 {
   font-weight: 700;
   font-size: 2.5rem;
   /* 40px */
-  color: #142EA9;
+  color: #142ea9;
 }
 
 .login-title {
@@ -274,7 +274,7 @@ h1 {
 }
 
 .required-asterisk {
-  color: #CC1212;
+  color: #cc1212;
   /* Color del asterisco */
   font-size: 1.25rem;
   /* 20px */
@@ -285,7 +285,7 @@ h1 {
   padding: 0.625rem;
   /* 10px */
   color: #141414;
-  background-color: #E5E7E9;
+  background-color: #e5e7e9;
   border: 1px solid #ccc;
   border-radius: 15px;
   font-size: 1.25rem;
@@ -307,7 +307,7 @@ h1 {
 .pass-message {
   font-size: 1.25rem;
   /* 20px */
-  color: #8005A3;
+  color: #8005a3;
   text-decoration: none;
   margin-top: 3.125rem;
   /* 50px */
@@ -332,7 +332,7 @@ h1 {
   /* 10px 20px */
   height: 6.25rem;
   /* 100px */
-  border-bottom: 2px solid #8005A3;
+  border-bottom: 2px solid #8005a3;
   background-color: #ffffff;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   display: flex;
@@ -374,7 +374,7 @@ h1 {
   /* 150px */
   width: 20rem;
   /* 320px */
-  background-color: #5C30B6;
+  background-color: #5c30b6;
   padding: 1rem;
   z-index: 999;
   box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
@@ -392,7 +392,7 @@ h1 {
   height: calc(100vh - 9.375rem);
   /* 150px */
   overflow-y: auto;
-  background-color: #F2F6F9;
+  background-color: #f2f6f9;
 }
 
 .container-fluid.h-100 {
@@ -502,7 +502,7 @@ h1 {
 }
 
 .event-info {
-  color: #D1D1D1;
+  color: #d1d1d1;
   font-size: 1rem;
   /* 20px */
   font-weight: bold;
@@ -511,7 +511,38 @@ h1 {
   /* 8px */
 }
 
-.event-info:hover{
+.event-info:hover {
   color: #909497;
   cursor: pointer;
+}
+
+/* Estilos para el botón de estado */
+.status-btn {
+  border-radius: 15px;
+  text-align: center;
+  color: #fafafa;
+  padding: 5px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.status-active {
+  background-color: #28a745; /* Verde */
+}
+
+.status-inactive {
+  background-color: #dc3545; /* Rojo */
+}
+
+.status-btn:hover {
+  opacity: 0.9;
+  transform: scale(1.02);
+}
+
+/* Estilos para el modal claro */
+.clear-modal .modal-content {
+  border: 1px solid #dee2e6;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
 }

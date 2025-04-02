@@ -14,7 +14,7 @@ const EditComponent = ({ onClick }) => {
                 cursor: 'pointer',
             }}
         >
-            <img className="icon-md" src={iconEdit} alt="Editar" />
+            <img className="icon-sm" src={iconEdit} alt="Editar" />
         </button>
     );
 };

@@ -6,15 +6,14 @@ import '../styles/main.css';
 import '../styles/tableStyles.css';
 import '../styles/iconStyles.css';
 
-import iconDetails from '../assets/icons/mas-detalles.png';
-import iconStatus from '../assets/icons/eliminar.png';
-import iconEdit from '../assets/icons/editar.png';
+
 
 import CustomerRootHeader from "../components/CustomerRootHeader";
 import AdminNav from "../components/AdminNav";
 import ViewDetailsComponent from "../components/iconsComponent/ViewDetailsComponent";
 import EditComponent from "../components/iconsComponent/EditComponent";
-import UpdateWorkshopModal from "../components/modals/UpdateWorkshopModal"; // Modal para editar talleres
+import UpdateWorkshopModal from "../components/modals/UpdateWorkshopModal";
+import ChangeStatus from "../components/iconsComponent/ChangeStatus";
 
 export default function MyWorkshops() {
   const [workshops, setWorkshops] = useState([]);
@@ -91,6 +90,32 @@ export default function MyWorkshops() {
     }
   };
 
+  const handleChangeStatus = async (id) => {
+    try {
+      const response = await fetch(`http://localhost:8080/activity/change-status/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      const data = await response.json();
+      if (response.ok) {
+        // Si la solicitud es exitosa, actualizamos el estado del checador
+        setWorkshops((prevWorkshops) =>
+          prevWorkshops.map((workshop) =>
+            workshop.id === id ? { ...workshop, status: !workshop.status } : workshop
+          )
+        );
+        console.log('Estado actualizado:', data);
+      } else {
+        console.log('Error al actualizar estado:', data);
+      }
+    } catch (error) {
+      console.error('Error al realizar la solicitud:', error);
+    }
+  };
+
   // Función para formatear la hora en formato 'HH:mm'
   const formatTime = (timeString) => {
     if (!timeString) return 'Hora inválida';
@@ -156,9 +181,10 @@ export default function MyWorkshops() {
                       <div>
                         <ViewDetailsComponent to={`/administrar/detalles-taller/${workshop.id}`} />
                         <EditComponent onClick={() => handleEdit(workshop)} />
-                        <button onClick={() => handleDelete(workshop.id)}>
-                          <img className="icon-md" src={iconStatus} alt="Eliminar" />
-                        </button>
+                        <ChangeStatus
+                          currentStatus={workshop.status}
+                          onChangeStatus={() => handleChangeStatus(workshop.id)}
+                        />
                       </div>
                     </td>
                   </tr>

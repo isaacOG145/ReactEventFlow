@@ -546,3 +546,26 @@ h1 {
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
   border-radius: 12px;
 }
+
+/* Estilos específicos para React-Bootstrap Modal */
+.custom-modal .modal-content {
+  border: none;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  border-radius: 12px;
+}
+
+/* Ajustes para el backdrop */
+.custom-modal .modal-backdrop {
+  opacity: 0.5 !important;
+  background-color: #000;
+}
+
+/* Botones del modal */
+.modal-footer .btn {
+  min-width: 100px;
+}
+
+/* Asegura que el modal esté sobre todo */
+.modal {
+  z-index: 1060 !important;
+}

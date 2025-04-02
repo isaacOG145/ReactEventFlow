@@ -4,7 +4,6 @@ import '../styles/main.css';
 
 import CustomerRootHeader from "../components/CustomerRootHeader";
 import AdminNav from "../components/AdminNav";
-import CheckerCard from "../components/CheckerCard";
 
 export default function Dashboard() {
   return (
@@ -15,7 +14,7 @@ export default function Dashboard() {
       </div>
       <div className="content">
         
-        <CheckerCard/>
+        
 
       </div>
     </div>

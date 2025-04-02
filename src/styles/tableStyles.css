@@ -8,15 +8,14 @@
 
 .table-container table {
     width: 100%;
-    border-spacing: 0 10px; /* Espacio solo vertical */
-    border-collapse: separate;/* Asegura que el border-spacing funcione */
+    border-spacing: 0 10px;
+    border-collapse: separate;
 }
 
 .table-container th, .table-container td {
     padding: 12px 15px;
     text-align: left;
-    background-color: #fff; /* Fondo blanco para las celdas */
-    border-radius: 0; /* Bordes redondeados para las celdas */
+    background-color: #fff;
 }
 
 .table-container th {
@@ -24,7 +23,6 @@
     color: #909497;
     font-weight: bold;
 }
-
 
 .table-container td {
     color: #000;
@@ -34,20 +32,37 @@
     color: #142EA9;
 }
 
-.table-container button {
-    background-color: #fff;
-    border: none; /* Elimina el borde del botón */
-    padding: 0; /* Elimina el padding interno del botón */
-    cursor: pointer; /* Cambia el cursor al pasar sobre los botones */
-}
-
+/* ESTILOS CORREGIDOS PARA ACCIONES */
 .table-container .actions {
-    width: 300px; /* Ancho fijo para la columna de acciones */
-    padding: 8px; /* Reduce el padding para ahorrar espacio */
+    width: 200px; /* Reduce el ancho si es necesario */
+    padding: 8px;
 }
 
 .table-container .actions div {
     display: flex;
-    justify-content: space-between; /* Distribuye los botones horizontalmente */
-    align-items: center; /* Centra los botones verticalmente */
+    gap: 10px; /* Espacio consistente entre botones */
+    justify-content: flex-end; /* Alinea a la derecha */
+}
+
+/* Asegura que los botones sean siempre visibles */
+.table-container .actions button,
+.table-container .actions a {
+    opacity: 1 !important;
+    visibility: visible !important;
+    transition: none !important;
+}
+
+/* Estilo mejorado para el botón de estado */
+.change-status-btn {
+    min-width: 70px;  /* Reducimos el ancho mínimo */
+    padding: 3px 5px; /* Padding más compacto (vertical/horizontal) */
+    border-radius: 15px;
+    font-weight: 500;
+    font-size: 0.8rem; /* Tamaño de fuente más pequeño */
+    line-height: 1.2;  /* Mejor ajuste vertical del texto */
+    height: 28px;      /* Altura fija para mejor alineación */
+    display: inline-flex;
+    align-items: center; /* Centrado vertical del contenido */
+    justify-content: center; /* Centrado horizontal */
+    margin: auto 0;     /* Margen automático para centrado vertical */
 }

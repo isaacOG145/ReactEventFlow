@@ -6,13 +6,13 @@ import '../styles/main.css';
 import '../styles/tableStyles.css';
 import '../styles/iconStyles.css';
 
-import iconStatus from '../assets/icons/eliminar.png';
 
 import CustomerRootHeader from "../components/CustomerRootHeader";
 import AdminNav from "../components/AdminNav";
 import ViewDetailsComponent from "../components/iconsComponent/ViewDetailsComponent";
 import EditComponent from "../components/iconsComponent/EditComponent";
 import UpdateEventModal from "../components/modals/UpdateEventModal";
+import ChangeStatus from "../components/iconsComponent/ChangeStatus";
 
 export default function MyEvents() {
   const [events, setEvents] = useState([]);
@@ -52,18 +52,40 @@ export default function MyEvents() {
     fetchEvents();
   }, []);
 
+  const handleChangeStatus = async (id) => {
+    try {
+      const response = await fetch(`http://localhost:8080/activity/change-status/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      const data = await response.json();
+      if (response.ok) {
+        // Si la solicitud es exitosa, actualizamos el estado del checador
+        setEvents((prevEvents) =>
+          prevEvents.map((event) =>
+            event.id === id ? { ...event, status: !event.status } : event
+          )
+        );
+        console.log('Estado actualizado:', data);
+      } else {
+        console.log('Error al actualizar estado:', data);
+      }
+    } catch (error) {
+      console.error('Error al realizar la solicitud:', error);
+    }
+  };
+
   const handleEdit = (event) => {
     setEventToEdit(event);
     setShowModal(true);
   };
 
-  const handleDelete = (eventId) => {
-    console.log("Eliminar evento:", eventId);
-  };
-
   const handleCloseModal = () => {
     setShowModal(false);
-    setEventToEdit(null); 
+    setEventToEdit(null);
   };
 
   const handleUpdateEvent = async (updatedEvent) => {
@@ -117,7 +139,7 @@ export default function MyEvents() {
                   <th>Nombre</th>
                   <th>Descripción</th>
                   <th>Fecha</th>
-                  <th></th> 
+                  <th></th>
                 </tr>
               </thead>
               <tbody>
@@ -131,9 +153,10 @@ export default function MyEvents() {
                       <div>
                         <ViewDetailsComponent to={`/administrar/detalles-evento/${event.id}`} />
                         <EditComponent onClick={() => handleEdit(event)} />
-                        <button onClick={() => handleDelete(event.id)}>
-                          <img className="icon-md" src={iconStatus} alt="Eliminar" />
-                        </button>
+                        <ChangeStatus
+                          currentStatus={event.status}  
+                          onChangeStatus={() => handleChangeStatus(event.id)}  
+                        />
                       </div>
                     </td>
                   </tr>

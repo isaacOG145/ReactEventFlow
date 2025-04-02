@@ -194,7 +194,7 @@ export default function AssignmentChecker() {
                 { value: "", label: "Seleccionar checador activo" },
                 ...checkers.map(checker => ({
                   value: checker.id,
-                  label: checker.name
+                  label: `${checker.name} ${checker.lastName}`
                 }))
               ]}
               value={selectedChecker}

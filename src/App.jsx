@@ -18,6 +18,7 @@ import AssignmentChecker from './views/AssignmentCheckers';
 import EventDetails from './views/EventDetails';
 import AdminEventDetails from './views/AdminEventDetails';
 import AdminWorkshopDetails from './views/AdminWorkshopDetails';
+import MyAsignments from './views/MyAsignments';
 
 function App() {
     return (
@@ -41,6 +42,7 @@ function App() {
                 <Route path='/dashboard/mis-talleres' element={<MyWorkshops />} />
                 <Route path='/dashboard/mis-eventos' element={<MyEvents />} />
                 <Route path='/dashboard/mis-checadores' element={<MyChechers />} />
+                <Route path='/dashboard/mis-asignaciones' element={<MyAsignments />} />
                 <Route path='/dashboard/asignar-checadores' element={<AssignmentChecker />} />
 
                 <Route path='/administrar/detalles-evento/:id' element={<AdminEventDetails/>}/>

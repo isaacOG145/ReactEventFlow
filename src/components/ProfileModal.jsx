@@ -1,40 +1,30 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom"; // Importa useNavigate
-import UserFrame from "../assets/icons/userFrame.png"; // Asegúrate de usar la ruta correcta de tu imagen
+import { useNavigate } from "react-router-dom";
+import UserFrame from "../assets/icons/userFrame.png";
+import Logout from "../components/modals/logout"; // Importa el modal de confirmación
 
 import '../styles/main.css';
 
 const ProfileModal = () => {
-    // Estado para manejar la visibilidad del modal
     const [isModalOpen, setIsModalOpen] = useState(false);
-
-    // Estado para almacenar la información del usuario
+    const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false); // Estado para el modal de cierre de sesión
     const [userInfo, setUserInfo] = useState(null);
-
-    // Estado para manejar errores
     const [error, setError] = useState(null);
-
-    // Hook para redireccionar
     const navigate = useNavigate();
 
-    // Función para alternar la visibilidad del modal
-    const toggleModal = () => {
-        setIsModalOpen(!isModalOpen);
-    };
+    const toggleModal = () => setIsModalOpen(!isModalOpen);
+    const toggleLogoutModal = () => setIsLogoutModalOpen(!isLogoutModalOpen); // Función para manejar el modal de logout
 
-    // Función para cerrar sesión
     const handleLogout = () => {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
-        navigate("/"); // Redirige al usuario a la página de inicio
+        navigate("/"); 
     };
 
-    // Función para redirigir al login
-    const handleLogin = () => {
-        navigate("/login"); // Redirige al usuario a la página de login
+    const handleLogoutClick = () => {
+        setIsLogoutModalOpen(true); // Abre el modal de confirmación en lugar de cerrar sesión directamente
     };
 
-    // Función para obtener la información del usuario
     const fetchUserInfo = async (userId) => {
         try {
             const response = await fetch(`http://localhost:8080/user/findId/${userId}`, {
@@ -45,76 +35,62 @@ const ProfileModal = () => {
                 },
             });
 
-            // Verifica si la respuesta es exitosa
             if (!response.ok) {
                 const errorData = await response.json();
                 throw new Error(errorData.text || "Error al obtener la información del usuario");
             }
 
             const data = await response.json();
-            console.log("Response:", data); // Depuración: Verifica la respuesta
 
-            // Verifica si la operación fue exitosa
             if (data.type === "SUCCESS") {
-                setUserInfo(data.result); // Guarda la información del usuario en el estado
+                setUserInfo(data.result);
             } else {
                 throw new Error(data.text || "Error desconocido");
             }
         } catch (error) {
-            setError(error.message); // Maneja errores
+            setError(error.message);
             console.error("Error:", error);
         }
     };
 
-    // Efecto para obtener la información del usuario cuando el modal se abre
     useEffect(() => {
         if (isModalOpen) {
             const userId = localStorage.getItem("userId");
             if (userId) {
-                fetchUserInfo(userId); // Obtiene la información del usuario
+                fetchUserInfo(userId);
             }
         }
     }, [isModalOpen]);
 
-    // Verifica si hay un token en el localStorage
     const isAuthenticated = !!localStorage.getItem("token");
 
     return (
         <div>
-            {/* Botón para abrir el modal */}
             <button className="icon-button" onClick={toggleModal}>
                 <img className="icon" src={UserFrame} alt="icono" />
             </button>
 
-            {/* Modal */}
             {isModalOpen && (
                 <div className="modal-overlay" onClick={toggleModal}>
                     <div className="about-profile col-2" onClick={(e) => e.stopPropagation()}>
                         {isAuthenticated ? (
                             <>
-                                {/* Modal para usuarios autenticados */}
                                 <div className="profile-header d-flex align-items-center">
                                     <div className="col-3">
-                                        {/* Botón para cerrar el modal */}
                                         <button className="icon-button" onClick={toggleModal}>
                                             <img className="icon" src={UserFrame} alt="icono" />
                                         </button>
                                     </div>
                                     <div className="col-9 info">
-                                        <div className="row">
-                                            <p className="mb-1">
-                                                {userInfo ? `${userInfo.name} ${userInfo.lastName || ""}` : "Cargando..."}
-                                            </p>
-                                        </div>
-                                        <div className="row">
-                                            <p className="mb-0">
-                                                {userInfo ? userInfo.email : "Cargando..."}
-                                            </p>
-                                        </div>
+                                        <p className="mb-1">
+                                            {userInfo ? `${userInfo.name} ${userInfo.lastName || ""}` : "Cargando..."}
+                                        </p>
+                                        <p className="mb-0">
+                                            {userInfo ? userInfo.email : "Cargando..."}
+                                        </p>
                                     </div>
                                 </div>
 
-                                {/* Botones de acción para usuarios autenticados */}
                                 <div className="row">
                                     <div className="col-12">
                                         <button className="profile-action">Mi perfil</button>
@@ -122,7 +98,7 @@ const ProfileModal = () => {
                                 </div>
                                 <div className="row">
                                     <div className="col-12">
-                                        <button className="profile-action" onClick={handleLogout}>
+                                        <button className="profile-action" onClick={handleLogoutClick}>
                                             Cerrar sesión
                                         </button>
                                     </div>
@@ -130,25 +106,20 @@ const ProfileModal = () => {
                             </>
                         ) : (
                             <>
-                                {/* Modal para usuarios no autenticados */}
                                 <div className="profile-header d-flex align-items-center">
                                     <div className="col-3">
-                                        {/* Botón para cerrar el modal */}
                                         <button className="icon-button" onClick={toggleModal}>
                                             <img className="icon" src={UserFrame} alt="icono" />
                                         </button>
                                     </div>
                                     <div className="col-9 info">
-                                        <div className="row">
-                                            <p className="mb-1">Invitado</p>
-                                        </div>
+                                        <p className="mb-1">Invitado</p>
                                     </div>
                                 </div>
 
-                                {/* Botones de acción para usuarios no autenticados */}
                                 <div className="row">
                                     <div className="col-12">
-                                        <button className="profile-action" onClick={handleLogin}>
+                                        <button className="profile-action" onClick={() => navigate("/login")}>
                                             Iniciar sesión
                                         </button>
                                     </div>
@@ -165,6 +136,13 @@ const ProfileModal = () => {
                     </div>
                 </div>
             )}
+
+            {/* Modal de Confirmación de Cierre de Sesión */}
+            <Logout 
+                show={isLogoutModalOpen} 
+                handleClose={toggleLogoutModal} 
+                handleLogout={handleLogout} 
+            />
         </div>
     );
 };

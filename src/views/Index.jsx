@@ -14,6 +14,7 @@ import QRImg from '../assets/icons/qr.png';
 import Enrollment from '../assets/icons/enrollment.png';
 import EventDate from '../assets/icons/calendario.png';
 import Time from '../assets/icons/time-and-date.png';
+import QuestionIcon from '../assets/icons/pregunta.png';
 
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
@@ -132,7 +133,9 @@ export default function Index() {
             ))
           ) : (
             <div className="card text-center p-4 shadow-sm" style={{ width: '40%', marginBottom: '1%'}}>
+                
               <p>No hay eventos disponibles.</p>
+              <img src={QuestionIcon} alt="Sin eventos" className="mx-auto d-block" style={{ width: '20%', marginBottom: '1%' }} />
             </div>
           )}
         </div>
@@ -158,7 +161,9 @@ export default function Index() {
             ))
           ) : (
             <div className="card text-center p-4 shadow-sm" style={{ width: '40%', marginBottom: '5%' }}>
+                
               <p>No hay talleres disponibles.</p>
+              <img src={QuestionIcon} alt="Sin eventos"className="mx-auto d-block" style={{ width: '20%', marginBottom: '1%' }} />
             </div>
           )}
         </div>

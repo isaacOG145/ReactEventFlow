@@ -20,17 +20,16 @@ import { es } from 'date-fns/locale';
 
 export default function Index() {
   const [activities, setActivities] = useState([]); // Mantiene el estado de las actividades
-  const [workshops, setWorkshops] = useState([]); // Mantiene el estado de las actividades
+  const [workshops, setWorkshops] = useState([]); // Mantiene el estado de los talleres
   const navigate = useNavigate(); // Usamos useNavigate
 
   useEffect(() => {
-    // Realizamos la solicitud GET usando fetch
     fetch('http://localhost:8080/activity/findActiveEvents')
       .then((response) => {
         if (!response.ok) {
           throw new Error('Error al obtener las actividades');
         }
-        return response.json(); // Convertimos la respuesta a JSON
+        return response.json();
       })
       .then((data) => {
         if (data.type === 'SUCCESS') {
@@ -46,28 +45,26 @@ export default function Index() {
       .catch((error) => {
         console.error("Hubo un error al cargar las actividades:", error);
       });
-  }, []);  // Se ejecuta solo una vez al cargar el componente
+  }, []);
 
   useEffect(() => {
-    // Realizamos la solicitud GET usando fetch
     fetch('http://localhost:8080/activity/findActiveWorkshops')
       .then((response) => {
         if (!response.ok) {
           throw new Error('Error al obtener los talleres');
         }
-        return response.json(); // Convertimos la respuesta a JSON
+        return response.json();
       })
       .then((data) => {
         if (data.type === 'SUCCESS') {
           const formattedWorkshops = data.result.map((workshop) => {
-            // Solo extraemos y formateamos la hora
             const formattedTime = workshop.time
-              ? workshop.time.substring(0, 5) // Tomamos solo HH:MM (elimina los segundos)
+              ? workshop.time.substring(0, 5)
               : 'Hora no disponible';
 
             return {
               ...workshop,
-              formattedTime // Solo guardamos la hora formateada
+              formattedTime 
             };
           });
           setWorkshops(formattedWorkshops);
@@ -76,8 +73,7 @@ export default function Index() {
       .catch((error) => {
         console.error("Hubo un error al cargar los talleres:", error);
       });
-  }, []);  // Se ejecuta solo una vez al cargar el componente
-
+  }, []);
 
   return (
     <div className="app-container">
@@ -120,9 +116,7 @@ export default function Index() {
             <h1>Eventos disponibles</h1>
           </div>
           {activities.length > 0 ? (
-
             activities.map((activity) => (
-
               <ActivityCard
                 key={activity.id}
                 activity={activity}
@@ -137,7 +131,9 @@ export default function Index() {
               />
             ))
           ) : (
-            <p>No hay actividades disponibles.</p>
+            <div className="card text-center p-4 shadow-sm" style={{ width: '40%', marginBottom: '1%'}}>
+              <p>No hay eventos disponibles.</p>
+            </div>
           )}
         </div>
 
@@ -146,9 +142,7 @@ export default function Index() {
             <h1>Talleres Disponibles</h1>
           </div>
           {workshops.length > 0 ? (
-
             workshops.map((workshop) => (
-
               <ActivityCard
                 key={workshop.id}
                 activity={workshop}
@@ -163,10 +157,11 @@ export default function Index() {
               />
             ))
           ) : (
-            <p>No hay actividades disponibles.</p>
+            <div className="card text-center p-4 shadow-sm" style={{ width: '40%', marginBottom: '5%' }}>
+              <p>No hay talleres disponibles.</p>
+            </div>
           )}
         </div>
-
       </div>
     </div>
   );

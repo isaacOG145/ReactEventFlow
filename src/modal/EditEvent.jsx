@@ -5,7 +5,7 @@ import "../styles/iconStyles.css";
 
 import BlueButton from "../components/BlueButton";
 import PurpleButton from "../components/PurpleButton";
-import DetailsImg from "../assets/icons/details.png";
+import DetailsImg from "../assets/icons/show.png";
 import InputComponent from "../components/InputComponent";
 import ImageGalleryUpload from "../components/ImagesGalleryUpload";
 

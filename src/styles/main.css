@@ -175,3 +175,27 @@ h1 {
 .row.h-100 {
   height: 100%;
 }
+
+/* Estilos para los selectores */
+select {
+  width: 50%;
+  padding: 10px;
+  font-size: 16px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  background-color: #142EA9; /* Color azul */
+  color: white; /* Texto en blanco */
+  appearance: none; /* Oculta la flecha predeterminada en algunos navegadores */
+  cursor: pointer;
+}
+
+/* Para cambiar el color de la flecha en algunos navegadores */
+select::-ms-expand {
+  display: none;
+}
+
+/* Cambiar color al enfocar */
+select:focus {
+  border-color: #8005A3; /* Un morado llamativo */
+  outline: none;
+}

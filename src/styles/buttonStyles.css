@@ -1,0 +1,47 @@
+.bt {
+    border-radius: 15px;
+    text-align: center;
+    color: #FAFAFA;
+    font-size: 24px;
+    width: 100%;
+    padding: 5px;
+    transition: all 0.3s ease; /* Añadido para hacer las transiciones más suaves */
+}
+
+.btn-purple {
+    background-color: #8005A3;
+}
+
+.btn-purple:hover {
+    background-color: #9125B0; /* Cambia a un tono más claro al pasar el ratón */
+}
+
+.btn-purple:active {
+    background-color: #650481; /* Oscurece el color cuando se presiona el botón */
+}
+
+.btn-blue {
+    background-color: #142EA9;
+}
+
+.btn-blue:hover {
+    background-color: #344BB5; /* Cambia a un tono más claro al pasar el ratón */
+}
+
+.btn-blue:active {
+    background-color: #0E2385; /* Oscurece el color cuando se presiona el botón */
+}
+
+.btn-nav{
+    font-weight: bold;
+    background-color: #5C30B6;
+    margin-bottom: 15px;
+}
+
+.btn-nav:hover{
+    background-color: #9125B0;
+}
+
+.btn-nav:active{
+    background-color: #650481;
+}

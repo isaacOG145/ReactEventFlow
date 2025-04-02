@@ -1,0 +1,571 @@
+html {
+  font-size: 16px;
+  /* Define un tamaño base para la fuente */
+}
+
+* {
+  font-family: "Montserrat", sans-serif;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.app-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  width: 100vw;
+  background-color: #f2f6f9;
+}
+
+.background-container {
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100vh;
+  width: 100vw;
+  background-color: #f2f6f9;
+}
+
+.content-container {
+  margin-top: 7.5rem;
+  /* 120px */
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.presentation-block {
+  background-color: #e5e7e9;
+  width: 100%;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  padding: 1.875rem 0.9375rem;
+  /* 30px 15px */
+}
+
+.about-us {
+  text-align: center;
+  padding: 1.25rem;
+  /* 20px */
+}
+
+h2 {
+  font-weight: bold;
+  font-size: 2rem;
+  /* 32px */
+  margin-bottom: 1.25rem;
+  /* 20px */
+  color: #141414;
+}
+
+.about-us h2 {
+  font-weight: bold;
+  font-size: 2rem;
+  /* 32px */
+  margin-bottom: 0.625rem;
+  /* 10px */
+  color: #141414;
+}
+
+.about-us p {
+  font-size: 1.25rem;
+  /* 20px */
+  line-height: 1.6;
+  color: #141414;
+  margin-bottom: 1.25rem;
+  /* 20px */
+}
+
+/* Estilo para las tarjetas */
+.card-presentation {
+  background-color: #fff;
+  border-radius: 15px;
+  padding: 1.25rem;
+  /* 20px */
+  margin: 0.625rem;
+  /* 10px */
+  text-align: center;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.icon-presentation {
+  width: 3.75rem;
+  /* 60px */
+  height: auto;
+  margin-bottom: 0.9375rem;
+  /* 15px */
+}
+
+.card-presentation h3 {
+  font-size: 1.25rem;
+  /* 20px */
+  font-weight: 600;
+  margin-bottom: 0.625rem;
+  /* 10px */
+}
+
+.card-presentation p {
+  font-size: 1rem;
+  /* 16px */
+  line-height: 1.5;
+  color: #555;
+}
+
+/* Estilos responsivos para móviles */
+@media (max-width: 768px) {
+  .about-us h2 {
+    font-size: 1.75rem;
+    /* 28px */
+  }
+
+  .about-us p {
+    font-size: 1.125rem;
+    /* 18px */
+  }
+
+  .card-presentation {
+    padding: 1rem;
+    /* 15px */
+  }
+
+  .card-presentation h3 {
+    font-size: 1.125rem;
+    /* 18px */
+  }
+
+  .card-presentation p {
+    font-size: 0.875rem;
+    /* 14px */
+  }
+}
+
+/* Agregar una mayor responsividad para pantallas muy pequeñas */
+@media (max-width: 576px) {
+  .card-presentation {
+    padding: 0.625rem;
+    /* 10px */
+  }
+
+  .card-presentation h3 {
+    font-size: 1rem;
+    /* 16px */
+  }
+
+  .card-presentation p {
+    font-size: 0.75rem;
+    /* 12px */
+  }
+
+  .presentation-block {
+    padding: 1.25rem 0.625rem;
+    /* 20px 10px */
+  }
+}
+
+.login-container {
+  background-color: white;
+  padding: 1.875rem;
+  /* 30px */
+  border-radius: 15px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  width: 100%;
+  /* Ocupa el ancho completo del contenedor padre */
+  max-width: 50rem;
+  /* 800px */
+  margin: 0 auto;
+  /* Centra el formulario horizontalmente */
+}
+
+.form {
+  background-color: white;
+  padding: 1.875rem;
+  /* 30px */
+  border-radius: 15px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  width: 90%;
+  /* Ocupa el ancho completo del contenedor padre */
+  margin: 0 auto;
+}
+
+.form-asign {
+  background-color: white;
+  padding: 1.875rem;
+  /* 30px */
+  border-radius: 15px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  width: 60%;
+  /* Ocupa el ancho completo del contenedor padre */
+  margin: 0 auto;
+}
+
+.card-details {
+  background-color: white;
+  padding: 1.875rem;
+  /* 30px */
+  border-radius: 15px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  text-align: left;
+  width: 80%;
+  /* Ocupa el ancho completo del contenedor padre */
+  margin: 0 auto;
+}
+
+h1 {
+  font-weight: 700;
+  font-size: 2.5rem;
+  /* 40px */
+  color: #142ea9;
+}
+
+.login-title {
+  font-size: 2.5rem;
+  /* 40px */
+  margin-top: 1.875rem;
+  /* 30px */
+  margin-bottom: 3.125rem;
+  /* 50px */
+  font-weight: 700;
+  font-style: bold;
+}
+
+/* Estilos para el campo de entrada */
+.input-container {
+  margin-bottom: 0.9375rem;
+  /* 15px */
+  width: 100%;
+}
+
+.input-label {
+  display: flex;
+  align-items: start;
+  /* Alinea los elementos verticalmente */
+  margin-bottom: 0.3125rem;
+  /* 5px */
+  font-size: 1.25rem;
+  /* 20px */
+  font-weight: normal;
+  color: #141414 !important;
+}
+
+/* styles/main.css */
+.select-field {
+  appearance: none;
+  padding: 0.5rem;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  background-color: white;
+}
+
+.select-field:focus {
+  outline: none;
+  border-color: #007bff;
+}
+
+/* Estilos para el texto dentro del label */
+.label-text {
+  margin-right: 0.25rem;
+  /* 4px */
+}
+
+.required-asterisk {
+  color: #cc1212;
+  /* Color del asterisco */
+  font-size: 1.25rem;
+  /* 20px */
+}
+
+.input-field {
+  width: 100%;
+  padding: 0.625rem;
+  /* 10px */
+  color: #141414;
+  background-color: #e5e7e9;
+  border: 1px solid #ccc;
+  border-radius: 15px;
+  font-size: 1.25rem;
+  /* 20px */
+  outline: none;
+  transition: border-color 0.3s ease;
+}
+
+.input-field[type="password"] {
+  font-size: 1.25rem !important;
+  /* Asegúrate de que el tamaño de fuente sea el mismo que para otros campos */
+}
+
+.input-field:focus {
+  border-color: #007bff;
+  /* Cambia el color del borde al enfocar */
+}
+
+.pass-message {
+  font-size: 1.25rem;
+  /* 20px */
+  color: #8005a3;
+  text-decoration: none;
+  margin-top: 3.125rem;
+  /* 50px */
+}
+
+.error-message {
+  color: red;
+  font-size: 0.875rem;
+  /* 14px */
+  margin-top: 0.25rem;
+  /* 4px */
+  text-align: start;
+}
+
+.root-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  padding: 0.625rem 1.25rem;
+  /* 10px 20px */
+  height: 6.25rem;
+  /* 100px */
+  border-bottom: 2px solid #8005a3;
+  background-color: #ffffff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.root-header .logo {
+  max-width: 100%;
+  height: auto;
+}
+
+@media (max-width: 576px) {
+  .root-header {
+    padding: 0.625rem;
+    /* 10px */
+    height: 5rem;
+    /* 80px */
+  }
+}
+
+@media (min-width: 768px) {
+  .root-header {
+    height: 7.5rem;
+    /* 120px */
+  }
+}
+
+.ml-auto {
+  margin-left: auto;
+}
+
+.admin-nav {
+  position: fixed;
+  top: 7.5rem;
+  /* 120px */
+  left: 0;
+  height: calc(120vh - 9.375rem);
+  /* 150px */
+  width: 20rem;
+  /* 320px */
+  background-color: #5c30b6;
+  padding: 1rem;
+  z-index: 999;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+}
+
+.content {
+  margin-left: 20rem;
+  /* 320px */
+  margin-top: 7.5rem;
+  /* 120px */
+  padding: 2.5rem;
+  /* 40px */
+  width: calc(100% - 20rem);
+  /* 320px */
+  height: calc(100vh - 9.375rem);
+  /* 150px */
+  overflow-y: auto;
+  background-color: #f2f6f9;
+}
+
+.container-fluid.h-100 {
+  height: 100%;
+}
+
+.row.h-100 {
+  height: 100%;
+}
+
+.card-activity {
+  margin: 0.625rem 1.875rem;
+  /* 10px 30px */
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  margin-bottom: 2rem;
+  background: white;
+}
+
+.card-activity:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.12);
+}
+
+.activity-carousel {
+  max-height: 18.75rem;
+  /* 300px */
+  overflow: hidden;
+}
+
+.carousel-image-container {
+  height: 21.875rem;
+  /* 350px */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f8f9fa;
+}
+
+.carousel-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  transition: transform 0.5s ease;
+}
+
+.carousel-control-prev,
+.carousel-control-next {
+  width: 2.5rem;
+  /* 40px */
+  height: 2.5rem;
+  /* 40px */
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 50%;
+  top: 50%;
+  transform: translateY(-50%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.card-activity:hover .carousel-control-prev,
+.card-activity:hover .carousel-control-next {
+  opacity: 1;
+}
+
+.card-activity-content {
+  padding: 1.5rem;
+}
+
+.card-activity-content h3 {
+  color: #2c3e50;
+  font-weight: 600;
+}
+
+.card-activity-content p {
+  color: #141414;
+  line-height: 1.6;
+  font-size: 1.5rem;
+  /* 24px */
+}
+
+@media (max-width: 768px) {
+  .card-activity {
+    margin-bottom: 1rem;
+  }
+
+  .carousel-image-container {
+    height: 15.625rem;
+    /* 250px */
+  }
+}
+
+.date-text {
+  font-weight: normal;
+  color: #909497;
+  line-height: 1.6;
+  font-size: 0.75rem;
+  /* 24px */
+}
+
+.time-input-field::-webkit-calendar-picker-indicator {
+  filter: invert(0.5);
+  cursor: pointer;
+}
+
+.event-info {
+  color: #d1d1d1;
+  font-size: 1rem;
+  /* 20px */
+  font-weight: bold;
+  margin-right: 0.5rem;
+  text-decoration: none;
+  /* 8px */
+}
+
+.event-info:hover {
+  color: #909497;
+  cursor: pointer;
+}
+
+/* Estilos para el botón de estado */
+.status-btn {
+  border-radius: 15px;
+  text-align: center;
+  color: #fafafa;
+  padding: 5px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.status-active {
+  background-color: #28a745; /* Verde */
+}
+
+.status-inactive {
+  background-color: #dc3545; /* Rojo */
+}
+
+.status-btn:hover {
+  opacity: 0.9;
+  transform: scale(1.02);
+}
+
+/* Estilos para el modal claro */
+.clear-modal .modal-content {
+  border: 1px solid #dee2e6;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
+}
+
+/* Estilos específicos para React-Bootstrap Modal */
+.custom-modal .modal-content {
+  border: none;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  border-radius: 12px;
+}
+
+/* Ajustes para el backdrop */
+.custom-modal .modal-backdrop {
+  opacity: 0.5 !important;
+  background-color: #000;
+}
+
+/* Botones del modal */
+.modal-footer .btn {
+  min-width: 100px;
+}
+
+/* Asegura que el modal esté sobre todo */
+.modal {
+  z-index: 1060 !important;
+}

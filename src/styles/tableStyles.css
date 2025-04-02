@@ -1,0 +1,68 @@
+.table-container {
+    margin-top: 40px;
+    background-color: #E5E7E9;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+}
+
+.table-container table {
+    width: 100%;
+    border-spacing: 0 10px;
+    border-collapse: separate;
+}
+
+.table-container th, .table-container td {
+    padding: 12px 15px;
+    text-align: left;
+    background-color: #fff;
+}
+
+.table-container th {
+    background-color: #E5E7E9;
+    color: #909497;
+    font-weight: bold;
+}
+
+.table-container td {
+    color: #000;
+}
+
+.table-container .td-blue {
+    color: #142EA9;
+}
+
+/* ESTILOS CORREGIDOS PARA ACCIONES */
+.table-container .actions {
+    width: 200px; /* Reduce el ancho si es necesario */
+    padding: 8px;
+}
+
+.table-container .actions div {
+    display: flex;
+    gap: 10px; /* Espacio consistente entre botones */
+    justify-content: flex-end; /* Alinea a la derecha */
+}
+
+/* Asegura que los botones sean siempre visibles */
+.table-container .actions button,
+.table-container .actions a {
+    opacity: 1 !important;
+    visibility: visible !important;
+    transition: none !important;
+}
+
+/* Estilo mejorado para el botón de estado */
+.change-status-btn {
+    min-width: 70px;  /* Reducimos el ancho mínimo */
+    padding: 3px 5px; /* Padding más compacto (vertical/horizontal) */
+    border-radius: 15px;
+    font-weight: 500;
+    font-size: 0.8rem; /* Tamaño de fuente más pequeño */
+    line-height: 1.2;  /* Mejor ajuste vertical del texto */
+    height: 28px;      /* Altura fija para mejor alineación */
+    display: inline-flex;
+    align-items: center; /* Centrado vertical del contenido */
+    justify-content: center; /* Centrado horizontal */
+    margin: auto 0;     /* Margen automático para centrado vertical */
+}

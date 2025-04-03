@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../styles/main.css';
+import SuccessModal from "../components/modals/SuccessModal";
 
+// Componentes
 import CustomerRootHeader from "../components/CustomerRootHeader";
 import AdminNav from "../components/AdminNav";
 import InputComponent from "../components/InputComponent";
@@ -10,20 +12,21 @@ import SelectInputComponent from "../components/SelectInput.Component";
 import ImageGalleryUpload from "../components/ImagesGalleryUpload";
 import TimeInputComponent from "../components/TimeInputComponent";
 
+// Iconos
 import time from '../assets/icons/time.png';
-import People from '../assets/icons/people.png'
+import People from '../assets/icons/people.png';
 import DetailsImg from '../assets/icons/details.png';
 import userIcon from '../assets/icons/usuario.png';
-import EventIcon from '../assets/icons/event-date.png'
+import EventIcon from '../assets/icons/event-date.png';
 
 export default function NewWorkshop() {
   const [selectedEvent, setSelectedEvent] = useState("");
   const [events, setEvents] = useState([]);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
-  
   const [images, setImages] = useState([]);
   const [workshopTime, setWorkshopTime] = useState("");
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
   
   const [formData, setFormData] = useState({
     name: "",
@@ -79,7 +82,6 @@ export default function NewWorkshop() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Validación de campos requeridos
     if (!formData.name || !formData.speaker || !formData.quota || 
         !formData.description || !workshopTime || !selectedEvent || 
         images.length < 3) {
@@ -87,12 +89,9 @@ export default function NewWorkshop() {
       return;
     }
 
-    // Formatear la hora al formato HH:MM:SS
     const formattedTime = `${workshopTime}:00`;
 
     const formDataToSend = new FormData();
-
-    // Crear el objeto activityDTO para el taller
     const workshopDTO = {
       name: formData.name,
       description: formData.description,
@@ -104,12 +103,10 @@ export default function NewWorkshop() {
       }
     };
 
-    // Agregar el JSON como string
     formDataToSend.append("activity", new Blob([JSON.stringify(workshopDTO)], {
       type: "application/json"
     }));
 
-    // Agregar las imágenes
     images.forEach((imageObj) => {
       if (imageObj && imageObj.file) {
         formDataToSend.append("images", imageObj.file);
@@ -128,16 +125,8 @@ export default function NewWorkshop() {
         throw new Error(errorData.message || 'Error al crear el taller');
       }
 
-      const result = await response.json();
-      alert("Taller creado con éxito");
-      
-      // Resetear el formulario
-      setFormData({
-        name: "",
-        speaker: "",
-        quota: "",
-        description: ""
-      });
+      setShowSuccessModal(true);
+      setFormData({ name: "", speaker: "", quota: "", description: "" });
       setWorkshopTime("");
       setSelectedEvent("");
       setImages([]);
@@ -314,6 +303,11 @@ export default function NewWorkshop() {
           </form>
         </div>
       </div>
+
+      <SuccessModal 
+        show={showSuccessModal} 
+        handleClose={() => setShowSuccessModal(false)} 
+      />
     </div>
   );
 }

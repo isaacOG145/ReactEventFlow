@@ -1,5 +1,7 @@
-import React, { useState } from 'react';
-import { Modal, Button } from 'react-bootstrap';
+import React from 'react';
+import { Modal } from 'react-bootstrap';
+import BlueButton from '../BlueButton';
+import PurpleButton from '../PurpleButton';
 
 export default function Logout({ show, handleClose, handleLogout }) {
   return (
@@ -10,13 +12,10 @@ export default function Logout({ show, handleClose, handleLogout }) {
       <Modal.Body>
         <p>¿Estás seguro de que deseas cerrar sesión?</p>
       </Modal.Body>
-      <Modal.Footer>
-        <Button variant="secondary" onClick={handleClose}>
-          Cancelar
-        </Button>
-        <Button variant="danger" onClick={handleLogout}>
-          Cerrar sesión
-        </Button>
+      <Modal.Footer> 
+        <BlueButton onClick={handleLogout}>Cerrar sesión</BlueButton>
+        <PurpleButton onClick={handleClose}>Cancelar</PurpleButton>
+       
       </Modal.Footer>
     </Modal>
   );

@@ -4,6 +4,7 @@ import ImageGalleryUpload from "../ImagesGalleryUpload";
 import DateInputComponent from "../DateInputComponent";
 import BlueButton from "../BlueButton";
 import PurpleButton from "../PurpleButton";
+import ConfirmUpdate from "./ConfirmUpdate";
 
 import Event from '../../assets/icons/event-name.png';
 import EventDate from '../../assets/icons/event-date.png';
@@ -19,13 +20,13 @@ const UpdateEventModal = ({ showModal, eventData, handleClose, onUpdateSuccess }
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [originalImages, setOriginalImages] = useState([]);
+    const [showConfirm, setShowConfirm] = useState(false);
 
     useEffect(() => {
         if (eventData && showModal) {
             setEventName(eventData.name || "");
             setEventDescription(eventData.description || "");
             setEventDate(eventData.date || "");
-            // Guardamos las imágenes originales por separado
             const initialImages = eventData.imageUrls ? [...eventData.imageUrls] : [];
             setOriginalImages(initialImages);
             setImages(initialImages);
@@ -36,36 +37,30 @@ const UpdateEventModal = ({ showModal, eventData, handleClose, onUpdateSuccess }
         setEventDate(e.target.value);
     };
 
-    
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-    
-        if (!eventName || !eventDate || !eventDescription) {
-            setError("Por favor, completa todos los campos obligatorios.");
-            return;
-        }
-    
+    const handleConfirm = () => {
+        setShowConfirm(true);
+    };
+
+    const handleSubmit = async () => {
+        setShowConfirm(false);
         setLoading(true);
         setError(null);
-    
+
         try {
-            // Identificar imágenes eliminadas
             const deletedImages = originalImages.filter(originalImg => 
                 !images.some(currentImg => 
                     typeof currentImg === 'string' && currentImg === originalImg
                 )
             );
-    
-            // Identificar imágenes existentes que se conservan
+
             const existingImages = images.filter(img => 
                 typeof img === 'string' && originalImages.includes(img)
             );
-    
-            // Filtrar imágenes nuevas (archivos)
+
             const newImages = images.filter(img => typeof img === 'object');
-    
+
             const formData = new FormData();
-    
+
             const activityDTO = {
                 id: eventData.id,
                 name: eventName,
@@ -74,38 +69,36 @@ const UpdateEventModal = ({ showModal, eventData, handleClose, onUpdateSuccess }
                 deletedImages: deletedImages,
                 existingImages: existingImages
             };
-    
+
             formData.append("activity", new Blob([JSON.stringify(activityDTO)], {
                 type: "application/json"
             }));
-    
-            // Agregar imágenes nuevas al FormData
+
             newImages.forEach((img) => {
                 if (img.file) {
                     formData.append("images", img.file);
                 }
             });
-    
+
             const response = await fetch('http://localhost:8080/activity/updateEvent', {
                 method: 'PUT',
                 body: formData,
                 headers: {
-                    // No incluir 'Content-Type': el navegador lo establecerá automáticamente con el boundary correcto
-                    'Authorization': `Bearer ${localStorage.getItem('token')}` // Si usas autenticación
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`
                 }
             });
-    
+
             if (!response.ok) {
                 const errorData = await response.json();
                 throw new Error(errorData.message || 'Error al actualizar el evento');
             }
-    
+
             const result = await response.json();
             
             if (onUpdateSuccess) {
                 onUpdateSuccess(result.result);
             }
-    
+
             handleClose();
         } catch (error) {
             console.error("Error:", error);
@@ -136,7 +129,7 @@ const UpdateEventModal = ({ showModal, eventData, handleClose, onUpdateSuccess }
                         </div>
                     )}
                     
-                    <form onSubmit={handleSubmit}>
+                    <form onSubmit={(e) => { e.preventDefault(); handleConfirm(); }}>
                         <div className="row">
                             <div className="col-md-6">
                                 <div className="form-block">
@@ -209,26 +202,16 @@ const UpdateEventModal = ({ showModal, eventData, handleClose, onUpdateSuccess }
                         <div className="row mt-4">
                             <div className="col-6"></div>
                             <div className="col-3">
-                                <PurpleButton 
-                                    onClick={handleClose} 
-                                    disabled={loading}
-                                    type="button"
-                                >
-                                    Cancelar
-                                </PurpleButton>
+                                <PurpleButton onClick={handleClose} disabled={loading} type="button">Cancelar</PurpleButton>
                             </div>
                             <div className="col-3">
-                                <BlueButton 
-                                    type="submit" 
-                                    disabled={loading}
-                                >
-                                    {loading ? "Guardando..." : "Actualizar"}
-                                </BlueButton>
+                                <BlueButton type="submit" disabled={loading}>{loading ? "Guardando..." : "Actualizar"}</BlueButton>
                             </div>
                         </div>
                     </form>
                 </div>
             </div>
+            {showConfirm && <ConfirmUpdate onConfirm={handleSubmit} onCancel={() => setShowConfirm(false)} />}
         </div>
     );
 };

@@ -12,7 +12,7 @@ const ConfirmUpdate = ({ show, handleClose }) => {
         <Modal.Title>Registro Fallido</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <p>El elemento no se ha podido registrar.</p>
+        <p>Exta seguro de que decea actualizar.</p>
       </Modal.Body>
       <Modal.Footer>
         <BlueButton>

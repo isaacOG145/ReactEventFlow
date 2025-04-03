@@ -8,7 +8,7 @@ const ChangeStatus = ({ currentStatus, onChangeStatus }) => {
 
   return (
     <>
-      {/* Botón con los nuevos estilos y textos */}
+      
       <button
         className={`change-status-btn btn btn-sm ${currentStatus ? "btn-success" : "btn-danger"}`}
         onClick={() => setShowModal(true)}

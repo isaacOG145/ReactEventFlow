@@ -70,7 +70,7 @@ export default function MyWorkshops() {
 
   const handleUpdateWorkshop = async (updatedWorkshop) => {
     try {
-      const response = await fetch(`http://localhost:8080/activity/workshops/update`, {
+      const response = await fetch(`http://localhost:8080/activity/workshops/update/${updatedWorkshop.id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

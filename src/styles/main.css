@@ -253,18 +253,33 @@ h1 {
   color: #141414 !important;
 }
 
-/* styles/main.css */
+/* Ajustes para los selectores */
 .select-field {
-  appearance: none;
-  padding: 0.5rem;
-  border-radius: 4px;
+  width: 100%;
+  padding: 0.625rem;
+  color: #141414;
+  background-color: #e5e7e9;
   border: 1px solid #ccc;
-  background-color: white;
+  border-radius: 15px;
+  font-size: 1.25rem;
+  outline: none;
+  transition: border-color 0.3s ease;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.625rem center;
+  background-size: 1.25rem;
 }
 
 .select-field:focus {
-  outline: none;
   border-color: #007bff;
+}
+
+/* Ajuste para el contenedor de los selectores */
+.input-container .time-selectors {
+  margin-top: 0.3125rem;
 }
 
 /* Estilos para el texto dentro del label */
@@ -303,6 +318,21 @@ h1 {
   border-color: #007bff;
   /* Cambia el color del borde al enfocar */
 }
+
+/* Estilos para los selectores de hora */
+.time-selectors {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+}
+
+.time-separator {
+  font-size: 1.25rem;
+  font-weight: bold;
+  color: #141414;
+}
+
 
 .pass-message {
   font-size: 1.25rem;

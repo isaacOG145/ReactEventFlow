@@ -3,12 +3,11 @@ import { Modal } from "react-bootstrap";
 import '../../styles/main.css';
 
 import BlueButton from '../BlueButton';
-import PurpleButton from '../PurpleButton';
 
 const SuccessModal = ({ show, handleClose }) => {
   return (
-    <Modal show={show} onHide={handleClose} centered>
-      <Modal.Header closeButton>
+    <Modal show={show} centered backdrop="static" keyboard={false}>
+      <Modal.Header>
         <Modal.Title>Registro exitoso</Modal.Title>
       </Modal.Header>
       <Modal.Body>

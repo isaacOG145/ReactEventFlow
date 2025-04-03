@@ -9,7 +9,9 @@ import BlueButton from "../components/BlueButton";
 import InputComponent from "../components/InputComponent";
 import DateInputComponent from "../components/DateInputComponent";
 import ImageGalleryUpload from "../components/ImagesGalleryUpload";
+
 import SuccessModal from "../components/modals/SuccessModal";
+import FailSuccessModal from "../components/modals/FailSuccessModal";
 
 import Event from '../assets/icons/event-name.png';
 import EventDate from '../assets/icons/event-date.png';
@@ -22,7 +24,7 @@ export default function NewEvent() {
   const [images, setImages] = useState([]);
   const [loading, setLoading] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
-
+  const [showFailModal, setShowFailModal] = useState(false);
   const handleDateChange = (e) => {
     const isoDate = e.target.value;
     const dateOnly = isoDate.split('T')[0];
@@ -31,12 +33,12 @@ export default function NewEvent() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
     if (!eventName || !eventDate || !eventDescription || images.length < 3) {
-      alert("Por favor, completa todos los campos y sube al menos 3 imágenes.");
+      setShowFailModal(true);
       return;
     }
-
+  
     const formData = new FormData();
     const activityDTO = {
       ownerActivity: { id: localStorage.getItem("userId") },
@@ -44,29 +46,29 @@ export default function NewEvent() {
       description: eventDescription,
       date: eventDate + 'T00:00:00Z'
     };
-
+  
     formData.append("activity", new Blob([JSON.stringify(activityDTO)], {
       type: "application/json"
     }));
-
+  
     images.forEach((imageObj) => {
       if (imageObj && imageObj.file) {
         formData.append("images", imageObj.file);
       }
     });
-
+  
     try {
       setLoading(true);
       const response = await fetch('http://localhost:8080/activity/saveEvent', {
         method: 'POST',
         body: formData,
       });
-
+  
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Error al crear el evento');
+        setShowFailModal(true); // Muestra el modal en caso de error
+        return;
       }
-
+  
       setShowSuccessModal(true);
       setEventName("");
       setEventDate("");
@@ -74,7 +76,7 @@ export default function NewEvent() {
       setImages([]);
     } catch (error) {
       console.error("Error:", error);
-      alert(error.message || "Hubo un error al crear el evento.");
+      setShowFailModal(true); // Muestra el modal en caso de excepción
     } finally {
       setLoading(false);
     }
@@ -161,6 +163,7 @@ export default function NewEvent() {
         </div>
       </div>
       <SuccessModal show={showSuccessModal} handleClose={() => setShowSuccessModal(false)} />
+      <FailSuccessModal show={showFailModal} handleClose={() => setShowFailModal(false)} />
     </div>
   );
 }

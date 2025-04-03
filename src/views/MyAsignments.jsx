@@ -9,21 +9,28 @@ import AssignmentTable from "../components/AssignmentTable";
 export default function MyAssignments() {
     const [events, setEvents] = useState([]);
     const [workshops, setWorkshops] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
+    const [loadingEvents, setLoadingEvents] = useState(true);
+    const [loadingWorkshops, setLoadingWorkshops] = useState(true);
+    const [errorEvents, setErrorEvents] = useState(null);
+    const [errorWorkshops, setErrorWorkshops] = useState(null);
 
     const ownerId = localStorage.getItem('userId');
 
     useEffect(() => {
-        async function fetchEvents() {
-            if (!ownerId) {
-                setError("No se ha encontrado el ID del propietario.");
-                return;
-            }
+        if (!ownerId) {
+            setErrorEvents("No se ha encontrado el ID del propietario.");
+            setErrorWorkshops("No se ha encontrado el ID del propietario.");
+            setLoadingEvents(false);
+            setLoadingWorkshops(false);
+            return;
+        }
 
+        // Cargar eventos
+        async function fetchEvents() {
             try {
                 const response = await fetch(`http://localhost:8080/assignment/events/findByOwner/${ownerId}`);
                 const data = await response.json();
+                
                 if (data.type === "SUCCESS") {
                     const eventsData = data.result.map(item => ({
                         id: item.id,
@@ -33,22 +40,21 @@ export default function MyAssignments() {
                     }));
                     setEvents(eventsData);
                 } else {
-                    setError("No se pudieron cargar los eventos.");
+                    setErrorEvents("No se pudieron cargar los eventos.");
                 }
             } catch (error) {
-                setError("Error al cargar los eventos.");
+                setErrorEvents("Error al cargar los eventos.");
+            } finally {
+                setLoadingEvents(false);
             }
         }
 
+        // Cargar talleres
         async function fetchWorkshops() {
-            if (!ownerId) {
-                setError("No se ha encontrado el ID del propietario.");
-                return;
-            }
-
             try {
                 const response = await fetch(`http://localhost:8080/assignment/workshops/findByOwner/${ownerId}`);
                 const data = await response.json();
+                
                 if (data.type === "SUCCESS") {
                     const workshopsData = data.result.map(item => ({
                         id: item.id,
@@ -58,16 +64,17 @@ export default function MyAssignments() {
                     }));
                     setWorkshops(workshopsData);
                 } else {
-                    setError("No se pudieron cargar los talleres.");
+                    setErrorWorkshops("No se pudieron cargar los talleres.");
                 }
             } catch (error) {
-                setError("Error al cargar los talleres.");
+                setErrorWorkshops("Error al cargar los talleres.");
+            } finally {
+                setLoadingWorkshops(false);
             }
         }
 
         fetchEvents();
         fetchWorkshops();
-        setLoading(false);
     }, [ownerId]);
 
     const handleChangeStatus = async (id) => {
@@ -81,27 +88,26 @@ export default function MyAssignments() {
 
             const data = await response.json();
             if (response.ok) {
+                // Buscar y actualizar en eventos
                 setEvents(prevEvents =>
-                    prevEvents.map((event) =>
+                    prevEvents.map(event =>
                         event.id === id ? { ...event, status: !event.status } : event
                     )
                 );
+                // Buscar y actualizar en talleres
                 setWorkshops(prevWorkshops =>
-                    prevWorkshops.map((workshop) =>
+                    prevWorkshops.map(workshop =>
                         workshop.id === id ? { ...workshop, status: !workshop.status } : workshop
                     )
                 );
-                console.log('Estado actualizado:', data);
-            } else {
-                console.log('Error al actualizar estado:', data);
             }
         } catch (error) {
-            console.error('Error al realizar la solicitud:', error);
+            console.error('Error al actualizar estado:', error);
         }
     };
 
     const handleUpdateAssignment = (updatedAssignment) => {
-        // Actualizar eventos
+        // Actualizar en eventos
         setEvents(prevEvents =>
             prevEvents.map(event =>
                 event.id === updatedAssignment.id
@@ -114,7 +120,7 @@ export default function MyAssignments() {
             )
         );
 
-        // Actualizar talleres
+        // Actualizar en talleres
         setWorkshops(prevWorkshops =>
             prevWorkshops.map(workshop =>
                 workshop.id === updatedAssignment.id
@@ -128,9 +134,6 @@ export default function MyAssignments() {
         );
     };
 
-    if (loading) return <div>Cargando...</div>;
-    if (error) return <div>{error}</div>;
-
     return (
         <div className="app-container">
             <CustomerRootHeader />
@@ -138,21 +141,45 @@ export default function MyAssignments() {
                 <AdminNav />
             </div>
             <div className="content">
-                <h1>Asignaciones de Eventos</h1>
-                <AssignmentTable
-                    title="Evento"
-                    assignments={events}
-                    onChangeStatus={handleChangeStatus}
-                    onUpdate={handleUpdateAssignment}
-                />
+                {/* Sección de Eventos */}
+                <h1 className="mb-4">Asignaciones de Eventos</h1>
+                {loadingEvents ? (
+                    <div className="text-center my-4">
+                        <div className="spinner-border text-primary" role="status">
+                            <span className="visually-hidden">Cargando...</span>
+                        </div>
+                        <p>Cargando eventos...</p>
+                    </div>
+                ) : errorEvents ? (
+                    <div className="alert alert-danger">{errorEvents}</div>
+                ) : (
+                    <AssignmentTable
+                        title="Evento"
+                        assignments={events}
+                        onChangeStatus={handleChangeStatus}
+                        onUpdate={handleUpdateAssignment}
+                    />
+                )}
 
-                <h1>Asignaciones de Talleres</h1>
-                <AssignmentTable
-                    title="Taller"
-                    assignments={workshops}
-                    onChangeStatus={handleChangeStatus}
-                    onUpdate={handleUpdateAssignment}
-                />
+                {/* Sección de Talleres */}
+                <h1 className="mb-4 mt-5">Asignaciones de Talleres</h1>
+                {loadingWorkshops ? (
+                    <div className="text-center my-4">
+                        <div className="spinner-border text-primary" role="status">
+                            <span className="visually-hidden">Cargando...</span>
+                        </div>
+                        <p>Cargando talleres...</p>
+                    </div>
+                ) : errorWorkshops ? (
+                    <div className="alert alert-danger">{errorWorkshops}</div>
+                ) : (
+                    <AssignmentTable
+                        title="Taller"
+                        assignments={workshops}
+                        onChangeStatus={handleChangeStatus}
+                        onUpdate={handleUpdateAssignment}
+                    />
+                )}
             </div>
         </div>
     );

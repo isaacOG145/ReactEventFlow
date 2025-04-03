@@ -84,7 +84,7 @@ export default function UpdateAssignmentModal({ showModal, setShowModal, assignm
             }
 
             // Obtener datos completos del nuevo checador
-            const selectedCheckerData = checkers.find(c => c.id === selectedChecker);
+            const selectedCheckerData = checkers.find(c => c.id == selectedChecker);
             if (!selectedCheckerData) {
                 throw new Error("No se encontró la información del nuevo checador.");
             }
@@ -159,5 +159,6 @@ export default function UpdateAssignmentModal({ showModal, setShowModal, assignm
                 </div>
             </div>
         </div>
+
     );
 }

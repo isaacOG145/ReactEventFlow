@@ -66,3 +66,22 @@
     justify-content: center; /* Centrado horizontal */
     margin: auto 0;     /* Margen automático para centrado vertical */
 }
+
+
+.no-data-card {
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 0.25rem;
+    padding: 20px;
+    margin: 20px 0;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.no-data-card .card-title {
+    color: #6c757d;
+    margin-bottom: 10px;
+}
+
+.no-data-card .card-text {
+    color: #6c757d;
+}

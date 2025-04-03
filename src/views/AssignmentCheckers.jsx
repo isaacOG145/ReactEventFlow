@@ -28,7 +28,7 @@ export default function AssignmentChecker() {
       setError(null);
       
       // Obtener eventos/talleres activos
-      fetch(`http://localhost:8080/activity/events/byOwner/${bossId}`)
+      fetch(`http://localhost:8080/activity/findAllActive/byOwner/${bossId}`)
         .then(response => {
           if (!response.ok) {
             throw new Error("Error al cargar actividades");
@@ -165,13 +165,14 @@ export default function AssignmentChecker() {
                   <span className="required-asterisk">*</span>
                 </>
               }
-              options={[
-                { value: "", label: "Seleccionar actividad activa" },
+              options={[ 
+                { value: "", label: "Seleccionar actividad activa" }, 
                 ...eventsAndWorkshops.map(activity => ({
                   value: activity.id,
-                  label: `${activity.name} (${activity.typeActivity})`
+                  label: `${activity.name} (${activity.typeActivity === 'EVENT' ? 'Evento' : activity.typeActivity === 'WORKSHOP' ? 'Taller' : activity.typeActivity})`
                 }))
               ]}
+              
               value={selectedEvent}
               onChange={e => setSelectedEvent(e.target.value)}
               disabled={loading || eventsAndWorkshops.length === 0}

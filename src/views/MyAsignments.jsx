@@ -1,13 +1,75 @@
 import React from "react";
+import { useState, useEffect } from "react";
+
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../styles/main.css';
 
 import CustomerRootHeader from "../components/CustomerRootHeader";
 import AdminNav from "../components/AdminNav";
-import EditComponent from "../components/iconsComponent/EditComponent";
-import ChangeStatus from "../components/iconsComponent/ChangeStatus";
+import AssignmentTable from "../components/AssignmentTable";
 
 export default function MyAsignments() {
+
+    const [events, setEvents] = useState([]);
+    const [workshops, setWorkshops] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+
+    const userId = localStorage.getItem('userId');
+    if (!userId) {
+        throw new Error('No se encontró userId en el localStorage');
+    }
+
+    // Cargar eventos
+    useEffect(() => {
+        async function fetchEvents() {
+            try {
+ 
+                const response = await fetch(`http://localhost:8080/assignment/events/findByOwner/${userId}`);
+                const data = await response.json();
+                if (data.type === "SUCCESS") {
+                    const eventsData = data.result.map(item => ({
+                        id: item.id,
+                        checkerName: `${item.user.name} ${item.user.lastName}`,
+                        activityName: item.activity.name
+                    }));
+                    setEvents(eventsData);
+                } else {
+                    setError("No se pudieron cargar los eventos.");
+                }
+            } catch (error) {
+                setError("Error al cargar los eventos.");
+            }
+        }
+
+        // Cargar talleres
+        async function fetchWorkshops() {
+            try {
+                const response = await fetch(`http://localhost:8080/assignment/workshops/findByOwner/${userId}`);
+                const data = await response.json();
+                if (data.type === "SUCCESS") {
+                    const workshopsData = data.result.map(item => ({
+                        id: item.id,
+                        checkerName: `${item.user.name} ${item.user.lastName}`,
+                        activityName: item.activity.name
+                    }));
+                    setWorkshops(workshopsData);
+                } else {
+                    setError("No se pudieron cargar los talleres.");
+                }
+            } catch (error) {
+                setError("Error al cargar los talleres.");
+            }
+        }
+
+        fetchEvents();
+        fetchWorkshops();
+        setLoading(false);
+    }, []);
+
+    if (loading) return <div>Cargando...</div>;
+    if (error) return <div>{error}</div>;
+
     return (
         <div className="app-container">
             <CustomerRootHeader />
@@ -18,79 +80,11 @@ export default function MyAsignments() {
 
                 <h1>Asignaciones de Eventos</h1>
 
-
-                <div className="table-container mb-5">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>No.</th>
-                                <th>Nombre del checador</th>
-                                <th>Nombre del evento</th>
-                                <th>Editar asignación</th>
-                                <th>Estado</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-
-                            <tr>
-                                <td className="td-blue">1</td>
-                                <td>Nombre del checador</td>
-                                <td className="td-blue">Nombre del evento</td>
-                                <td>
-                                    <div className="d-flex justify-content-center">
-                                        <EditComponent />
-                                    </div>
-                                </td>
-                                <td className="actions">
-
-
-                                    <ChangeStatus />
-
-                                </td>
-                            </tr>
-
-                        </tbody>
-                    </table>
-                </div>
-
+                <AssignmentTable title="Eventos" assignments={events} />
 
                 <h1>Asignaciones de Talleres</h1>
 
-
-                <div className="table-container">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>No.</th>
-                                <th>Nombre del checador</th>
-                                <th>Nombre del Taller</th>
-                                <th>Editar asignación</th>
-                                <th>Estado</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-
-                            <tr>
-                                <td className="td-blue">1</td>
-                                <td>Nombre del checador</td>
-                                <td className="td-blue">Nombre del taller</td>
-                                <td>
-                                    <div className="d-flex justify-content-center">
-                                        <EditComponent />
-                                    </div>
-                                </td>
-                                <td className="actions">
-
-
-                                    <ChangeStatus />
-
-                                </td>
-                            </tr>
-
-                        </tbody>
-                    </table>
-                </div>
-
+                <AssignmentTable title="Talleres" assignments={workshops} />
 
             </div>
         </div>

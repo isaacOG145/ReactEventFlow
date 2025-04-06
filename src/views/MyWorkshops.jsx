@@ -59,10 +59,6 @@ export default function MyWorkshops() {
     setShowModal(true);
   };
 
-  const handleDelete = (workshopId) => {
-    console.log("Eliminar taller:", workshopId);
-  };
-
   const handleCloseModal = () => {
     setShowModal(false);
     setWorkshopToEdit(null);
@@ -115,6 +111,11 @@ export default function MyWorkshops() {
       console.error('Error al realizar la solicitud:', error);
     }
   };
+
+  const formatDate = (dateString) => {
+      const date = parseISO(dateString);
+      return format(date, 'dd MMMM yyyy', { locale: es }); // Usamos el locale en español
+    };
 
   // Función para formatear la hora en formato 'HH:mm'
   const formatTime = (timeString) => {
@@ -172,7 +173,7 @@ export default function MyWorkshops() {
                         <div>
                           <strong>{workshop.fromActivity.name}</strong>
                           <div className="text-muted small">
-                            {new Date(workshop.fromActivity.date).toLocaleDateString()}
+                          {formatDate(workshop.fromActivity.date)}
                           </div>
                         </div>
                       ) : "Sin evento asociado"}

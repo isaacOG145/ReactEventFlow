@@ -20,7 +20,7 @@ import { es } from 'date-fns/locale';
 
 export default function Index() {
   const [activities, setActivities] = useState([]); // Mantiene el estado de las actividades
-  const [workshops, setWorkshops] = useState([]); // Mantiene el estado de las actividades
+  const [workshops, setWorkshops] = useState([]); // Mantiene el estado de los talleres
   const navigate = useNavigate(); // Usamos useNavigate
 
   useEffect(() => {
@@ -35,9 +35,19 @@ export default function Index() {
       .then((data) => {
         if (data.type === 'SUCCESS') {
           const formattedActivities = data.result.map((activity) => {
-            const formattedDate = activity.date
-              ? format(new Date(activity.date), 'dd MMM yyyy', { locale: es })
+            // Si la fecha está en formato string (yyyy-MM-dd), convertimos a objeto Date
+            const activityDate = activity.date ? new Date(activity.date) : null;
+
+            // Sumamos un día a la fecha (solo si la fecha existe)
+            if (activityDate) {
+              activityDate.setDate(activityDate.getDate() + 1);
+            }
+
+            // Ahora formateamos la nueva fecha
+            const formattedDate = activityDate
+              ? format(activityDate, 'dd MMM yyyy', { locale: es })
               : 'Fecha no disponible';
+
             return { ...activity, formattedDate };
           });
           setActivities(formattedActivities);
@@ -77,7 +87,6 @@ export default function Index() {
         console.error("Hubo un error al cargar los talleres:", error);
       });
   }, []);  // Se ejecuta solo una vez al cargar el componente
-
 
   return (
     <div className="app-container">
@@ -120,9 +129,7 @@ export default function Index() {
             <h1>Eventos disponibles</h1>
           </div>
           {activities.length > 0 ? (
-
             activities.map((activity) => (
-
               <ActivityCard
                 key={activity.id}
                 activity={activity}
@@ -146,13 +153,11 @@ export default function Index() {
             <h1>Talleres Disponibles</h1>
           </div>
           {workshops.length > 0 ? (
-
             workshops.map((workshop) => (
-
               <ActivityCard
                 key={workshop.id}
                 activity={workshop}
-                to={`/detalles-taller/${workshop.id}`}
+                to={`/detalles-evento/${workshop.fromActivity.id}`}
                 buttonText="Ver detalles"
                 label={
                   <label>

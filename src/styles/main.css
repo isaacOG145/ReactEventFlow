@@ -36,6 +36,7 @@ html {
   width: 100%;
   margin-left: auto;
   margin-right: auto;
+  
 }
 
 .presentation-block {
@@ -522,7 +523,7 @@ h1 {
   font-weight: normal;
   color: #909497;
   line-height: 1.6;
-  font-size: 0.75rem;
+  font-size: 1rem;
   /* 24px */
 }
 

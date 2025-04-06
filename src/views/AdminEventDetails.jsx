@@ -15,6 +15,8 @@ import UpdateEventModal from "../components/modals/UpdateEventModal";
 export default function AdminEventDetails() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const [userActivities, setUserActivities] = useState([]);
+  const [attendanceCount, setAttendanceCount] = useState({ yes: 0, no: 0 });
   const [eventData, setEventData] = useState({
     id: "",
     name: "",
@@ -35,15 +37,11 @@ export default function AdminEventDetails() {
   };
 
   const handleUpdateSuccess = (updatedEvent) => {
-    // Actualizar los datos locales con la respuesta del servidor
-    const formattedDate = new Date(updatedEvent.date).toLocaleDateString(
-      "es-ES",
-      {
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-      }
-    );
+    const formattedDate = new Date(updatedEvent.date).toLocaleDateString("es-ES", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
 
     setEventData({
       ...updatedEvent,
@@ -52,39 +50,29 @@ export default function AdminEventDetails() {
     setShowModal(false);
   };
 
+  // Cargar datos del evento
   useEffect(() => {
     const fetchEventData = async () => {
       try {
-        const response = await fetch(
-          `http://localhost:8080/activity/event/findById/${id}`
-        );
-
+        const response = await fetch(`http://localhost:8080/activity/event/findById/${id}`);
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
-
         const data = await response.json();
-
         if (data.type === "SUCCESS") {
-          // Guardar la fecha original para el modal
           const eventDate = data.result.date;
-
-          // Formatear la fecha para mostrar
-          const formattedDate = new Date(eventDate).toLocaleDateString(
-            "es-ES",
-            {
-              year: "numeric",
-              month: "long",
-              day: "numeric",
-            }
-          );
+          const formattedDate = new Date(eventDate).toLocaleDateString("es-ES", {
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+          });
 
           setEventData({
             id: data.result.id,
             name: data.result.name,
             description: data.result.description,
             date: formattedDate,
-            originalDate: eventDate, // Guardamos la fecha original sin formatear
+            originalDate: eventDate,
             imageUrls: data.result.imageUrls || [],
           });
         } else {
@@ -93,12 +81,48 @@ export default function AdminEventDetails() {
       } catch (err) {
         console.error("Error fetching event data:", err);
         setError(err.message);
+      }
+    };
+
+    fetchEventData();
+  }, [id]);
+
+  // Cargar usuarios de la actividad
+  useEffect(() => {
+    const fetchUserActivities = async () => {
+      try {
+        const usersResponse = await fetch(`http://localhost:8080/user-activities/findByActivity/${id}`);
+        
+        if (usersResponse.status === 404) {
+          // Si no hay usuarios, simplemente no hacemos nada
+          setUserActivities([]);
+          return;
+        }
+
+        if (!usersResponse.ok) {
+          throw new Error(`HTTP error! status: ${usersResponse.status}`);
+        }
+
+        const usersData = await usersResponse.json();
+        if (usersData.type === "SUCCESS") {
+          setUserActivities(usersData.result);
+
+          // Contar las asistencias
+          const yesCount = usersData.result.filter(userActivity => userActivity.verified).length;
+          const noCount = usersData.result.length - yesCount;
+          setAttendanceCount({ yes: yesCount, no: noCount });
+        } else {
+          throw new Error(usersData.text || "Error al obtener los usuarios de la actividad");
+        }
+      } catch (err) {
+        console.error("Error fetching user activities:", err);
+        setError(err.message);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchEventData();
+    fetchUserActivities();
   }, [id]);
 
   const handleReturn = () => {
@@ -177,9 +201,7 @@ export default function AdminEventDetails() {
           <div className="row mt-3">
             <div className="col-6"></div>
             <div className="col-3">
-              <NavigatePurpleButton onClick={handleReturn}>
-                Volver
-              </NavigatePurpleButton>
+              <NavigatePurpleButton onClick={handleReturn}>Volver</NavigatePurpleButton>
             </div>
             <div className="col-3">
               <BlueButton onClick={handleEdit}>Actualizar</BlueButton>
@@ -187,29 +209,48 @@ export default function AdminEventDetails() {
           </div>
         </div>
 
-        <div className="row mt-3 d-flex justify-content-center">
-          <div className="col-10">
+        <div className="row mt-4 d-flex justify-content-center">
+          <div className="col-6">
             <h1>Asistencias</h1>
-            <div className="table-container">
-              <table>
-                <thead>
-                  <tr>
-                    <th>No.</th>
-                    <th>Nombre del invitado</th>
-                    <th>Nombre del evento</th>
-                    <th className="d-flex justify-content-center">Asistencia 0/1</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td className="td-blue">1</td>
-                    <td className="td-blue">Nombre del invitado</td>
-                    <td>Nombre del evento</td>
-                    <td className="d-flex justify-content-center">Yes</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
+
+            {userActivities.length === 0 ? (
+              <div className="alert alert-warning" role="alert">
+                <strong>No hay usuarios inscritos en este evento.</strong>
+              </div>
+            ) : (
+              <div className="table-container">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>No.</th>
+                      <th>Nombre del invitado</th>
+                      <th>Correo del invitado</th>
+                      <th className="d-flex justify-content-center">
+                        Asistencia {attendanceCount.yes}/{attendanceCount.yes + attendanceCount.no}
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {userActivities.map((userActivity, index) => (
+                      <tr key={userActivity.id}>
+                        <td className="td-blue">{index + 1}</td>
+                        <td>{`${userActivity.user.name} ${userActivity.user.lastName}`}</td>
+                        <td className="td-blue">{`${userActivity.user.email}`}</td>
+                        <td className="d-flex justify-content-center">
+                          <span
+                            style={{
+                              color: userActivity.verified ? "#28A745" : "#DC3545",
+                            }}
+                          >
+                            {userActivity.verified ? "Asistió" : "No asistió"}
+                          </span>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -218,7 +259,7 @@ export default function AdminEventDetails() {
         showModal={showModal}
         eventData={{
           ...eventData,
-          date: eventData.originalDate || eventData.date, // Usamos la fecha sin formatear para el modal
+          date: eventData.originalDate || eventData.date,
         }}
         handleClose={handleCloseModal}
         onUpdateSuccess={handleUpdateSuccess}

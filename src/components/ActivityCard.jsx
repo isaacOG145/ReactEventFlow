@@ -7,7 +7,8 @@ export default function ActivityCard({
   to,
   activity,
   label,
-  buttonText
+  buttonText,
+  scrollToId
 }) {
   const [showModal, setShowModal] = useState(false);
   const [selectedImage, setSelectedImage] = useState('');
@@ -84,7 +85,7 @@ export default function ActivityCard({
 
         {/* Botón */}
         <div className="blue-button-container">
-          <NavigateBlueButton to={to}>
+          <NavigateBlueButton to={to}  scrollToId={scrollToId}>
             {buttonText}
           </NavigateBlueButton>
         </div>

@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import InputComponent from "../InputComponent";
 import ImageGalleryUpload from "../ImagesGalleryUpload";
 import TimeInputComponent from "../TimeInputComponent";
-import SelectInputComponent from "../SelectInput.Component";
 import BlueButton from "../BlueButton";
 import PurpleButton from "../PurpleButton";
 import EventIcon from '../../assets/icons/event-date.png';

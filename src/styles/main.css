@@ -344,7 +344,7 @@ h1 {
 }
 
 .error-message {
-  color: red;
+  color: #dc3545;
   font-size: 0.875rem;
   /* 14px */
   margin-top: 0.25rem;

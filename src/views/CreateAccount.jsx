@@ -159,7 +159,7 @@ export default function CreateAccount() {
                             <div className="form-block p-3">
                                 <InputComponent
                                     value={formData.lastName}
-                                    onChange={handleInputChange} 
+                                    onChange={handleInputChange}
                                     type="text"
                                     label={
                                         <>
@@ -180,8 +180,8 @@ export default function CreateAccount() {
                         <div className="col-md-6">
                             <div className="form-block p-2">
                                 <InputComponent
-                                value={formData.email}
-                                onChange={handleInputChange}
+                                    value={formData.email}
+                                    onChange={handleInputChange}
 
                                     type="text"
                                     label={
@@ -203,8 +203,8 @@ export default function CreateAccount() {
                             <div className="form-block p-2">
                                 <div className="form-block p-2">
                                     <InputComponent
-                                    value={formData.phone}
-                                    onChange={handleInputChange}
+                                        value={formData.phone}
+                                        onChange={handleInputChange}
 
                                         type="text"
                                         label={
@@ -226,8 +226,8 @@ export default function CreateAccount() {
                         <div className="col-md-6">
                             <div className="form-block p-2">
                                 <CustomPasswordInput
-                                value={formData.password}
-                                onChange={handleInputChange}
+                                    value={formData.password}
+                                    onChange={handleInputChange}
 
                                     label={
                                         <>
@@ -247,8 +247,8 @@ export default function CreateAccount() {
                         <div className="col-md-6">
                             <div className="form-block p-2">
                                 <CustomPasswordInput
-                                value={formData.rePassword}
-                                onChange={handleInputChange}
+                                    value={formData.rePassword}
+                                    onChange={handleInputChange}
 
                                     label={
                                         <>
@@ -266,8 +266,8 @@ export default function CreateAccount() {
                     </div>
                     <div className="row mb-3">
                         <InputComponent
-                        value={formData.company}
-                        onChange={handleInputChange}
+                            value={formData.company}
+                            onChange={handleInputChange}
                             label={
                                 <>
                                     <img className="icon-md" src={passwordIcon} alt="Icono" />

@@ -19,6 +19,7 @@ import EventDetails from './views/EventDetails';
 import AdminEventDetails from './views/AdminEventDetails';
 import AdminWorkshopDetails from './views/AdminWorkshopDetails';
 import MyAsignments from './views/MyAsignments';
+import CreateUserAcount from './components/modals/CreateUserAcount';
 
 function App() {
     return (
@@ -32,6 +33,8 @@ function App() {
                 <Route path='/nueva-contraseña' element={<NewPassword />} />
                 <Route path='/crear-cuenta' element={<CreateAccount />} />
                 <Route path="/detalles-evento/:id" element={<EventDetails />} />
+
+                <Route path='/usuario/crear-cuenta' element={<CreateUserAcount/>} />
 
 
                 {/**Rutas del administrador */}
@@ -47,6 +50,8 @@ function App() {
 
                 <Route path='/administrar/detalles-evento/:id' element={<AdminEventDetails/>}/>
                 <Route path='/administrar/detalles-taller/:id' element={<AdminWorkshopDetails/>} />
+
+                
 
             </Routes>
         </Router>

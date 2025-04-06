@@ -1,17 +1,25 @@
 import React, { useState, useEffect } from "react";
-import { useParams } from 'react-router-dom'; // Asegúrate de importar useParams correctamente
+import { useParams } from 'react-router-dom';
+
+import '../styles/main.css';
+
 import Carrusel from "../components/Carrusel";
 import BlueButton from "../components/BlueButton";
-import '../styles/main.css';
+import ModalComponent from "../components/modals/ModalComponent";
 import CustomerRootHeader from "../components/CustomerRootHeader";
 import ActivityCard from "../components/ActivityCard";
+
+
 import Time from '../assets/icons/time-and-date.png';
 
+import CreateUserAcount from "../components/modals/CreateUserAcount";
+
 export default function EventDetails() {
-    const { id } = useParams();  
+    const { id } = useParams();
     const [eventDetails, setEventDetails] = useState(null);
     const [activities, setActivities] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [showModal, setShowModal] = useState(false);
 
     // Función para obtener los detalles del evento
     const fetchEventDetails = async () => {
@@ -39,12 +47,11 @@ export default function EventDetails() {
         }
     };
 
-    // Usamos useEffect para hacer el fetch cuando se monte el componente
     useEffect(() => {
         fetchEventDetails();
         fetchActivities();
         setLoading(false);
-    }, [id]); // Dependemos del id para hacer el fetch cada vez que cambia
+    }, [id]);
 
     if (loading) {
         return <div>Loading...</div>;
@@ -55,6 +62,14 @@ export default function EventDetails() {
     }
 
     const { name, date, description, imageUrls } = eventDetails;
+
+    const handleOpenModal = () => {
+        setShowModal(true);
+    };
+
+    const handleCloseModal = () => {
+        setShowModal(false);
+    };
 
     return (
         <div className="app-container">
@@ -70,11 +85,19 @@ export default function EventDetails() {
                         <div className="row">
                             <div className="col-9"></div>
                             <div className="col-3">
-                                <BlueButton>Inscribirse</BlueButton>
+                                <BlueButton onClick={handleOpenModal}>Inscribirse</BlueButton>
                             </div>
                         </div>
                     </div>
                 </div>
+
+                {/* Modal */}
+                <ModalComponent show={showModal} onClose={handleCloseModal} title="Crear cuenta">
+                    
+                    
+                        <CreateUserAcount activityId={id} onRegistrationSuccess={handleCloseModal}/>
+                    
+                </ModalComponent>
 
                 <div className="row mt-4 justify-content-center">
                     {activities.length > 0 ? (

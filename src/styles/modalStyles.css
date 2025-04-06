@@ -98,34 +98,45 @@
   overflow-y: auto;
 }
 
-/* Cabecera del modal */
+
 .modal-header {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  justify-content: space-between; /* Distribuye el espacio entre h1 y el botón */
+  align-items: center; /* Centra verticalmente ambos elementos */
   margin-bottom: 20px;
   padding-bottom: 15px;
-  border-bottom: 1px solid #e0e0e0;
+  width: 100%; /* Asegura que ocupe todo el ancho */
 }
 
 .modal-header h1 {
   margin: 0;
-  font-size: 24px;
-  color: #333;
+  font-size: 2.5rem;
+  color: #142ea9;
+  flex-grow: 1;
+  text-align: center; /* Centra el texto horizontalmente */
 }
 
-/* Botón de cierre */
 .close-button {
-  background: none;
+  background: #dc3545;
   border: none;
-  font-size: 24px;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  color: white;
+  font-size: 18px;
+  font-weight: bold;
   cursor: pointer;
-  color: #666;
-  transition: color 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  padding: 0;
+  line-height: 1;
+  margin-left: auto; /* Empuja el botón a la derecha */
 }
 
 .close-button:hover {
-  color: #333;
+  background: #cc0000;
 }
 
 /* Cuerpo del modal */
@@ -138,7 +149,6 @@
   text-align: right;
   padding-top: 20px;
   margin-top: 20px;
-  border-top: 1px solid #e0e0e0;
 }
 
 /* Ajustes para los inputs en modal más ancho */

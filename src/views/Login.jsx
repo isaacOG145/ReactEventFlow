@@ -82,28 +82,33 @@ export default function Login() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setPasswordError(""); // Limpiar errores previos
 
-        if (validateForm()) {
-            try {
-                const userData = await loginUser(email, password);
-                console.log('Autenticación exitosa:', userData);
+        if (!validateForm()) {
+            return;
+        }
 
-                // Guardar el token en localStorage
-                localStorage.setItem('token', userData.jwt);
-                localStorage.setItem('userId', userData.userId);
-                localStorage.setItem('role', userData.role);
+        try {
+            const userData = await loginUser(email, password);
 
-                if(userData.role != 'ADMIN' || userData.role != "SUPER_ADMIN"){
-                    navigate('/');
-                }
+            localStorage.setItem('token', userData.jwt);
+            localStorage.setItem('userId', userData.userId);
+            localStorage.setItem('role', userData.role);
+
+            // Redirección basada en rol
+            if (userData.role === 'ADMIN' || userData.role === "SUPER_ADMIN") {
                 navigate('/dashboard/mis-talleres');
-
-            } catch (error) {
-                console.error('Error en la autenticación:', error);
-                setPasswordError('Correo electrónico o contraseña incorrectos');
+            } else {
+                navigate('/');
             }
-        } else {
-            console.log("Formulario con errores");
+
+        } catch (error) {
+            
+            if (error.message.includes('401')) {
+                setPasswordError('Credenciales incorrectas');
+            } else {
+                setPasswordError('Error de conexión. Intente nuevamente.');
+            }
         }
     };
 

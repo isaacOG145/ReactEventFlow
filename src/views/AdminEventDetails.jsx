@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import { format, parseISO } from 'date-fns';
+import { es } from 'date-fns/locale';
 
 import "bootstrap/dist/css/bootstrap.min.css";
 import "../styles/main.css";
@@ -33,7 +35,7 @@ export default function AdminEventDetails() {
   };
 
   const handleView = (route) => {
-    navigate(route); // navega a la ruta proporcionada
+    navigate(route);
   };
 
   const handleCloseModal = () => {
@@ -41,17 +43,21 @@ export default function AdminEventDetails() {
   };
 
   const handleUpdateSuccess = (updatedEvent) => {
-    const formattedDate = new Date(updatedEvent.date).toLocaleDateString("es-ES", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    });
-
     setEventData({
       ...updatedEvent,
-      date: formattedDate,
+      date: updatedEvent.date,
     });
     setShowModal(false);
+  };
+
+  const formatDate = (dateString) => {
+    try {
+      const date = parseISO(dateString);
+      return format(date, 'dd MMMM yyyy', { locale: es });
+    } catch (error) {
+      console.error("Error formateando fecha:", error);
+      return dateString;
+    }
   };
 
   // Cargar datos del evento
@@ -64,19 +70,11 @@ export default function AdminEventDetails() {
         }
         const data = await response.json();
         if (data.type === "SUCCESS") {
-          const eventDate = data.result.date;
-          const formattedDate = new Date(eventDate).toLocaleDateString("es-ES", {
-            year: "numeric",
-            month: "long",
-            day: "numeric",
-          });
-
           setEventData({
             id: data.result.id,
             name: data.result.name,
             description: data.result.description,
-            date: formattedDate,
-            originalDate: eventDate,
+            date: data.result.date,
             imageUrls: data.result.imageUrls || [],
           });
         } else {
@@ -98,7 +96,6 @@ export default function AdminEventDetails() {
         const usersResponse = await fetch(`http://localhost:8080/user-activities/findByActivity/${id}`);
         
         if (usersResponse.status === 404) {
-          // Si no hay usuarios, simplemente no hacemos nada
           setUserActivities([]);
           return;
         }
@@ -111,7 +108,6 @@ export default function AdminEventDetails() {
         if (usersData.type === "SUCCESS") {
           setUserActivities(usersData.result);
 
-          // Contar las asistencias
           const yesCount = usersData.result.filter(userActivity => userActivity.verified).length;
           const noCount = usersData.result.length - yesCount;
           setAttendanceCount({ yes: yesCount, no: noCount });
@@ -183,7 +179,7 @@ export default function AdminEventDetails() {
         <div className="card-details">
           <h1>{eventData.name}</h1>
           <p>
-            <strong>Fecha:</strong> {eventData.date}
+            <strong>Fecha:</strong> {formatDate(eventData.date)}
           </p>
           <p>
             <strong>Descripción:</strong> {eventData.description}
@@ -268,10 +264,7 @@ export default function AdminEventDetails() {
 
       <UpdateEventModal
         showModal={showModal}
-        eventData={{
-          ...eventData,
-          date: eventData.originalDate || eventData.date,
-        }}
+        eventData={eventData}
         handleClose={handleCloseModal}
         onUpdateSuccess={handleUpdateSuccess}
       />

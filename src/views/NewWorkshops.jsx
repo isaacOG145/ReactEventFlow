@@ -9,22 +9,30 @@ import BlueButton from "../components/BlueButton";
 import SelectInputComponent from "../components/SelectInput.Component";
 import ImageGalleryUpload from "../components/ImagesGalleryUpload";
 import TimeInputComponent from "../components/TimeInputComponent";
+import MessageModal from '../components/modals/MessageModal'; // Asegúrate de importar el MessageModal
 
 import time from '../assets/icons/time.png';
-import People from '../assets/icons/people.png'
+import People from '../assets/icons/people.png';
 import DetailsImg from '../assets/icons/details.png';
 import userIcon from '../assets/icons/usuario.png';
-import EventIcon from '../assets/icons/event-date.png'
+import EventIcon from '../assets/icons/event-date.png';
 
 export default function NewWorkshop() {
   const [selectedEvent, setSelectedEvent] = useState("");
   const [events, setEvents] = useState([]);
+  const [loading, setLoading] = useState(true); // Estado para controlar la carga
   const [error, setError] = useState(null);
-  const [loading, setLoading] = useState(true);
-  
+
   const [images, setImages] = useState([]);
   const [workshopTime, setWorkshopTime] = useState("");
-  
+
+  // Estado para el modal de notificación
+  const [notification, setNotification] = useState({
+    show: false,
+    message: "",
+    type: "success" // 'success', 'error', 'warning', 'loading'
+  });
+
   const [formData, setFormData] = useState({
     name: "",
     speaker: "",
@@ -32,9 +40,25 @@ export default function NewWorkshop() {
     description: ""
   });
 
+  // Función para mostrar notificaciones
+  const showNotification = (message, type = "success") => {
+    setNotification({
+      show: true,
+      message,
+      type
+    });
+    
+    // Auto-cerrar solo si no es de tipo loading
+    if (type !== 'loading') {
+      setTimeout(() => {
+        setNotification(prev => ({...prev, show: false}));
+      }, 3000);
+    }
+  };
+
   useEffect(() => {
     const userId = localStorage.getItem("userId");
-  
+
     if (userId) {
       fetch(`http://localhost:8080/activity/events/byOwner/${userId}`)
         .then((response) => {
@@ -51,8 +75,11 @@ export default function NewWorkshop() {
                 value: event.id.toString(),
                 label: event.name
               }));
-            
+
             setEvents(activeEvents);
+            if (activeEvents.length === 0) {
+              setError("No hay eventos activos disponibles");
+            }
           } else {
             setError("No se encontraron eventos activos.");
           }
@@ -61,10 +88,12 @@ export default function NewWorkshop() {
         .catch((error) => {
           setError(`Error al cargar eventos: ${error.message}`);
           setLoading(false);
+          showNotification("Error al cargar eventos", "error");
         });
     } else {
       setError("No se encontró el ID de usuario.");
       setLoading(false);
+      showNotification("No se identificó al usuario", "error");
     }
   }, []);
 
@@ -80,10 +109,10 @@ export default function NewWorkshop() {
     e.preventDefault();
 
     // Validación de campos requeridos
-    if (!formData.name || !formData.speaker || !formData.quota || 
-        !formData.description || !workshopTime || !selectedEvent || 
-        images.length < 3) {
-      setError("Por favor, completa todos los campos y sube al menos 3 imágenes.");
+    if (!formData.name || !formData.speaker || !formData.quota ||
+      !formData.description || !workshopTime || !selectedEvent ||
+      images.length < 3) {
+      showNotification("Por favor, completa todos los campos y sube al menos 3 imágenes.", "warning");
       return;
     }
 
@@ -117,7 +146,9 @@ export default function NewWorkshop() {
     });
 
     try {
-      setLoading(true);
+      // Mostrar estado de carga
+      showNotification("Guardando taller...", "loading");
+
       const response = await fetch('http://localhost:8080/activity/saveWorkshop', {
         method: 'POST',
         body: formDataToSend,
@@ -129,8 +160,10 @@ export default function NewWorkshop() {
       }
 
       const result = await response.json();
-      alert("Taller creado con éxito");
-      
+
+      // Mostrar éxito
+      showNotification("Taller creado con éxito", "success");
+
       // Resetear el formulario
       setFormData({
         name: "",
@@ -144,9 +177,7 @@ export default function NewWorkshop() {
       setError(null);
     } catch (error) {
       console.error("Error:", error);
-      setError(error.message || "Hubo un error al crear el taller.");
-    } finally {
-      setLoading(false);
+      showNotification(error.message || "Hubo un error al crear el taller", "error");
     }
   };
 
@@ -160,9 +191,9 @@ export default function NewWorkshop() {
         <div className="form">
           <form onSubmit={handleSubmit}>
             <h1 className="text-center mb-4">Registrar taller</h1>
-            
+
             {error && <div className="alert alert-danger">{error}</div>}
-            
+
             <div className="row">
               <div className="col-md-6">
                 <div className="form-block">
@@ -258,8 +289,7 @@ export default function NewWorkshop() {
                       </>
                     }
                     id="fromActivity"
-                    placeholder={loading ? "Cargando eventos..." : "Selecciona un evento"}
-                    disabled={loading || events.length === 0}
+                    placeholder={"Selecciona un evento"}
                     required
                   />
                   {events.length === 0 && !loading && (
@@ -305,8 +335,8 @@ export default function NewWorkshop() {
 
               <div className="col-md-3">
                 <div className="form-block p-2">
-                  <BlueButton type="submit" disabled={loading}>
-                    {loading ? "Guardando..." : "Registrar"}
+                  <BlueButton type="submit">
+                    Crear nuevo
                   </BlueButton>
                 </div>
               </div>
@@ -314,6 +344,12 @@ export default function NewWorkshop() {
           </form>
         </div>
       </div>
+      <MessageModal
+        show={notification.show}
+        onClose={() => setNotification({ ...notification, show: false })}
+        type={notification.type}
+        message={notification.message}
+      />
     </div>
   );
 }

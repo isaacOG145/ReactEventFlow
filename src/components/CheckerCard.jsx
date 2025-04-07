@@ -2,6 +2,9 @@ import React from "react";
 import EditComponent from "./iconsComponent/EditComponent";
 import ChangeStatus from "./iconsComponent/ChangeStatus";
 
+import '../styles/main.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
+
 export default function CheckerCard({ 
   checker, 
   onChangeStatus, 
@@ -43,7 +46,7 @@ export default function CheckerCard({
         
         {assignment && (
           <p className="mb-2">
-            <span className="badge bg-info text-dark">
+            <span className="badge bg-purple text-white">
               Actividad asignada: {assignment}
             </span>
           </p>

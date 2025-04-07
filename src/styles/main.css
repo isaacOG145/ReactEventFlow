@@ -3,6 +3,10 @@ html {
   /* Define un tamaño base para la fuente */
 }
 
+.badge.bg-purple{
+  background-color: #8005a3 !important;
+}
+
 * {
   font-family: "Montserrat", sans-serif;
   margin: 0;

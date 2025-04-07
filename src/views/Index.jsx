@@ -15,7 +15,7 @@ import Enrollment from '../assets/icons/enrollment.png';
 import EventDate from '../assets/icons/calendario.png';
 import Time from '../assets/icons/time-and-date.png';
 import QuestionIcon from '../assets/icons/pregunta.png';
-
+import UserProfile from '../components/modals/UserProfile';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 
@@ -139,7 +139,7 @@ export default function Index() {
             </div>
           )}
         </div>
-
+         <button>hola</button>
         <div className="row mt-4 justify-content-center">
           <div className="row p-4 text-center">
             <h1>Talleres Disponibles</h1>

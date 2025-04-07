@@ -32,6 +32,10 @@ export default function AdminEventDetails() {
     setShowModal(true);
   };
 
+  const handleView = (route) => {
+    navigate(route); // navega a la ruta proporcionada
+  };
+
   const handleCloseModal = () => {
     setShowModal(false);
   };
@@ -186,7 +190,14 @@ export default function AdminEventDetails() {
           </p>
 
           <div className="col-6 d-flex gap-2">
-            <a className="event-info">Ver checadores</a>
+            <a href="#!"
+              className="event-info"
+              onClick={(e) => {
+                e.preventDefault();
+                handleView(`/administrar/ver-checadores-evento/${id}`);
+              }}>
+              Ver checadores
+            </a>
             <a className="event-info">Ver talleres</a>
           </div>
 

@@ -68,7 +68,7 @@ export default function AdminWorkshopDetails() {
             speaker: data.result.speaker || "",
             quota: data.result.quota || "",
             time: data.result.time || "",
-            fromActivity: data.result.fromActivity || {}
+            fromActivity: data.result.fromActivity || {} 
           });
         } else {
           throw new Error(data.text || "Error al obtener los datos del evento");
@@ -193,7 +193,7 @@ export default function AdminWorkshopDetails() {
               className="event-info"
               onClick={(e) => {
                 e.preventDefault();
-                handleView('/checador');
+                handleView(`/administrar/ver-checador-taller/${eventData.id}`);
               }}>
               Ver checador
             </a>

@@ -19,6 +19,8 @@ import EventDetails from './views/EventDetails';
 import AdminEventDetails from './views/AdminEventDetails';
 import AdminWorkshopDetails from './views/AdminWorkshopDetails';
 import MyAsignments from './views/MyAsignments';
+import ShowCheckersWorkshop from './views/ShowCheckersWorkshop';
+import ShowCheckersEvent from './views/ShowCheckersEvent';
 import CreateUserAcount from './components/modals/CreateUserAcount';
 
 function App() {
@@ -50,6 +52,9 @@ function App() {
 
                 <Route path='/administrar/detalles-evento/:id' element={<AdminEventDetails/>}/>
                 <Route path='/administrar/detalles-taller/:id' element={<AdminWorkshopDetails/>} />
+
+                <Route path='/administrar/ver-checadores-evento/:id' element={<ShowCheckersEvent/>}/>
+                <Route path='/administrar/ver-checador-taller/:id' element={<ShowCheckersWorkshop/>}/>
 
                 
 

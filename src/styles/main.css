@@ -7,6 +7,10 @@ html {
   background-color: #8005a3 !important;
 }
 
+.badge.bg-blue{
+  background-color: #142EA9;
+}
+
 * {
   font-family: "Montserrat", sans-serif;
   margin: 0;

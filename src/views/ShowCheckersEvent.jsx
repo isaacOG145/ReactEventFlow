@@ -190,10 +190,15 @@ export default function ShowCheckersEvent() {
                 <AdminNav />
             </div>
             <div className="content">
-                <h1>Checadores del Evento</h1>
+                <h1>Checadores del Evento <span className="badge bg-blue">{eventAssignments.length + workshopAssignments.length} Checadores</span></h1>
 
+                {/* Sección de checadores del evento */}
                 <div className="row mt-4">
-                    {/* Renderizar checadores para el evento */}
+                    {eventAssignments.length > 0 && (
+                        <div className="col-12">
+                            <h2>Asignaciones del Evento</h2>
+                        </div>
+                    )}
                     {eventAssignments.map((assignment, index) => (
                         <CheckerCard
                             key={assignment.assignmentId}
@@ -204,8 +209,13 @@ export default function ShowCheckersEvent() {
                     ))}
                 </div>
 
+                {/* Sección de checadores de los talleres */}
                 <div className="row mt-4">
-                    {/* Renderizar checadores para los talleres */}
+                    {workshopAssignments.length > 0 && (
+                        <div className="col-12">
+                            <h2>Asignaciones de Talleres</h2>
+                        </div>
+                    )}
                     {workshopAssignments.map((assignment, index) => (
                         <CheckerCard
                             key={assignment.assignmentId}

@@ -9,11 +9,13 @@ import backgroundLogin from '../assets/backgroundLogin.png';
 import loginLogo from '../assets/loginLogo.png';
 import userIcon from '../assets/icons/user.png';
 import PasswordIcon from '../assets/icons/password.png';
+
 // Componentes
 import PurpleButton from "../components/PurpleButton";
 import BlueButton from "../components/BlueButton";
 import InputComponent from "../components/InputComponent";
 import CustomPasswordInput from "../components/CustomPasswordInput";
+import MessageModal from "../components/modals/MessageModal";
 
 const loginUser = async (email, password) => {
     try {
@@ -26,14 +28,16 @@ const loginUser = async (email, password) => {
         });
 
         if (!response.ok) {
-            throw new Error('Error en la autenticación');
+            const errorData = await response.json().catch(() => ({}));
+            const errorMessage = errorData.message || 'Error en la autenticación';
+            throw new Error(`${errorMessage} (${response.status})`);
         }
 
         const data = await response.json();
-        return data; // Retorna los datos del servidor (por ejemplo, un token)
+        return data;
     } catch (error) {
         console.error('Error:', error);
-        throw error; // Lanza el error para manejarlo en el componente
+        throw error;
     }
 };
 
@@ -42,6 +46,11 @@ export default function Login() {
     const [password, setPassword] = useState("");
     const [emailError, setEmailError] = useState("");
     const [passwordError, setPasswordError] = useState("");
+    const [notification, setNotification] = useState({
+        show: false,
+        message: "",
+        type: "success"
+    });
     const navigate = useNavigate();
 
     const handleEmailChange = (e) => {
@@ -77,12 +86,21 @@ export default function Login() {
     };
 
     const handleForgotPassword = () => {
-        navigate('/recover-password'); // Redirige a la página de recuperación de contraseña
+        navigate('/recover-password');
+    };
+
+    const showNotification = (message, type = "success") => {
+        setNotification({
+            show: true,
+            message,
+            type
+        });
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setPasswordError(""); // Limpiar errores previos
+        setPasswordError("");
+        setEmailError("");
 
         if (!validateForm()) {
             return;
@@ -95,19 +113,29 @@ export default function Login() {
             localStorage.setItem('userId', userData.userId);
             localStorage.setItem('role', userData.role);
 
-            // Redirección basada en rol
-            if (userData.role === 'ADMIN' || userData.role === "SUPER_ADMIN") {
-                navigate('/dashboard/mis-talleres');
-            } else {
-                navigate('/');
-            }
+            // Mostrar mensaje de éxito antes de redirigir
+            showNotification("Inicio de sesión exitoso");
+            
+            // Redirección después de 1.5 segundos (para que se vea el mensaje)
+            setTimeout(() => {
+                if (userData.role === 'ADMIN' || userData.role === "SUPER_ADMIN") {
+                    navigate('/dashboard/mis-talleres');
+                } else {
+                    navigate('/');
+                }
+            }, 1500);
 
         } catch (error) {
+            console.error('Login error:', error);
             
             if (error.message.includes('401')) {
-                setPasswordError('Credenciales incorrectas');
+                showNotification('Credenciales incorrectas', 'error');
+            } else if (error.message.includes('403')) {
+                showNotification('Acceso no autorizado', 'error');
+            } else if (error.message.includes('NetworkError')) {
+                showNotification('Error de conexión. Intente nuevamente.', 'error');
             } else {
-                setPasswordError('Error de conexión. Intente nuevamente.');
+                showNotification('Error al iniciar sesión', 'error');
             }
         }
     };
@@ -162,6 +190,14 @@ export default function Login() {
             </div>
 
             <a onClick={handleForgotPassword} className="pass-message">¿Has olvidado la contraseña?</a>
+
+            {/* Modal de notificación */}
+            <MessageModal 
+                show={notification.show}
+                onClose={() => setNotification({...notification, show: false})}
+                type={notification.type}
+                message={notification.message}
+            />
         </div>
     );
 }

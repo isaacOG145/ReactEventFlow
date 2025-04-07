@@ -1,0 +1,127 @@
+/* styles/modalStyles.css */
+
+.message-modal-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1050;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease;
+  }
+  
+  .message-modal-backdrop.show {
+    opacity: 1;
+    visibility: visible;
+  }
+  
+  .message-modal-content {
+    background-color: white;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 300px;
+    padding: 25px;
+    text-align: center;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  }
+  
+  /* Contenedor del icono - Centrado perfecto */
+/* Contenedor del icono */
+.message-modal-icon-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.loading-spin {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+
+/* Deshabilitar eventos de ratón en loading */
+.message-modal-content.message-modal-loading {
+  pointer-events: none;
+}
+  /* Estilos del icono - Tamaño fijo y centrado */
+  .message-modal-icon {
+    width: 60px;
+    height: 60px;
+    object-fit: contain; /* Mantiene relación de aspecto */
+  }
+  
+  .message-modal-text {
+    font-size: 1rem;
+    color: #333;
+    margin: 0;
+    line-height: 1.4;
+    text-align: center;
+  }
+  
+
+  
+  /* ============================================= */
+  /* Prevención de conflictos con otros componentes */
+  /* ============================================= */
+  
+  /* Asegura que otros modales no interfieran */
+  .modal {
+    z-index: 1040 !important;
+  }
+  
+  /* Reset para posibles estilos heredados */
+  .message-modal-content * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+  
+  /* ============================================= */
+  /* Adaptación para dispositivos móviles          */
+  /* ============================================= */
+  
+  @media (max-width: 480px) {
+    .message-modal-content {
+      padding: 20px;
+      max-width: 280px;
+    }
+    
+    .message-modal-icon {
+      width: 50px;
+      height: 50px;
+    }
+    
+    .message-modal-text {
+      font-size: 0.9rem;
+    }
+  }
+  
+  /* ============================================= */
+  /* Animaciones                                   */
+  /* ============================================= */
+  
+  @keyframes fadeInScale {
+    0% {
+      opacity: 0;
+      transform: translateY(20px) scale(0.95);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+  
+  .message-modal-backdrop.show .message-modal-content {
+    animation: fadeInScale 0.3s ease-out forwards;
+  }

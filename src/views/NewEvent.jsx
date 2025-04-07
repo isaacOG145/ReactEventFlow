@@ -9,43 +9,62 @@ import BlueButton from "../components/BlueButton";
 import InputComponent from "../components/InputComponent";
 import DateInputComponent from "../components/DateInputComponent";
 import ImageGalleryUpload from "../components/ImagesGalleryUpload";
+import MessageModal from '../components/modals/MessageModal';
 
 import Event from '../assets/icons/event-name.png';
 import EventDate from '../assets/icons/event-date.png';
 import DetailsImg from '../assets/icons/details.png';
 
 export default function NewEvent() {
+  // Estados del formulario
   const [eventName, setEventName] = useState("");
   const [eventDate, setEventDate] = useState("");
   const [eventDescription, setEventDescription] = useState("");
-  const [images, setImages] = useState([]); // Un solo estado para imágenes
-  const [loading, setLoading] = useState(false); // Agregar el estado de carga
+  const [images, setImages] = useState([]);
+  
+  // Estado para el modal de notificación
+  const [notification, setNotification] = useState({
+    show: false,
+    message: "",
+    type: "success" // 'success', 'error', 'warning', 'loading'
+  });
 
   const handleDateChange = (e) => {
-    
-    const isoDate = e.target.value;
+    // Guardamos el valor directamente sin transformaciones
+    setEventDate(e.target.value);
+  };
 
-    const dateOnly = isoDate.split('T')[0];
-    setEventDate(dateOnly);
-  }
+  // Función para mostrar notificaciones
+  const showNotification = (message, type = "success") => {
+    setNotification({
+      show: true,
+      message,
+      type
+    });
+    
+    // Auto-cerrar solo si no es de tipo loading
+    if (type !== 'loading') {
+      setTimeout(() => {
+        setNotification(prev => ({...prev, show: false}));
+      }, 3000);
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Verificación de campos requeridos
+    // Validación de campos requeridos
     if (!eventName || !eventDate || !eventDescription || images.length < 3) {
-      alert("Por favor, completa todos los campos y sube al menos 3 imágenes.");
+      showNotification("Por favor, completa todos los campos y sube al menos 3 imágenes.", "warning");
       return;
     }
 
     const formData = new FormData();
-
-    // Crear el objeto activityDTO
     const activityDTO = {
-      ownerActivity: { id: localStorage.getItem("userId") }, // Usa el ID de localStorage
+      ownerActivity: { id: localStorage.getItem("userId") },
       name: eventName,
       description: eventDescription,
-      date: eventDate + 'T00:00:00Z' // Asegura que es UTC
+      date: `${eventDate}T00:00:00Z` // Formato UTC
     };
 
     // Agregar el JSON como string
@@ -53,7 +72,7 @@ export default function NewEvent() {
       type: "application/json"
     }));
 
-    // Agregar las imágenes (extraer solo el file de cada objeto imagen)
+    // Agregar las imágenes
     images.forEach((imageObj) => {
       if (imageObj && imageObj.file) {
         formData.append("images", imageObj.file);
@@ -61,11 +80,12 @@ export default function NewEvent() {
     });
 
     try {
-      setLoading(true); // Iniciar carga
+      // Mostrar estado de carga
+      showNotification("Guardando evento...", "loading");
+      
       const response = await fetch('http://localhost:8080/activity/saveEvent', {
         method: 'POST',
         body: formData,
-        // No agregues headers Content-Type, FormData lo maneja automáticamente
       });
 
       if (!response.ok) {
@@ -74,17 +94,19 @@ export default function NewEvent() {
       }
 
       const result = await response.json();
-      alert("Evento creado con éxito");
-      // Opcional: resetear el formulario
+      
+      // Mostrar éxito
+      showNotification("Evento creado con éxito", "success");
+      
+      // Resetear formulario
       setEventName("");
       setEventDate("");
       setEventDescription("");
       setImages([]);
+
     } catch (error) {
       console.error("Error:", error);
-      alert(error.message || "Hubo un error al crear el evento.");
-    } finally {
-      setLoading(false); // Finalizar carga
+      showNotification(error.message || "Hubo un error al crear el evento", "error");
     }
   };
 
@@ -166,13 +188,21 @@ export default function NewEvent() {
             </div>
 
             <div className="text-center mt-4">
-              <BlueButton type="submit" disabled={loading}>
-                {loading ? "Guardando..." : "Crear nuevo"}
+              <BlueButton type="submit">
+                Crear nuevo
               </BlueButton>
             </div>
           </form>
         </div>
       </div>
+
+      {/* Modal de notificación */}
+      <MessageModal 
+        show={notification.show}
+        onClose={() => setNotification({...notification, show: false})}
+        type={notification.type}
+        message={notification.message}
+      />
     </div>
   );
 }

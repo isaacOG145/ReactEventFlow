@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import successImg from '../../assets/icons/success.png';
 import errorImg from '../../assets/icons/error.png';
 import alertImg from '../../assets/icons/alert.png';
-import loadingImg from '../../assets/icons/sending.png';
+import loadingImg from '../../assets/icons/loading.png';
 import '../../styles/messageStyles.css';
 
 export default function MessageModal({ 

@@ -77,7 +77,7 @@
   
   /* Asegura que otros modales no interfieran */
   .modal {
-    z-index: 1040 !important;
+    z-index: 1040;
   }
   
   /* Reset para posibles estilos heredados */

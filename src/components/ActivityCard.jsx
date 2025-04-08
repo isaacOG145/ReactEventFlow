@@ -3,6 +3,8 @@ import BlueButton from './BlueButton';
 import { Carousel, Modal } from 'react-bootstrap';
 import NavigateBlueButton from './NavigateBlueButton';
 
+import 'bootstrap/dist/css/bootstrap.min.css';
+
 export default function ActivityCard({
   to,
   activity,
@@ -78,13 +80,13 @@ export default function ActivityCard({
         
 
         {/* 5. Descripción */}
-        <div className="mb-2">
+        <div className="mb-4">
           <small className='text-muted'> Descripción: <strong>{activity.description}</strong></small>
         </div>
         
 
         {/* Botón */}
-        <div className="blue-button-container">
+        <div className="blue-button-container ">
           <NavigateBlueButton to={to}  scrollToId={scrollToId}>
             {buttonText}
           </NavigateBlueButton>

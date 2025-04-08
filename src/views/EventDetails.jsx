@@ -98,7 +98,7 @@ export default function EventDetails() {
                     <div className="col-10">
                         <div className="card-details mt-4" id="card">
                             <h1>{name}</h1>
-                            <label>
+                            <label className="mb-2">
                                 <img className="icon-ssm" src={eventDate} alt="Ícono de fecha" />
                                 <span className="date-text">{formatDate(date)}</span>
                             </label>

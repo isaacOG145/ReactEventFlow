@@ -94,7 +94,7 @@ export default function AdminEventDetails() {
     const fetchUserActivities = async () => {
       try {
         const usersResponse = await fetch(`http://localhost:8080/user-activities/findByActivity/${id}`);
-        
+
         if (usersResponse.status === 404) {
           setUserActivities([]);
           return;
@@ -179,7 +179,10 @@ export default function AdminEventDetails() {
         <div className="card-details">
           <h1>{eventData.name}</h1>
           <p>
-            <strong>Fecha:</strong> {formatDate(eventData.date)}
+            <span className="badge bg-purple text-white">
+              Fecha: {formatDate(eventData.date)}
+            </span>
+
           </p>
           <p>
             <strong>Descripción:</strong> {eventData.description}

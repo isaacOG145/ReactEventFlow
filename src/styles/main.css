@@ -5,10 +5,17 @@ html {
 
 .badge.bg-purple{
   background-color: #8005a3 !important;
+  margin-left: 8px;
+}
+
+.badge.bg-magent{
+  background-color: #4210A9;
+  margin-left: 8px;
 }
 
 .badge.bg-blue{
   background-color: #142EA9;
+  margin-left: 8px;
 }
 
 * {
@@ -451,6 +458,12 @@ h1 {
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   margin-bottom: 2rem;
   background: white;
+  
+  /* Uso de flexbox para distribuir contenido */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; /* Mantiene el botón al fondo */
+  min-height: 400px;  /* Altura mínima para la tarjeta */
 }
 
 .card-activity:hover {
@@ -502,11 +515,16 @@ h1 {
 
 .card-activity-content {
   padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start; /* Asegura que el contenido se quede en la parte superior */
+  flex-grow: 1; /* Permite que el contenido crezca y ocupe el espacio disponible */
 }
 
 .card-activity-content h3 {
   color: #2c3e50;
   font-weight: 600;
+  margin-bottom: 0.5rem; /* Espacio entre el título y la descripción */
 }
 
 .card-activity-content p {
@@ -514,6 +532,10 @@ h1 {
   line-height: 1.6;
   font-size: 1.5rem;
   /* 24px */
+}
+
+.blue-button-container {
+  margin-top: auto;  /* Empuja el botón hacia la parte inferior */
 }
 
 @media (max-width: 768px) {

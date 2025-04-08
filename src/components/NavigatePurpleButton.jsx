@@ -15,7 +15,7 @@ export default function NavigatePurpleButton({ children, to, onClick }) {
   }
 
   return (
-    <button className="bt btn-blue" onClick={onClick}>
+    <button className="bt btn-purple" onClick={onClick}>
       {children}
     </button>
   );

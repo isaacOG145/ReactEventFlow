@@ -49,7 +49,7 @@ export default function DateInputComponent({
       {label && (
         <label htmlFor={id} className="input-label">
           {label}
-          {required && <span className="required-asterisk">*</span>}
+          
         </label>
       )}
       <input

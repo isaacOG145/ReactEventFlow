@@ -158,7 +158,7 @@ export default function Index() {
                 key={workshop.id}
                 activity={workshop}
                 to={`/detalles-evento/${workshop.fromActivity.id}`}
-                buttonText="Ver detalles"
+                buttonText="Ver evento asociado"
                 label={
                   <label>
                     <img className="icon-ssm" src={Time} alt="Ícono de hora" />

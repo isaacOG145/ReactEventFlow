@@ -23,7 +23,7 @@ export default function AdminWorkshopDetails() {
     speaker: "",
     quota: "",
     time: "",
-    fromActivity:{} 
+    fromActivity: {}
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -45,6 +45,25 @@ export default function AdminWorkshopDetails() {
     setEventData(updatedData);
     setShowModal(false);
   };
+
+  const formatTime = (time) => {
+    // Dividimos la cadena de tiempo (por ejemplo: "12:00:00") en hora, minutos y segundos
+    const [hours, minutes] = time.split(':');
+
+    // Convertimos la hora a número para determinar si es AM o PM
+    const hourNumber = parseInt(hours, 10);
+
+    // Determinamos AM o PM
+    const suffix = hourNumber >= 12 ? 'pm' : 'am';
+
+    // Convertimos la hora a formato de 12 horas
+    const formattedHour = hourNumber % 12 === 0 ? 12 : hourNumber % 12;
+
+    // Devolvemos la hora en el formato 12:00pm
+    return `${formattedHour}:${minutes.toString().padStart(2, '0')}${suffix}`;
+  };
+
+
 
   const handleView = (route) => {
     navigate(route); // navega a la ruta proporcionada
@@ -68,7 +87,7 @@ export default function AdminWorkshopDetails() {
             speaker: data.result.speaker || "",
             quota: data.result.quota || "",
             time: data.result.time || "",
-            fromActivity: data.result.fromActivity || {} 
+            fromActivity: data.result.fromActivity || {}
           });
         } else {
           throw new Error(data.text || "Error al obtener los datos del evento");
@@ -175,17 +194,32 @@ export default function AdminWorkshopDetails() {
       <div className="content">
         <div className="card-details">
           <h1>{eventData.name}</h1>
-          <p>
-            <strong>Descripción:</strong> {eventData.description}
-          </p>
+          <div className="row mb-2">
+            <div className="d-flex align-items-center"> {/* Alinea los items verticalmente */}
+              <p className="mb-0 mr-3"> {/* Elimina el margen inferior y agrega margen derecho */}
+                <span className="badge bg-purple text-white">
+                  Evento relacionado: {eventData.fromActivity.name}
+                </span>
+              </p>
+              <p className="mb-0 mr-3"> {/* Igual que el anterior */}
+                <span className="badge bg-magent text-white">
+                  Cupo: {eventData.quota}
+                </span>
+              </p>
+              <p className="mb-0">
+                <span className="badge bg-blue text-white">
+                  Hora: {formatTime(eventData.time)}
+                </span>
+              </p>
+            </div>
+          </div>
+
           <p>
             <strong>Ponente:</strong> {eventData.speaker}
           </p>
+
           <p>
-            <strong>Cupo:</strong> {eventData.quota}
-          </p>
-          <p>
-            <strong>Hora:</strong> {eventData.time}
+            <strong>Descripción:</strong> {eventData.description}
           </p>
 
           <div className="col-6 d-flex gap-2">
@@ -198,87 +232,90 @@ export default function AdminWorkshopDetails() {
               Ver checador
             </a>
             <a href="#!"
-            className="event-info"
-            onClick={(e) => {
-              e.preventDefault();
-              handleView(`/administrar/detalles-evento/${eventData.fromActivity.id}`);
-            }}>Ver evento asociado</a>
-        </div>
-
-        {eventData.imageUrls.length > 0 ? (
-          <Carrusel images={eventData.imageUrls} />
-        ) : (
-          <div className="alert alert-info">
-            No hay imágenes disponibles para este evento
+              className="event-info"
+              onClick={(e) => {
+                e.preventDefault();
+                handleView(`/administrar/detalles-evento/${eventData.fromActivity.id}`);
+              }}>
+              Ver evento asociado
+            </a>
           </div>
-        )}
 
-        <div className="row mt-3">
-          <div className="col-6"></div>
-          <div className="col-3">
-            <NavigatePurpleButton onClick={handleReturn}>Volver</NavigatePurpleButton>
-          </div>
-          <div className="col-3">
-            <BlueButton onClick={handleEdit}>Actualizar</BlueButton>
-          </div>
-        </div>
-      </div>
-      <div className="row mt-4 d-flex justify-content-center">
-        <div className="col-6">
-          <h1>Asistencias</h1>
-
-          {userActivities.length === 0 ? (
-            <div className="alert alert-warning" role="alert">
-              <strong>No hay usuarios inscritos en este evento.</strong>
-            </div>
+          {eventData.imageUrls.length > 0 ? (
+            <Carrusel images={eventData.imageUrls} />
           ) : (
-            <div className="table-container">
-              <table>
-                <thead>
-                  <tr>
-                    <th>No.</th>
-                    <th>Nombre del invitado</th>
-                    <th>Correo del invitado</th>
-                    <th className="d-flex justify-content-center">
-                      Asistencia {attendanceCount.yes}/{attendanceCount.yes + attendanceCount.no}
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {userActivities.map((userActivity, index) => (
-                    <tr key={userActivity.id}>
-                      <td className="td-blue">{index + 1}</td>
-                      <td>{`${userActivity.user.name} ${userActivity.user.lastName}`}</td>
-                      <td className="td-blue">{`${userActivity.user.email}`}</td>
-                      <td className="d-flex justify-content-center">
-                        <span
-                          style={{
-                            color: userActivity.verified ? "#28A745" : "#DC3545",
-                          }}
-                        >
-                          {userActivity.verified ? "Asistió" : "No asistió"}
-                        </span>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+            <div className="alert alert-info">
+              No hay imágenes disponibles para este evento
             </div>
           )}
+
+          <div className="row mt-3">
+            <div className="col-6"></div>
+            <div className="col-3">
+              <NavigatePurpleButton onClick={handleReturn}>Volver</NavigatePurpleButton>
+            </div>
+            <div className="col-3">
+              <BlueButton onClick={handleEdit}>Actualizar</BlueButton>
+            </div>
+          </div>
+        </div>
+
+        <div className="row mt-4 d-flex justify-content-center">
+          <div className="col-6">
+            <h1>Asistencias</h1>
+
+            {userActivities.length === 0 ? (
+              <div className="alert alert-warning" role="alert">
+                <strong>No hay usuarios inscritos en este evento.</strong>
+              </div>
+            ) : (
+              <div className="table-container">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>No.</th>
+                      <th>Nombre del invitado</th>
+                      <th>Correo del invitado</th>
+                      <th className="d-flex justify-content-center">
+                        Asistencia {attendanceCount.yes}/{attendanceCount.yes + attendanceCount.no}
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {userActivities.map((userActivity, index) => (
+                      <tr key={userActivity.id}>
+                        <td className="td-blue">{index + 1}</td>
+                        <td>{`${userActivity.user.name} ${userActivity.user.lastName}`}</td>
+                        <td className="td-blue">{`${userActivity.user.email}`}</td>
+                        <td className="d-flex justify-content-center">
+                          <span
+                            style={{
+                              color: userActivity.verified ? "#28A745" : "#DC3545",
+                            }}
+                          >
+                            {userActivity.verified ? "Asistió" : "No asistió"}
+                          </span>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </div>
         </div>
       </div>
-    </div>
 
       {
-    showModal && workshopToEdit && (
-      <UpdateWorkshopModal
-        showModal={showModal}
-        workshopData={workshopToEdit}
-        handleClose={handleCloseModal}
-        onUpdateSuccess={handleUpdateSuccess}
-      />
-    )
-  }
+        showModal && workshopToEdit && (
+          <UpdateWorkshopModal
+            showModal={showModal}
+            workshopData={workshopToEdit}
+            handleClose={handleCloseModal}
+            onUpdateSuccess={handleUpdateSuccess}
+          />
+        )
+      }
     </div >
   );
 }

@@ -1,9 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import { format, parseISO } from 'date-fns';
+import { es } from 'date-fns/locale';
 
 import "bootstrap/dist/css/bootstrap.min.css";
 import "../styles/main.css";
 import "../styles/tableStyles.css";
+import "../styles/iconStyles.css";
+
+import voidImg from '../assets/icons/void.png';
 
 import CustomerRootHeader from "../components/CustomerRootHeader";
 import AdminNav from "../components/AdminNav";
@@ -11,6 +16,7 @@ import Carrusel from "../components/Carrusel";
 import BlueButton from "../components/BlueButton";
 import NavigatePurpleButton from "../components/NavigatePurpleButton";
 import UpdateWorkshopModal from "../components/modals/UpdateWorkshopModal";
+
 
 export default function AdminWorkshopDetails() {
   const { id } = useParams();
@@ -25,12 +31,15 @@ export default function AdminWorkshopDetails() {
     time: "",
     fromActivity: {}
   });
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [showModal, setShowModal] = useState(false);
-  const [workshopToEdit, setWorkshopToEdit] = useState(null);
   const [userActivities, setUserActivities] = useState([]);
   const [attendanceCount, setAttendanceCount] = useState({ yes: 0, no: 0 });
+  const [showModal, setShowModal] = useState(false);
+  const [workshopToEdit, setWorkshopToEdit] = useState(null);
+
+  // Estados de carga
+  const [loadingEvent, setLoadingEvent] = useState(true);
+  const [loadingUserActivities, setLoadingUserActivities] = useState(true);
+  const [error, setError] = useState(null);
 
   const handleEdit = () => {
     setWorkshopToEdit(eventData);
@@ -47,26 +56,19 @@ export default function AdminWorkshopDetails() {
   };
 
   const formatTime = (time) => {
-    // Dividimos la cadena de tiempo (por ejemplo: "12:00:00") en hora, minutos y segundos
     const [hours, minutes] = time.split(':');
-
-    // Convertimos la hora a número para determinar si es AM o PM
     const hourNumber = parseInt(hours, 10);
-
-    // Determinamos AM o PM
     const suffix = hourNumber >= 12 ? 'pm' : 'am';
-
-    // Convertimos la hora a formato de 12 horas
     const formattedHour = hourNumber % 12 === 0 ? 12 : hourNumber % 12;
-
-    // Devolvemos la hora en el formato 12:00pm
     return `${formattedHour}:${minutes.toString().padStart(2, '0')}${suffix}`;
   };
 
-
-
   const handleView = (route) => {
-    navigate(route); // navega a la ruta proporcionada
+    navigate(route);
+  };
+
+  const handleReturn = () => {
+    navigate(-1);
   };
 
   // Cargar datos del evento
@@ -96,7 +98,7 @@ export default function AdminWorkshopDetails() {
         console.error("Error fetching event data:", err);
         setError(err.message);
       } finally {
-        setLoading(false);
+        setLoadingEvent(false);
       }
     };
 
@@ -108,22 +110,16 @@ export default function AdminWorkshopDetails() {
     const fetchUserActivities = async () => {
       try {
         const usersResponse = await fetch(`http://localhost:8080/user-activities/findByActivity/${id}`);
-
         if (usersResponse.status === 404) {
-          // Si no hay usuarios, simplemente no hacemos nada
           setUserActivities([]);
           return;
         }
-
         if (!usersResponse.ok) {
           throw new Error(`HTTP error! status: ${usersResponse.status}`);
         }
-
         const usersData = await usersResponse.json();
         if (usersData.type === "SUCCESS") {
           setUserActivities(usersData.result);
-
-          // Contar las asistencias
           const yesCount = usersData.result.filter(userActivity => userActivity.verified).length;
           const noCount = usersData.result.length - yesCount;
           setAttendanceCount({ yes: yesCount, no: noCount });
@@ -134,18 +130,14 @@ export default function AdminWorkshopDetails() {
         console.error("Error fetching user activities:", err);
         setError(err.message);
       } finally {
-        setLoading(false);
+        setLoadingUserActivities(false);
       }
     };
 
     fetchUserActivities();
   }, [id]);
 
-  const handleReturn = () => {
-    navigate(-1);
-  };
-
-  if (loading) {
+  if (loadingEvent || loadingUserActivities) {
     return (
       <div className="app-container">
         <CustomerRootHeader />
@@ -192,25 +184,32 @@ export default function AdminWorkshopDetails() {
         <AdminNav />
       </div>
       <div className="content">
-        <div className="card-details">
+        <div className="card-details col-12 col-lg-10 col-xl-10 mx-auto">
           <h1>{eventData.name}</h1>
           <div className="row mb-2">
-            <div className="d-flex align-items-center"> {/* Alinea los items verticalmente */}
-              <p className="mb-0 mr-3"> {/* Elimina el margen inferior y agrega margen derecho */}
-                <span className="badge bg-purple text-white">
-                  Evento relacionado: {eventData.fromActivity.name}
-                </span>
-              </p>
-              <p className="mb-0 mr-3"> {/* Igual que el anterior */}
-                <span className="badge bg-magent text-white">
-                  Cupo: {eventData.quota}
-                </span>
-              </p>
-              <p className="mb-0">
-                <span className="badge bg-blue text-white">
-                  Hora: {formatTime(eventData.time)}
-                </span>
-              </p>
+            <div className="col-12">
+              <div className="row g-2"> {/* `g-2` añade espacio entre badges cuando se apilen */}
+                {/* Badge 1 */}
+                <div className="col-auto"> {/* `col-auto` ajusta el ancho al contenido */}
+                  <span className="badge bg-purple text-white">
+                    Evento relacionado: {eventData.fromActivity.name}
+                  </span>
+                </div>
+
+                {/* Badge 2 */}
+                <div className="col-auto">
+                  <span className="badge bg-magent text-white">
+                    Cupo: {eventData.quota}
+                  </span>
+                </div>
+
+                {/* Badge 3 */}
+                <div className="col-auto">
+                  <span className="badge bg-blue text-white">
+                    Hora: {formatTime(eventData.time)}
+                  </span>
+                </div>
+              </div>
             </div>
           </div>
 
@@ -222,21 +221,17 @@ export default function AdminWorkshopDetails() {
             <strong>Descripción:</strong> {eventData.description}
           </p>
 
-          <div className="col-6 d-flex gap-2">
-            <a href="#!"
-              className="event-info"
-              onClick={(e) => {
-                e.preventDefault();
-                handleView(`/administrar/ver-checador-taller/${eventData.id}`);
-              }}>
+          <div className="col-12 col-md-6 d-flex gap-2">
+            <a href="#!" className="event-info" onClick={(e) => {
+              e.preventDefault();
+              handleView(`/administrar/ver-checador-taller/${eventData.id}`);
+            }}>
               Ver checador
             </a>
-            <a href="#!"
-              className="event-info"
-              onClick={(e) => {
-                e.preventDefault();
-                handleView(`/administrar/detalles-evento/${eventData.fromActivity.id}`);
-              }}>
+            <a href="#!" className="event-info" onClick={(e) => {
+              e.preventDefault();
+              handleView(`/administrar/detalles-evento/${eventData.fromActivity.id}`);
+            }}>
               Ver evento asociado
             </a>
           </div>
@@ -251,26 +246,32 @@ export default function AdminWorkshopDetails() {
 
           <div className="row mt-3">
             <div className="col-6"></div>
-            <div className="col-3">
+            <div className="col-12 col-md-3 mb-2">
               <NavigatePurpleButton onClick={handleReturn}>Volver</NavigatePurpleButton>
             </div>
-            <div className="col-3">
-              <BlueButton onClick={handleEdit}>Actualizar</BlueButton>
+            <div className="col-12 col-md-3 mb-2">
+              <BlueButton onClick={handleEdit}>Editar</BlueButton>
             </div>
           </div>
         </div>
 
         <div className="row mt-4 d-flex justify-content-center">
-          <div className="col-6">
+          <div className="col-12 col-lg-10 col-xl-10 mx-auto">
             <h1>Asistencias</h1>
 
             {userActivities.length === 0 ? (
-              <div className="alert alert-warning" role="alert">
-                <strong>No hay usuarios inscritos en este evento.</strong>
+              <div className="card-details" role="alert">
+                <div className="row justify-content-center text-center">
+                  <img className="icon-xxlg" src={voidImg} alt="void" />
+                </div>
+                <div className="row justify-content-center text-center">
+                  <strong>No hay usuarios inscritos en este taller aún.</strong>
+                </div>
               </div>
+
             ) : (
-              <div className="table-container">
-                <table>
+              <div className="table-container table-responsive">
+                <table className="table">
                   <thead>
                     <tr>
                       <th>No.</th>
@@ -286,7 +287,7 @@ export default function AdminWorkshopDetails() {
                       <tr key={userActivity.id}>
                         <td className="td-blue">{index + 1}</td>
                         <td>{`${userActivity.user.name} ${userActivity.user.lastName}`}</td>
-                        <td className="td-blue">{`${userActivity.user.email}`}</td>
+                        <td className="td-blue">{userActivity.user.email}</td>
                         <td className="d-flex justify-content-center">
                           <span
                             style={{
@@ -301,21 +302,18 @@ export default function AdminWorkshopDetails() {
                   </tbody>
                 </table>
               </div>
+
             )}
           </div>
         </div>
       </div>
 
-      {
-        showModal && workshopToEdit && (
-          <UpdateWorkshopModal
-            showModal={showModal}
-            workshopData={workshopToEdit}
-            handleClose={handleCloseModal}
-            onUpdateSuccess={handleUpdateSuccess}
-          />
-        )
-      }
-    </div >
+      <UpdateWorkshopModal
+        show={showModal}
+        eventData={workshopToEdit}
+        onClose={handleCloseModal}
+        onUpdate={handleUpdateSuccess}
+      />
+    </div>
   );
 }

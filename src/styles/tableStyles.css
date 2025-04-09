@@ -10,12 +10,18 @@
     width: 100%;
     border-spacing: 0 10px;
     border-collapse: separate;
+    table-layout: fixed; /* Garantiza que las filas tengan la misma altura */
+    overflow-x: auto; 
 }
 
 .table-container th, .table-container td {
     padding: 12px 15px;
     text-align: left;
     background-color: #fff;
+    height: 100%; /* Asegura que las celdas ocupen toda la altura disponible */
+    vertical-align: middle; /* Alinea el contenido verticalmente */
+    overflow: hidden; /* Si el contenido es demasiado largo, se corta */
+    overflow-x: auto; 
 }
 
 .table-container th {
@@ -26,7 +32,9 @@
 
 .table-container td {
     color: #000;
+    word-wrap: break-word;
 }
+
 
 .table-container .td-blue {
     color: #142EA9;

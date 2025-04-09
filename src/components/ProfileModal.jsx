@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom"; // Importa useNavigate
 import UserFrame from "../assets/icons/userFrame.png"; // Asegúrate de usar la ruta correcta de tu imagen
 
 import '../styles/main.css';
+import '../styles/modalStyles.css';
+import "bootstrap/dist/css/bootstrap.min.css";
 
 const ProfileModal = () => {
     // Estado para manejar la visibilidad del modal
@@ -81,10 +83,12 @@ const ProfileModal = () => {
 
     return (
         <div>
-            {/* Botón para abrir el modal */}
-            <button className="icon-button" onClick={toggleModal}>
-                <img className="icon" src={UserFrame} alt="icono" />
-            </button>
+            {/* Botón para abrir el modal (solo visible cuando el modal está cerrado) */}
+            {!isModalOpen && (
+                <button className="icon-button" onClick={toggleModal}>
+                    <img className="icon" src={UserFrame} alt="icono" />
+                </button>
+            )}
 
             {/* Modal */}
             {isModalOpen && (
@@ -94,12 +98,9 @@ const ProfileModal = () => {
                             <>
                                 {/* Modal para usuarios autenticados */}
                                 <div className="profile-header d-flex align-items-center">
-                                    <div className="col-3">
-                                        {/* Botón para cerrar el modal */}
-                                        <button className="icon-button" onClick={toggleModal}>
-                                            <img className="icon" src={UserFrame} alt="icono" />
-                                        </button>
-                                    </div>
+                                    <button className="icon-button" onClick={toggleModal}>
+                                        <img className="icon" src={UserFrame} alt="icono" />
+                                    </button>
                                     <div className="col-9 info">
                                         <div className="row">
                                             <p className="mb-1">
@@ -132,12 +133,9 @@ const ProfileModal = () => {
                             <>
                                 {/* Modal para usuarios no autenticados */}
                                 <div className="profile-header d-flex align-items-center">
-                                    <div className="col-3">
-                                        {/* Botón para cerrar el modal */}
-                                        <button className="icon-button" onClick={toggleModal}>
-                                            <img className="icon" src={UserFrame} alt="icono" />
-                                        </button>
-                                    </div>
+                                    <button className="icon-button" onClick={toggleModal}>
+                                        <img className="icon" src={UserFrame} alt="icono" />
+                                    </button>
                                     <div className="col-9 info">
                                         <div className="row">
                                             <p className="mb-1">Invitado</p>

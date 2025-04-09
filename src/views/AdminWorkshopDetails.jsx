@@ -270,14 +270,14 @@ export default function AdminWorkshopDetails() {
               </div>
 
             ) : (
-              <div className="table-container table-responsive">
+              <div className="table-container">
                 <table className="table">
                   <thead>
                     <tr>
                       <th>No.</th>
                       <th>Nombre del invitado</th>
                       <th>Correo del invitado</th>
-                      <th className="d-flex justify-content-center">
+                      <th>
                         Asistencia {attendanceCount.yes}/{attendanceCount.yes + attendanceCount.no}
                       </th>
                     </tr>
@@ -288,7 +288,7 @@ export default function AdminWorkshopDetails() {
                         <td className="td-blue">{index + 1}</td>
                         <td>{`${userActivity.user.name} ${userActivity.user.lastName}`}</td>
                         <td className="td-blue">{userActivity.user.email}</td>
-                        <td className="d-flex justify-content-center">
+                        <td>
                           <span
                             style={{
                               color: userActivity.verified ? "#28A745" : "#DC3545",

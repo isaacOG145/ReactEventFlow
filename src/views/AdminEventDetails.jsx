@@ -197,7 +197,14 @@ export default function AdminEventDetails() {
               }}>
               Ver checadores
             </a>
-            <a className="event-info">Ver talleres</a>
+            <a href="#!"
+              className="event-info"
+              onClick={(e) => {
+                e.preventDefault();
+                handleView(`administrar/ver-talleres-evento/${id}`);
+              }}>
+              Ver talleres
+            </a>
           </div>
 
           {eventData.imageUrls.length > 0 ? (

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom'; // Asegúrate de importar useNavigate
+import { useNavigate } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../styles/main.css';
 import '../styles/modalStyles.css';
@@ -7,6 +7,7 @@ import '../styles/iconStyles.css';
 
 import CustomerRootHeader from "../components/CustomerRootHeader";
 import ActivityCard from "../components/ActivityCard";
+import MessageModal from "../components/modals/MessageModal";
 
 import Admin from '../assets/icons/administrator.png';
 import UserAvatar from '../assets/icons/user-avatar.png';
@@ -19,74 +20,78 @@ import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 
 export default function Index() {
-  const [activities, setActivities] = useState([]); // Mantiene el estado de las actividades
-  const [workshops, setWorkshops] = useState([]); // Mantiene el estado de los talleres
-  const navigate = useNavigate(); // Usamos useNavigate
+  const [activities, setActivities] = useState([]);
+  const [workshops, setWorkshops] = useState([]);
+  const [notification, setNotification] = useState({
+    show: false,
+    message: "",
+    type: "success",
+  });
+
+  const navigate = useNavigate();
+
+  const showNotification = (message, type = "success") => {
+    setNotification({ show: true, message, type });
+    if (type !== "loading") {
+      setTimeout(() => setNotification({ ...notification, show: false }), 3000);
+    }
+  };
 
   useEffect(() => {
-    // Realizamos la solicitud GET usando fetch
-    fetch('http://localhost:8080/activity/findActiveEvents')
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error('Error al obtener las actividades');
-        }
-        return response.json(); // Convertimos la respuesta a JSON
-      })
-      .then((data) => {
+    const fetchActivities = async () => {
+      try {
+        showNotification("Cargando actividades...", "loading");
+        const response = await fetch('http://localhost:8080/activity/findActiveEvents');
+        if (!response.ok) throw new Error('Error al obtener las actividades');
+
+        const data = await response.json();
         if (data.type === 'SUCCESS') {
           const formattedActivities = data.result.map((activity) => {
-            // Si la fecha está en formato string (yyyy-MM-dd), convertimos a objeto Date
             const activityDate = activity.date ? new Date(activity.date) : null;
-
-            // Sumamos un día a la fecha (solo si la fecha existe)
-            if (activityDate) {
-              activityDate.setDate(activityDate.getDate() + 1);
-            }
-
-            // Ahora formateamos la nueva fecha
+            if (activityDate) activityDate.setDate(activityDate.getDate() + 1);
             const formattedDate = activityDate
               ? format(activityDate, 'dd MMM yyyy', { locale: es })
               : 'Fecha no disponible';
-
             return { ...activity, formattedDate };
           });
           setActivities(formattedActivities);
+          showNotification("Actividades cargadas exitosamente", "success");
         }
-      })
-      .catch((error) => {
-        console.error("Hubo un error al cargar las actividades:", error);
-      });
-  }, []);  // Se ejecuta solo una vez al cargar el componente
+      } catch (error) {
+        console.error("Error al cargar actividades:", error);
+        showNotification("Error al cargar actividades", "error");
+      }
+    };
+
+    fetchActivities();
+  }, []);
 
   useEffect(() => {
-    // Realizamos la solicitud GET usando fetch
-    fetch('http://localhost:8080/activity/findActiveWorkshops')
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error('Error al obtener los talleres');
-        }
-        return response.json(); // Convertimos la respuesta a JSON
-      })
-      .then((data) => {
+    const fetchWorkshops = async () => {
+      try {
+        showNotification("Cargando talleres...", "loading");
+        const response = await fetch('http://localhost:8080/activity/findActiveWorkshops');
+        if (!response.ok) throw new Error('Error al obtener los talleres');
+
+        const data = await response.json();
         if (data.type === 'SUCCESS') {
           const formattedWorkshops = data.result.map((workshop) => {
-            // Solo extraemos y formateamos la hora
             const formattedTime = workshop.time
-              ? workshop.time.substring(0, 5) // Tomamos solo HH:MM (elimina los segundos)
+              ? workshop.time.substring(0, 5)
               : 'Hora no disponible';
-
-            return {
-              ...workshop,
-              formattedTime // Solo guardamos la hora formateada
-            };
+            return { ...workshop, formattedTime };
           });
           setWorkshops(formattedWorkshops);
+          showNotification("Talleres cargados exitosamente", "success");
         }
-      })
-      .catch((error) => {
-        console.error("Hubo un error al cargar los talleres:", error);
-      });
-  }, []);  // Se ejecuta solo una vez al cargar el componente
+      } catch (error) {
+        console.error("Error al cargar talleres:", error);
+        showNotification("Error al cargar talleres", "error");
+      }
+    };
+
+    fetchWorkshops();
+  }, []);
 
   return (
     <div className="app-container">
@@ -171,8 +176,15 @@ export default function Index() {
             <p>No hay actividades disponibles.</p>
           )}
         </div>
-
       </div>
+
+      {/* Modal de notificación */}
+      <MessageModal
+        show={notification.show}
+        onClose={() => setNotification({ ...notification, show: false })}
+        type={notification.type}
+        message={notification.message}
+      />
     </div>
   );
 }

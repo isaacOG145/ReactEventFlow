@@ -1,209 +1,174 @@
-import React, { useState, useEffect } from "react";
-import { format, parseISO } from 'date-fns';
-import { es } from 'date-fns/locale'; // Importamos el locale en español
-import 'bootstrap/dist/css/bootstrap.min.css';
-import '../styles/main.css';
-import '../styles/tableStyles.css';
-import '../styles/iconStyles.css';
-
-
+import React, { useState } from "react";
+import "bootstrap/dist/css/bootstrap.min.css";
+import "../styles/main.css";
+import "../styles/iconStyles.css";
 
 import CustomerRootHeader from "../components/CustomerRootHeader";
 import AdminNav from "../components/AdminNav";
-import ViewDetailsComponent from "../components/iconsComponent/ViewDetailsComponent";
-import EditComponent from "../components/iconsComponent/EditComponent";
-import UpdateWorkshopModal from "../components/modals/UpdateWorkshopModal";
-import ChangeStatus from "../components/iconsComponent/ChangeStatus";
+import InputComponent from "../components/InputComponent";
+import BlueButton from "../components/BlueButton";
+import MessageModal from "../components/modals/MessageModal";
 
 export default function MyWorkshops() {
-  const [workshops, setWorkshops] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [showModal, setShowModal] = useState(false);
-  const [workshopToEdit, setWorkshopToEdit] = useState(null);
+  const [formData, setFormData] = useState({
+    name: "",
+    speaker: "",
+    time: "",
+    associatedEvent: "",
+  });
 
-  useEffect(() => {
-    const fetchWorkshops = async () => {
-      try {
-        const userId = localStorage.getItem('userId');
-        if (!userId) {
-          throw new Error('No se encontró userId en el localStorage');
-        }
+  const [errors, setErrors] = useState({});
+  const [notification, setNotification] = useState({
+    show: false,
+    message: "",
+    type: "success",
+  });
 
-        const response = await fetch(`http://localhost:8080/activity/workshops/byOwner/${userId}`);
-
-        if (!response.ok) {
-          throw new Error('Error al cargar los talleres');
-        }
-
-        const data = await response.json();
-
-        if (data.type === "SUCCESS") {
-          setWorkshops(data.result);
-        } else {
-          throw new Error('No se encontraron talleres');
-        }
-      } catch (err) {
-        setError(err.message);
-        console.error("Error fetching workshops:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchWorkshops();
-  }, []);
-
-  const handleEdit = (workshop) => {
-    setWorkshopToEdit(workshop);
-    setShowModal(true);
+  const showNotification = (message, type = "success") => {
+    setNotification({ show: true, message, type });
+    if (type !== "loading") {
+      setTimeout(() => setNotification({ ...notification, show: false }), 3000);
+    }
   };
 
-  const handleCloseModal = () => {
-    setShowModal(false);
-    setWorkshopToEdit(null);
+  const handleInputChange = (e) => {
+    const { id, value } = e.target;
+    setFormData({
+      ...formData,
+      [id]: value,
+    });
   };
 
-  const handleUpdateWorkshop = async (updatedWorkshop) => {
+  const validateForm = () => {
+    const newErrors = {};
+
+    if (!formData.name) newErrors.name = "El nombre del taller es obligatorio.";
+    if (!formData.speaker) newErrors.speaker = "El nombre del ponente es obligatorio.";
+    if (!formData.time) newErrors.time = "La hora del taller es obligatoria.";
+    if (!formData.associatedEvent) newErrors.associatedEvent = "El evento asociado es obligatorio.";
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const registerWorkshop = async (formData) => {
     try {
-      const response = await fetch(`http://localhost:8080/activity/workshops/update/${updatedWorkshop.id}`, {
-        method: 'PUT',
+      showNotification("Guardando taller...", "loading");
+      const response = await fetch("http://localhost:8080/activity/workshops/save", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify(updatedWorkshop),
+        body: JSON.stringify(formData),
       });
 
       if (!response.ok) {
-        throw new Error('Error al actualizar el taller');
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Error al registrar el taller");
       }
-
-      setWorkshops(workshops.map(workshop => workshop.id === updatedWorkshop.id ? updatedWorkshop : workshop));
-      handleCloseModal();
-    } catch (err) {
-      console.error("Error updating workshop:", err);
-      setError("Error al actualizar el taller");
-    }
-  };
-
-  const handleChangeStatus = async (id) => {
-    try {
-      const response = await fetch(`http://localhost:8080/activity/change-status/${id}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
 
       const data = await response.json();
-      if (response.ok) {
-        // Si la solicitud es exitosa, actualizamos el estado del checador
-        setWorkshops((prevWorkshops) =>
-          prevWorkshops.map((workshop) =>
-            workshop.id === id ? { ...workshop, status: !workshop.status } : workshop
-          )
-        );
-        console.log('Estado actualizado:', data);
-      } else {
-        console.log('Error al actualizar estado:', data);
-      }
+      showNotification("Taller registrado exitosamente", "success");
+      return data;
     } catch (error) {
-      console.error('Error al realizar la solicitud:', error);
+      console.error("Error:", error);
+      showNotification(error.message || "Hubo un error al registrar el taller", "error");
+      throw error;
     }
   };
 
-  const formatDate = (dateString) => {
-      const date = parseISO(dateString);
-      return format(date, 'dd MMMM yyyy', { locale: es }); // Usamos el locale en español
-    };
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-  // Función para formatear la hora en formato 'HH:mm'
-  const formatTime = (timeString) => {
-    if (!timeString) return 'Hora inválida';
+    showNotification("Validando formulario...", "loading");
 
-    const [hours, minutes] = timeString.split(':'); // Separamos las partes de la hora
-    const date = new Date();
-    date.setHours(hours);
-    date.setMinutes(minutes);
-    date.setSeconds(0); // Aseguramos que los segundos sean 0
-
-    // Verificamos si la fecha es válida
-    if (isNaN(date.getTime())) {
-      return 'Hora inválida';
+    if (validateForm()) {
+      try {
+        await registerWorkshop(formData);
+        setFormData({
+          name: "",
+          speaker: "",
+          time: "",
+          associatedEvent: "",
+        });
+      } catch (error) {
+        console.error("Error al registrar el taller:", error);
+      }
+    } else {
+      showNotification("Por favor, completa todos los campos correctamente.", "warning");
     }
-
-    return format(date, 'HH:mm'); // Formateamos la hora
   };
+
   return (
     <div className="app-container">
       <CustomerRootHeader />
       <div className="admin-nav">
         <AdminNav />
       </div>
+
       <div className="content">
-        <h1>Mis talleres</h1>
-        {loading ? (
-          <div className="text-center mt-5">Cargando talleres...</div>
-        ) : error ? (
-          <div className="alert alert-danger" role="alert">
-            Error al cargar los talleres: {error}
-          </div>
-        ) : (
-          <div className="table-container">
-            <table>
-              <thead>
-                <tr>
-                  <th>No.</th>
-                  <th>Nombre</th>
-                  <th>Ponente</th>
-                  <th>Hora</th>
-                  <th>Evento asociado</th>
-                  <th>Acciones</th>
-                </tr>
-              </thead>
-              <tbody>
-                {workshops.map((workshop, index) => (
-                  <tr key={workshop.id}>
-                    <td className="td-blue">{index + 1}</td>
-                    <td>{workshop.name}</td>
-                    <td className="td-blue">{workshop.speaker}</td>
-                    <td>{formatTime(workshop.time)}</td>
-                    <td>
-                      {workshop.fromActivity ? (
-                        <div>
-                          <strong>{workshop.fromActivity.name}</strong>
-                          <div className="text-muted small">
-                          {formatDate(workshop.fromActivity.date)}
-                          </div>
-                        </div>
-                      ) : "Sin evento asociado"}
-                    </td>
-                    <td className="actions">
-                      <div>
-                        <ViewDetailsComponent to={`/administrar/detalles-taller/${workshop.id}`} />
-                        <EditComponent onClick={() => handleEdit(workshop)} />
-                        <ChangeStatus
-                          currentStatus={workshop.status}
-                          onChangeStatus={() => handleChangeStatus(workshop.id)}
-                        />
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
+        <div className="form">
+          <h1 className="text-center mb-4">Registrar Taller</h1>
+
+          <form onSubmit={handleSubmit}>
+            <div className="row">
+              <div className="col-md-6">
+                <InputComponent
+                  value={formData.name}
+                  onChange={handleInputChange}
+                  type="text"
+                  label="Nombre del Taller"
+                  id="name"
+                  error={errors.name}
+                />
+              </div>
+              <div className="col-md-6">
+                <InputComponent
+                  value={formData.speaker}
+                  onChange={handleInputChange}
+                  type="text"
+                  label="Ponente"
+                  id="speaker"
+                  error={errors.speaker}
+                />
+              </div>
+            </div>
+            <div className="row">
+              <div className="col-md-6">
+                <InputComponent
+                  value={formData.time}
+                  onChange={handleInputChange}
+                  type="time"
+                  label="Hora"
+                  id="time"
+                  error={errors.time}
+                />
+              </div>
+              <div className="col-md-6">
+                <InputComponent
+                  value={formData.associatedEvent}
+                  onChange={handleInputChange}
+                  type="text"
+                  label="Evento Asociado"
+                  id="associatedEvent"
+                  error={errors.associatedEvent}
+                />
+              </div>
+            </div>
+            <div className="text-center mt-4">
+              <BlueButton type="submit">Registrar Taller</BlueButton>
+            </div>
+          </form>
+        </div>
       </div>
 
-      {showModal && workshopToEdit && (
-        <UpdateWorkshopModal
-          showModal={showModal}
-          workshopData={workshopToEdit}
-          handleClose={handleCloseModal}
-          handleUpdate={handleUpdateWorkshop}
-        />
-      )}
+      {/* Modal de notificación */}
+      <MessageModal
+        show={notification.show}
+        onClose={() => setNotification({ ...notification, show: false })}
+        type={notification.type}
+        message={notification.message}
+      />
     </div>
   );
 }

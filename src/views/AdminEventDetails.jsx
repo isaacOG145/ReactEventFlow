@@ -13,6 +13,7 @@ import Carrusel from "../components/Carrusel";
 import BlueButton from "../components/BlueButton";
 import NavigatePurpleButton from "../components/NavigatePurpleButton";
 import UpdateEventModal from "../components/modals/UpdateEventModal";
+import MessageModal from "../components/modals/MessageModal";
 
 export default function AdminEventDetails() {
   const { id } = useParams();
@@ -29,6 +30,19 @@ export default function AdminEventDetails() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [showModal, setShowModal] = useState(false);
+
+  const [notification, setNotification] = useState({
+    show: false,
+    message: "",
+    type: "success",
+  });
+
+  const showNotification = (message, type = "success") => {
+    setNotification({ show: true, message, type });
+    if (type !== "loading") {
+      setTimeout(() => setNotification({ ...notification, show: false }), 3000);
+    }
+  };
 
   const handleEdit = () => {
     setShowModal(true);
@@ -48,6 +62,7 @@ export default function AdminEventDetails() {
       date: updatedEvent.date,
     });
     setShowModal(false);
+    showNotification("Evento actualizado exitosamente", "success");
   };
 
   const formatDate = (dateString) => {
@@ -60,10 +75,10 @@ export default function AdminEventDetails() {
     }
   };
 
-  // Cargar datos del evento
   useEffect(() => {
     const fetchEventData = async () => {
       try {
+        showNotification("Cargando datos del evento...", "loading");
         const response = await fetch(`http://localhost:8080/activity/event/findById/${id}`);
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
@@ -77,22 +92,24 @@ export default function AdminEventDetails() {
             date: data.result.date,
             imageUrls: data.result.imageUrls || [],
           });
+          showNotification("Datos del evento cargados exitosamente", "success");
         } else {
           throw new Error(data.text || "Error al obtener los datos del evento");
         }
       } catch (err) {
         console.error("Error fetching event data:", err);
         setError(err.message);
+        showNotification("Error al cargar datos del evento", "error");
       }
     };
 
     fetchEventData();
   }, [id]);
 
-  // Cargar usuarios de la actividad
   useEffect(() => {
     const fetchUserActivities = async () => {
       try {
+        showNotification("Cargando usuarios inscritos...", "loading");
         const usersResponse = await fetch(`http://localhost:8080/user-activities/findByActivity/${id}`);
 
         if (usersResponse.status === 404) {
@@ -111,12 +128,14 @@ export default function AdminEventDetails() {
           const yesCount = usersData.result.filter(userActivity => userActivity.verified).length;
           const noCount = usersData.result.length - yesCount;
           setAttendanceCount({ yes: yesCount, no: noCount });
+          showNotification("Usuarios cargados exitosamente", "success");
         } else {
           throw new Error(usersData.text || "Error al obtener los usuarios de la actividad");
         }
       } catch (err) {
         console.error("Error fetching user activities:", err);
         setError(err.message);
+        showNotification("Error al cargar usuarios inscritos", "error");
       } finally {
         setLoading(false);
       }
@@ -182,7 +201,6 @@ export default function AdminEventDetails() {
             <span className="badge bg-purple text-white">
               Fecha: {formatDate(eventData.date)}
             </span>
-
           </p>
           <p>
             <strong>Descripción:</strong> {eventData.description}
@@ -270,6 +288,14 @@ export default function AdminEventDetails() {
         eventData={eventData}
         handleClose={handleCloseModal}
         onUpdateSuccess={handleUpdateSuccess}
+      />
+
+      {/* Modal de notificación */}
+      <MessageModal
+        show={notification.show}
+        onClose={() => setNotification({ ...notification, show: false })}
+        type={notification.type}
+        message={notification.message}
       />
     </div>
   );

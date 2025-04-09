@@ -11,6 +11,7 @@ import Carrusel from "../components/Carrusel";
 import BlueButton from "../components/BlueButton";
 import NavigatePurpleButton from "../components/NavigatePurpleButton";
 import UpdateWorkshopModal from "../components/modals/UpdateWorkshopModal";
+import MessageModal from "../components/modals/MessageModal";
 
 export default function AdminWorkshopDetails() {
   const { id } = useParams();
@@ -32,6 +33,19 @@ export default function AdminWorkshopDetails() {
   const [userActivities, setUserActivities] = useState([]);
   const [attendanceCount, setAttendanceCount] = useState({ yes: 0, no: 0 });
 
+  const [notification, setNotification] = useState({
+    show: false,
+    message: "",
+    type: "success",
+  });
+
+  const showNotification = (message, type = "success") => {
+    setNotification({ show: true, message, type });
+    if (type !== "loading") {
+      setTimeout(() => setNotification({ ...notification, show: false }), 3000);
+    }
+  };
+
   const handleEdit = () => {
     setWorkshopToEdit(eventData);
     setShowModal(true);
@@ -44,39 +58,28 @@ export default function AdminWorkshopDetails() {
   const handleUpdateSuccess = (updatedData) => {
     setEventData(updatedData);
     setShowModal(false);
+    showNotification("Taller actualizado exitosamente", "success");
   };
 
   const formatTime = (time) => {
-    // Dividimos la cadena de tiempo (por ejemplo: "12:00:00") en hora, minutos y segundos
     const [hours, minutes] = time.split(':');
-
-    // Convertimos la hora a número para determinar si es AM o PM
     const hourNumber = parseInt(hours, 10);
-
-    // Determinamos AM o PM
     const suffix = hourNumber >= 12 ? 'pm' : 'am';
-
-    // Convertimos la hora a formato de 12 horas
     const formattedHour = hourNumber % 12 === 0 ? 12 : hourNumber % 12;
-
-    // Devolvemos la hora en el formato 12:00pm
     return `${formattedHour}:${minutes.toString().padStart(2, '0')}${suffix}`;
   };
 
-
-
   const handleView = (route) => {
-    navigate(route); // navega a la ruta proporcionada
+    navigate(route);
   };
 
-  // Cargar datos del evento
   useEffect(() => {
     const fetchEventData = async () => {
       try {
+        showNotification("Cargando datos del taller...", "loading");
         const response = await fetch(`http://localhost:8080/activity/workshop/findById/${id}`);
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
+        if (!response.ok) throw new Error("Error al cargar los datos del taller");
+
         const data = await response.json();
         if (data.type === "SUCCESS") {
           setEventData({
@@ -89,12 +92,14 @@ export default function AdminWorkshopDetails() {
             time: data.result.time || "",
             fromActivity: data.result.fromActivity || {}
           });
+          showNotification("Datos del taller cargados exitosamente", "success");
         } else {
-          throw new Error(data.text || "Error al obtener los datos del evento");
+          throw new Error(data.text || "Error al obtener los datos del taller");
         }
       } catch (err) {
         console.error("Error fetching event data:", err);
         setError(err.message);
+        showNotification("Error al cargar datos del taller", "error");
       } finally {
         setLoading(false);
       }
@@ -103,36 +108,31 @@ export default function AdminWorkshopDetails() {
     fetchEventData();
   }, [id]);
 
-  // Cargar usuarios de la actividad
   useEffect(() => {
     const fetchUserActivities = async () => {
       try {
+        showNotification("Cargando usuarios inscritos...", "loading");
         const usersResponse = await fetch(`http://localhost:8080/user-activities/findByActivity/${id}`);
-
         if (usersResponse.status === 404) {
-          // Si no hay usuarios, simplemente no hacemos nada
           setUserActivities([]);
           return;
         }
-
-        if (!usersResponse.ok) {
-          throw new Error(`HTTP error! status: ${usersResponse.status}`);
-        }
+        if (!usersResponse.ok) throw new Error("Error al cargar usuarios inscritos");
 
         const usersData = await usersResponse.json();
         if (usersData.type === "SUCCESS") {
           setUserActivities(usersData.result);
-
-          // Contar las asistencias
           const yesCount = usersData.result.filter(userActivity => userActivity.verified).length;
           const noCount = usersData.result.length - yesCount;
           setAttendanceCount({ yes: yesCount, no: noCount });
+          showNotification("Usuarios cargados exitosamente", "success");
         } else {
-          throw new Error(usersData.text || "Error al obtener los usuarios de la actividad");
+          throw new Error(usersData.text || "Error al obtener los usuarios del taller");
         }
       } catch (err) {
         console.error("Error fetching user activities:", err);
         setError(err.message);
+        showNotification("Error al cargar usuarios inscritos", "error");
       } finally {
         setLoading(false);
       }
@@ -157,7 +157,7 @@ export default function AdminWorkshopDetails() {
             <div className="spinner-border text-primary" role="status">
               <span className="visually-hidden">Cargando...</span>
             </div>
-            <p className="mt-2">Cargando detalles del evento...</p>
+            <p className="mt-2">Cargando detalles del taller...</p>
           </div>
         </div>
       </div>
@@ -195,13 +195,13 @@ export default function AdminWorkshopDetails() {
         <div className="card-details">
           <h1>{eventData.name}</h1>
           <div className="row mb-2">
-            <div className="d-flex align-items-center"> {/* Alinea los items verticalmente */}
-              <p className="mb-0 mr-3"> {/* Elimina el margen inferior y agrega margen derecho */}
+            <div className="d-flex align-items-center">
+              <p className="mb-0 mr-3">
                 <span className="badge bg-purple text-white">
                   Evento relacionado: {eventData.fromActivity.name}
                 </span>
               </p>
-              <p className="mb-0 mr-3"> {/* Igual que el anterior */}
+              <p className="mb-0 mr-3">
                 <span className="badge bg-magent text-white">
                   Cupo: {eventData.quota}
                 </span>
@@ -245,7 +245,7 @@ export default function AdminWorkshopDetails() {
             <Carrusel images={eventData.imageUrls} />
           ) : (
             <div className="alert alert-info">
-              No hay imágenes disponibles para este evento
+              No hay imágenes disponibles para este taller
             </div>
           )}
 
@@ -266,7 +266,7 @@ export default function AdminWorkshopDetails() {
 
             {userActivities.length === 0 ? (
               <div className="alert alert-warning" role="alert">
-                <strong>No hay usuarios inscritos en este evento.</strong>
+                <strong>No hay usuarios inscritos en este taller.</strong>
               </div>
             ) : (
               <div className="table-container">
@@ -306,16 +306,22 @@ export default function AdminWorkshopDetails() {
         </div>
       </div>
 
-      {
-        showModal && workshopToEdit && (
-          <UpdateWorkshopModal
-            showModal={showModal}
-            workshopData={workshopToEdit}
-            handleClose={handleCloseModal}
-            onUpdateSuccess={handleUpdateSuccess}
-          />
-        )
-      }
-    </div >
+      {showModal && workshopToEdit && (
+        <UpdateWorkshopModal
+          showModal={showModal}
+          workshopData={workshopToEdit}
+          handleClose={handleCloseModal}
+          onUpdateSuccess={handleUpdateSuccess}
+        />
+      )}
+
+      {/* Modal de notificación */}
+      <MessageModal
+        show={notification.show}
+        onClose={() => setNotification({ ...notification, show: false })}
+        type={notification.type}
+        message={notification.message}
+      />
+    </div>
   );
 }

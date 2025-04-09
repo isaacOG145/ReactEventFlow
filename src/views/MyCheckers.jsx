@@ -4,15 +4,30 @@ import '../styles/main.css';
 import CustomerRootHeader from "../components/CustomerRootHeader";
 import AdminNav from "../components/AdminNav";
 import CheckerCard from "../components/CheckerCard";
+import MessageModal from "../components/modals/MessageModal";
 
 export default function MyCheckers() {
   const [checkers, setCheckers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  const [notification, setNotification] = useState({
+    show: false,
+    message: "",
+    type: "success",
+  });
+
+  const showNotification = (message, type = "success") => {
+    setNotification({ show: true, message, type });
+    if (type !== "loading") {
+      setTimeout(() => setNotification({ ...notification, show: false }), 3000);
+    }
+  };
+
   useEffect(() => {
     const fetchCheckers = async () => {
       try {
+        showNotification("Cargando checadores...", "loading");
         const userId = localStorage.getItem('userId');
         if (!userId) {
           throw new Error('No se encontró userId en el localStorage');
@@ -31,9 +46,10 @@ export default function MyCheckers() {
 
         const data = await response.json();
         setCheckers(data.result || []);
+        showNotification("Checadores cargados exitosamente", "success");
       } catch (err) {
         setError(err.message);
-        console.error('Error fetching checkers:', err);
+        showNotification(err.message, "error");
       } finally {
         setLoading(false);
       }
@@ -42,9 +58,9 @@ export default function MyCheckers() {
     fetchCheckers();
   }, []);
 
-  // Función para manejar el cambio de estado
   const handleChangeStatus = async (id) => {
     try {
+      showNotification("Actualizando estado...", "loading");
       const response = await fetch(`http://localhost:8080/user/change-status/${id}`, {
         method: 'PUT',
         headers: {
@@ -54,18 +70,17 @@ export default function MyCheckers() {
 
       const data = await response.json();
       if (response.ok) {
-        // Si la solicitud es exitosa, actualizamos el estado del checador
         setCheckers((prevCheckers) =>
           prevCheckers.map((checker) =>
             checker.id === id ? { ...checker, status: !checker.status } : checker
           )
         );
-        console.log('Estado actualizado:', data);
+        showNotification("Estado actualizado exitosamente", "success");
       } else {
-        console.log('Error al actualizar estado:', data);
+        showNotification("Error al actualizar estado", "error");
       }
     } catch (error) {
-      console.error('Error al realizar la solicitud:', error);
+      showNotification("Error al realizar la solicitud", "error");
     }
   };
 
@@ -121,7 +136,7 @@ export default function MyCheckers() {
               <CheckerCard
                 key={checker.id}
                 checker={checker}
-                onChangeStatus={handleChangeStatus}  // Pasamos la función para manejar el cambio de estado
+                onChangeStatus={handleChangeStatus}
               />
             ))}
           </div>
@@ -131,6 +146,14 @@ export default function MyCheckers() {
           </div>
         )}
       </div>
+
+      {/* Modal de notificación */}
+      <MessageModal
+        show={notification.show}
+        onClose={() => setNotification({ ...notification, show: false })}
+        type={notification.type}
+        message={notification.message}
+      />
     </div>
   );
 }

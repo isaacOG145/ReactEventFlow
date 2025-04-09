@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { format, parseISO } from 'date-fns';
-import { es } from 'date-fns/locale';  // Importamos el locale en español
+import { es } from 'date-fns/locale';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../styles/main.css';
 import '../styles/tableStyles.css';
 import '../styles/iconStyles.css';
-
 
 import CustomerRootHeader from "../components/CustomerRootHeader";
 import AdminNav from "../components/AdminNav";
@@ -13,6 +12,7 @@ import ViewDetailsComponent from "../components/iconsComponent/ViewDetailsCompon
 import EditComponent from "../components/iconsComponent/EditComponent";
 import UpdateEventModal from "../components/modals/UpdateEventModal";
 import ChangeStatus from "../components/iconsComponent/ChangeStatus";
+import MessageModal from "../components/modals/MessageModal";
 
 export default function MyEvents() {
   const [events, setEvents] = useState([]);
@@ -21,29 +21,39 @@ export default function MyEvents() {
   const [showModal, setShowModal] = useState(false);
   const [eventToEdit, setEventToEdit] = useState(null);
 
+  const [notification, setNotification] = useState({
+    show: false,
+    message: "",
+    type: "success",
+  });
+
+  const showNotification = (message, type = "success") => {
+    setNotification({ show: true, message, type });
+    if (type !== "loading") {
+      setTimeout(() => setNotification({ ...notification, show: false }), 3000);
+    }
+  };
+
   useEffect(() => {
     const fetchEvents = async () => {
       try {
+        showNotification("Cargando eventos...", "loading");
         const userId = localStorage.getItem('userId');
-        if (!userId) {
-          throw new Error('No se encontró userId en el localStorage');
-        }
+        if (!userId) throw new Error('No se encontró userId en el localStorage');
 
         const response = await fetch(`http://localhost:8080/activity/events/byOwner/${userId}`);
-
-        if (!response.ok) {
-          throw new Error('Error al cargar los eventos');
-        }
+        if (!response.ok) throw new Error('Error al cargar los eventos');
 
         const data = await response.json();
         if (data.type === "SUCCESS") {
           setEvents(data.result);
+          showNotification("Eventos cargados exitosamente", "success");
         } else {
           throw new Error('No se encontraron eventos');
         }
       } catch (err) {
         setError(err.message);
-        console.error("Error fetching events:", err);
+        showNotification(err.message, "error");
       } finally {
         setLoading(false);
       }
@@ -54,33 +64,45 @@ export default function MyEvents() {
 
   const handleChangeStatus = async (id) => {
     try {
+      showNotification("Actualizando estado...", "loading");
       const response = await fetch(`http://localhost:8080/activity/change-status/${id}`, {
         method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
       });
 
       const data = await response.json();
       if (response.ok) {
-        // Si la solicitud es exitosa, actualizamos el estado del checador
         setEvents((prevEvents) =>
           prevEvents.map((event) =>
             event.id === id ? { ...event, status: !event.status } : event
           )
         );
-        console.log('Estado actualizado:', data);
+        showNotification("Estado actualizado exitosamente", "success");
       } else {
-        console.log('Error al actualizar estado:', data);
+        showNotification("Error al actualizar estado", "error");
       }
     } catch (error) {
-      console.error('Error al realizar la solicitud:', error);
+      showNotification("Error al realizar la solicitud", "error");
     }
   };
 
-  const handleEdit = (event) => {
-    setEventToEdit(event);
-    setShowModal(true);
+  const handleUpdateEvent = async (updatedEvent) => {
+    try {
+      showNotification("Actualizando evento...", "loading");
+      const response = await fetch(`http://localhost:8080/activity/events/update`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(updatedEvent),
+      });
+
+      if (!response.ok) throw new Error('Error al actualizar el evento');
+
+      setEvents(events.map(event => event.id === updatedEvent.id ? updatedEvent : event));
+      handleCloseModal();
+      showNotification("Evento actualizado exitosamente", "success");
+    } catch (err) {
+      showNotification("Error al actualizar el evento", "error");
+    }
   };
 
   const handleCloseModal = () => {
@@ -88,32 +110,9 @@ export default function MyEvents() {
     setEventToEdit(null);
   };
 
-  const handleUpdateEvent = async (updatedEvent) => {
-    try {
-      const response = await fetch(`http://localhost:8080/activity/events/update`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(updatedEvent),
-      });
-
-      if (!response.ok) {
-        throw new Error('Error al actualizar el evento');
-      }
-
-      setEvents(events.map(event => event.id === updatedEvent.id ? updatedEvent : event));
-      handleCloseModal();
-    } catch (err) {
-      console.error("Error updating event:", err);
-      setError("Error al actualizar el evento");
-    }
-  };
-
-  // Función para formatear la fecha en español
   const formatDate = (dateString) => {
     const date = parseISO(dateString);
-    return format(date, 'dd MMMM yyyy', { locale: es }); // Usamos el locale en español
+    return format(date, 'dd MMMM yyyy', { locale: es });
   };
 
   return (
@@ -148,14 +147,14 @@ export default function MyEvents() {
                     <td className="td-blue">{index + 1}</td>
                     <td>{event.name}</td>
                     <td className="td-blue">{event.description}</td>
-                    <td>{formatDate(event.date)}</td> {/* Aquí formateamos la fecha en español */}
+                    <td>{formatDate(event.date)}</td>
                     <td className="actions">
                       <div>
                         <ViewDetailsComponent to={`/administrar/detalles-evento/${event.id}`} />
-                        <EditComponent onClick={() => handleEdit(event)} />
+                        <EditComponent onClick={() => setEventToEdit(event)} />
                         <ChangeStatus
-                          currentStatus={event.status}  
-                          onChangeStatus={() => handleChangeStatus(event.id)}  
+                          currentStatus={event.status}
+                          onChangeStatus={() => handleChangeStatus(event.id)}
                         />
                       </div>
                     </td>
@@ -175,6 +174,14 @@ export default function MyEvents() {
           handleUpdate={handleUpdateEvent}
         />
       )}
+
+      {/* Modal de notificación */}
+      <MessageModal
+        show={notification.show}
+        onClose={() => setNotification({ ...notification, show: false })}
+        type={notification.type}
+        message={notification.message}
+      />
     </div>
   );
 }

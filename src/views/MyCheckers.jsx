@@ -9,7 +9,6 @@ import MessageModal from "../components/modals/MessageModal";
 export default function MyCheckers() {
   const [checkers, setCheckers] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
 
   const [notification, setNotification] = useState({
     show: false,
@@ -46,12 +45,12 @@ export default function MyCheckers() {
 
         const data = await response.json();
         setCheckers(data.result || []);
-        showNotification("Checadores cargados exitosamente", "success");
+        setNotification({ ...notification, show: false }); // Cerrar el modal de carga
       } catch (err) {
-        setError(err.message);
-        showNotification(err.message, "error");
+        console.error("Error al cargar checadores:", err);
+        showNotification("Error al cargar los checadores: " + err.message, "error");
       } finally {
-        setLoading(false);
+        setLoading(false); // Aseguramos que el estado de carga se actualice
       }
     };
 
@@ -75,7 +74,7 @@ export default function MyCheckers() {
             checker.id === id ? { ...checker, status: !checker.status } : checker
           )
         );
-        showNotification("Estado actualizado exitosamente", "success");
+        setNotification({ ...notification, show: false }); // Cerrar el modal de carga
       } else {
         showNotification("Error al actualizar estado", "error");
       }
@@ -83,43 +82,6 @@ export default function MyCheckers() {
       showNotification("Error al realizar la solicitud", "error");
     }
   };
-
-  if (loading) {
-    return (
-      <div className="app-container">
-        <CustomerRootHeader />
-        <div className="admin-nav">
-          <AdminNav />
-        </div>
-        <div className="content">
-          <h1>Mis checadores</h1>
-          <div className="text-center mt-5">
-            <div className="spinner-border text-primary" role="status">
-              <span className="visually-hidden">Cargando...</span>
-            </div>
-            <p>Cargando checadores...</p>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="app-container">
-        <CustomerRootHeader />
-        <div className="admin-nav">
-          <AdminNav />
-        </div>
-        <div className="content">
-          <h1>Mis checadores</h1>
-          <div className="alert alert-danger" role="alert">
-            Error al cargar los checadores: {error}
-          </div>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="app-container">

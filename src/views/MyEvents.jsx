@@ -37,7 +37,7 @@ export default function MyEvents() {
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        showNotification("Cargando eventos...", "loading");
+     //   showNotification("Cargando eventos...", "loading");
         const userId = localStorage.getItem('userId');
         if (!userId) throw new Error('No se encontró userId en el localStorage');
 
@@ -47,7 +47,7 @@ export default function MyEvents() {
         const data = await response.json();
         if (data.type === "SUCCESS") {
           setEvents(data.result);
-          showNotification("Eventos cargados exitosamente", "success");
+         // showNotification("Eventos cargados exitosamente", "success");
         } else {
           throw new Error('No se encontraron eventos');
         }

@@ -630,3 +630,8 @@ h1 {
 .modal {
   z-index: 1060 !important;
 }
+
+/******************css agregado para el User Profile*******************************************/
+.custom-modal-size {
+  max-width: 800px !important;  /* Puedes ajustar el tamaño si lo deseas */
+}

@@ -37,7 +37,7 @@ export default function AssignmentChecker() {
         const data = await response.json();
         if (data.type === "SUCCESS") {
           setEventsAndWorkshops(data.result);
-          showNotification("Actividades cargadas exitosamente", "success");
+       //   showNotification("Actividades cargadas exitosamente", "success");
         } else {
           throw new Error("No se encontraron actividades activas");
         }

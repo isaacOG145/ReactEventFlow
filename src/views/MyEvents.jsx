@@ -16,11 +16,9 @@ import MessageModal from "../components/modals/MessageModal";
 
 export default function MyEvents() {
   const [events, setEvents] = useState([]);
-  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [eventToEdit, setEventToEdit] = useState(null);
-
   const [notification, setNotification] = useState({
     show: false,
     message: "",
@@ -37,7 +35,6 @@ export default function MyEvents() {
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-     //   showNotification("Cargando eventos...", "loading");
         const userId = localStorage.getItem('userId');
         if (!userId) throw new Error('No se encontró userId en el localStorage');
 
@@ -47,15 +44,19 @@ export default function MyEvents() {
         const data = await response.json();
         if (data.type === "SUCCESS") {
           setEvents(data.result);
-         // showNotification("Eventos cargados exitosamente", "success");
+          setError(null); // Limpiar cualquier error previo
         } else {
           throw new Error('No se encontraron eventos');
         }
       } catch (err) {
-        setError(err.message);
-        showNotification(err.message, "error");
-      } finally {
-        setLoading(false);
+        console.error("Error al cargar eventos:", err);
+        setError(err.message); // Guardar el mensaje de error
+
+        // Mostrar el modal de "Cargando eventos..." seguido del error
+        showNotification("Cargando eventos...", "loading");
+        setTimeout(() => {
+          showNotification("Error al cargar los eventos: " + err.message, "error");
+        }, 1000); // Esperar 1 segundo antes de mostrar el error
       }
     };
 
@@ -64,31 +65,27 @@ export default function MyEvents() {
 
   const handleChangeStatus = async (id) => {
     try {
-      showNotification("Actualizando estado...", "loading");
       const response = await fetch(`http://localhost:8080/activity/change-status/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
       });
 
+      if (!response.ok) throw new Error('Error al actualizar el estado');
+
       const data = await response.json();
-      if (response.ok) {
-        setEvents((prevEvents) =>
-          prevEvents.map((event) =>
-            event.id === id ? { ...event, status: !event.status } : event
-          )
-        );
-        showNotification("Estado actualizado exitosamente", "success");
-      } else {
-        showNotification("Error al actualizar estado", "error");
-      }
+      setEvents((prevEvents) =>
+        prevEvents.map((event) =>
+          event.id === id ? { ...event, status: !event.status } : event
+        )
+      );
     } catch (error) {
-      showNotification("Error al realizar la solicitud", "error");
+      console.error("Error al actualizar estado:", error);
+      showNotification("Error al actualizar estado: " + error.message, "error");
     }
   };
 
   const handleUpdateEvent = async (updatedEvent) => {
     try {
-      showNotification("Actualizando evento...", "loading");
       const response = await fetch(`http://localhost:8080/activity/events/update`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
@@ -99,9 +96,9 @@ export default function MyEvents() {
 
       setEvents(events.map(event => event.id === updatedEvent.id ? updatedEvent : event));
       handleCloseModal();
-      showNotification("Evento actualizado exitosamente", "success");
     } catch (err) {
-      showNotification("Error al actualizar el evento", "error");
+      console.error("Error al actualizar el evento:", err);
+      showNotification("Error al actualizar el evento: " + err.message, "error");
     }
   };
 
@@ -123,9 +120,7 @@ export default function MyEvents() {
       </div>
       <div className="content">
         <h1>Mis eventos</h1>
-        {loading ? (
-          <div className="text-center mt-5">Cargando eventos...</div>
-        ) : error ? (
+        {error ? (
           <div className="alert alert-danger" role="alert">
             Error al cargar los eventos: {error}
           </div>

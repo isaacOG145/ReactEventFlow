@@ -9,6 +9,7 @@ import MessageModal from "../components/modals/MessageModal";
 export default function MyCheckers() {
   const [checkers, setCheckers] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null); // Agregar estado para manejar errores
 
   const [notification, setNotification] = useState({
     show: false,
@@ -45,9 +46,11 @@ export default function MyCheckers() {
 
         const data = await response.json();
         setCheckers(data.result || []);
+        setError(null); // Limpiar cualquier error previo
         setNotification({ ...notification, show: false }); // Cerrar el modal de carga
       } catch (err) {
         console.error("Error al cargar checadores:", err);
+        setError(err.message); // Guardar el mensaje de error
         showNotification("Error al cargar los checadores: " + err.message, "error");
       } finally {
         setLoading(false); // Aseguramos que el estado de carga se actualice
@@ -92,7 +95,11 @@ export default function MyCheckers() {
       <div className="content">
         <h1>Mis checadores</h1>
 
-        {checkers.length > 0 ? (
+        {error ? (
+          <div className="alert alert-danger" role="alert">
+            Error al cargar los checadores: {error}
+          </div>
+        ) : checkers.length > 0 ? (
           <div className="row">
             {checkers.map((checker) => (
               <CheckerCard

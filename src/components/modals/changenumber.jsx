@@ -36,12 +36,13 @@ const ChangeNumber = ({ show, handleClose, telefonoActual, onSave }) => {
       </Modal.Body>
 
       <Modal.Footer>
-        <PurpleButton onClick={handleClose}>
-          Cancelar
-        </PurpleButton>
+       
         <BlueButton onClick={handleGuardar}>
           Guardar
         </BlueButton>
+         <PurpleButton onClick={handleClose}>
+          Cancelar
+        </PurpleButton>
       </Modal.Footer>
     </Modal>
   );

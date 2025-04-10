@@ -40,10 +40,12 @@ export default function Index() {
   useEffect(() => {
     const fetchActivities = async () => {
       try {
+        // Mostrar el modal de "Cargando actividades..."
         showNotification("Cargando actividades...", "loading");
+  
         const response = await fetch('http://localhost:8080/activity/findActiveEvents');
         if (!response.ok) throw new Error('Error al obtener las actividades');
-
+  
         const data = await response.json();
         if (data.type === 'SUCCESS') {
           const formattedActivities = data.result.map((activity) => {
@@ -55,21 +57,29 @@ export default function Index() {
             return { ...activity, formattedDate };
           });
           setActivities(formattedActivities);
-          showNotification("Actividades cargadas exitosamente", "success");
+  
+          // Cerrar el modal de "Cargando actividades..."
+          setNotification({ ...notification, show: false });
         }
       } catch (error) {
         console.error("Error al cargar actividades:", error);
-        showNotification("Error al cargar actividades", "error");
+  
+        // Mostrar el modal de error después de "Cargando actividades..."
+        setTimeout(() => {
+          showNotification("Error al cargar actividades", "error");
+        }, 1000); // Esperar 1 segundo antes de mostrar el error
       }
     };
-
+  
     fetchActivities();
   }, []);
 
   useEffect(() => {
     const fetchWorkshops = async () => {
       try {
+        // Mostrar el modal de "Cargando talleres..."
         showNotification("Cargando talleres...", "loading");
+
         const response = await fetch('http://localhost:8080/activity/findActiveWorkshops');
         if (!response.ok) throw new Error('Error al obtener los talleres');
 
@@ -82,11 +92,14 @@ export default function Index() {
             return { ...workshop, formattedTime };
           });
           setWorkshops(formattedWorkshops);
-          showNotification("Talleres cargados exitosamente", "success");
         }
       } catch (error) {
         console.error("Error al cargar talleres:", error);
-        showNotification("Error al cargar talleres", "error");
+
+        // Mostrar el modal de error después de "Cargando talleres..."
+        setTimeout(() => {
+          showNotification("Error al cargar talleres", "error");
+        }, 1000); // Esperar 1 segundo antes de mostrar el error
       }
     };
 

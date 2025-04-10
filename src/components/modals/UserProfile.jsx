@@ -1,16 +1,25 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Modal } from "react-bootstrap";
 import '../../styles/main.css';
 import BlueButton from '../BlueButton';
 import PurpleButton from "../PurpleButton";
 import EditComponent from "../iconsComponent/EditComponent";
-import ChangeNumber from "./changenumber"; // Asegúrate que la ruta sea correcta
+import ChangeNumber from "./changenumber";
 
 const UserProfile = ({ show, handleClose, user }) => {
   const { nombre, apellido, email, telefono: telefonoOriginal, empresa } = user;
 
   const [showEditPhoneModal, setShowEditPhoneModal] = useState(false);
   const [telefono, setTelefono] = useState(telefonoOriginal);
+
+  const navigate = useNavigate();
+
+  const handleChangePassword = () => {
+    console.log("Redirigiendo a /nueva-contraseña");
+    handleClose(); // Cierra el modal
+    navigate("/nueva-contraseña"); // Redirige
+  };
 
   return (
     <>
@@ -23,14 +32,11 @@ const UserProfile = ({ show, handleClose, user }) => {
         dialogClassName="custom-modal-size"
       >
         <Modal.Header closeButton>
-          <Modal.Title className="w-100 text-center text-primary fw-bold">
-            Perfil Usuario
-          </Modal.Title>
+          <h1>Perfil Usuario</h1>
         </Modal.Header>
 
         <Modal.Body>
           <div className="row">
-            {/* Columna izquierda */}
             <div className="col-md-6 mb-3">
               <div className="d-flex mb-2">
                 <strong className="me-2">Nombre:</strong>
@@ -46,7 +52,6 @@ const UserProfile = ({ show, handleClose, user }) => {
               </div>
             </div>
 
-            {/* Columna derecha */}
             <div className="col-md-6 mb-3">
               <div className="d-flex mb-2 align-items-center">
                 <strong className="me-2" style={{ width: "90px" }}>Teléfono:</strong>
@@ -62,7 +67,7 @@ const UserProfile = ({ show, handleClose, user }) => {
         </Modal.Body>
 
         <Modal.Footer className="d-flex justify-content-between">
-          <BlueButton onClick={handleClose} className="w-50 me-2">
+          <BlueButton onClick={handleChangePassword} className="w-50 me-2">
             Cambiar contraseña
           </BlueButton>
           <PurpleButton onClick={handleClose} className="w-50 ms-2">
@@ -71,7 +76,6 @@ const UserProfile = ({ show, handleClose, user }) => {
         </Modal.Footer>
       </Modal>
 
-      {/* Modal para editar número de teléfono */}
       <ChangeNumber
         show={showEditPhoneModal}
         handleClose={() => setShowEditPhoneModal(false)}

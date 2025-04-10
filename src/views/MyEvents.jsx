@@ -12,6 +12,7 @@ import AdminNav from "../components/AdminNav";
 import ViewDetailsComponent from "../components/iconsComponent/ViewDetailsComponent";
 import EditComponent from "../components/iconsComponent/EditComponent";
 import UpdateEventModal from "../components/modals/UpdateEventModal";
+import Assignment from "../components/iconsComponent/Assignment";
 import ChangeStatus from "../components/iconsComponent/ChangeStatus";
 
 export default function MyEvents() {
@@ -139,7 +140,8 @@ export default function MyEvents() {
                   <th>Nombre</th>
                   <th>Descripción</th>
                   <th>Fecha</th>
-                  <th></th>
+                  <th>Asignado</th>
+                  <th>Acciones</th>
                 </tr>
               </thead>
               <tbody>
@@ -148,11 +150,13 @@ export default function MyEvents() {
                     <td className="td-blue">{index + 1}</td>
                     <td>{event.name}</td>
                     <td className="td-blue">{event.description}</td>
-                    <td>{formatDate(event.date)}</td> {/* Aquí formateamos la fecha en español */}
+                    <td>{formatDate(event.date)}</td>
+                    <td>{/**Aqui deberiamos poner depende del estado */}</td>
                     <td className="actions">
                       <div>
                         <ViewDetailsComponent to={`/administrar/detalles-evento/${event.id}`} />
                         <EditComponent onClick={() => handleEdit(event)} />
+                        <Assignment activityId={event.id}/>
                         <ChangeStatus
                           currentStatus={event.status}  
                           onChangeStatus={() => handleChangeStatus(event.id)}  

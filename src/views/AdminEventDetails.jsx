@@ -201,7 +201,7 @@ export default function AdminEventDetails() {
               className="event-info"
               onClick={(e) => {
                 e.preventDefault();
-                handleView(`administrar/ver-talleres-evento/${id}`);
+                handleView(`/administrar/ver-talleres-evento/${id}`);
               }}>
               Ver talleres
             </a>

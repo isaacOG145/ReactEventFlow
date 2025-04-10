@@ -52,8 +52,8 @@ function App() {
                 <Route path='/dashboard/asignar-checadores' element={<AssignmentChecker />} />
 
                 <Route path='/administrar/detalles-evento/:id' element={<AdminEventDetails/>}/>
-                <Route path='/administrar/detalles-taller/:id' element={<AdminWorkshopDetails/>} />
-                <Route path='administrar/ver-talleres-evento/:id' element={<AdminEventWorkshops/>}/>
+                <Route path='/administrar/ver-talleres-evento/:eventId' element={<AdminEventWorkshops/>}/>
+                
 
                 <Route path='/administrar/ver-checadores-evento/:id' element={<ShowCheckersEvent/>}/>
                 <Route path='/administrar/ver-checador-taller/:id' element={<ShowCheckersWorkshop/>}/>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 import "bootstrap/dist/css/bootstrap.min.css";
 import "../styles/main.css";
@@ -8,10 +8,10 @@ import "../styles/iconStyles.css";
 
 import voidImg from '../assets/icons/void.png';
 
-import Carrusel from "../components/Carrusel";
-import BlueButton from "../components/BlueButton";
-import NavigatePurpleButton from "../components/NavigatePurpleButton";
-import UpdateWorkshopModal from "../components/modals/UpdateWorkshopModal";
+import Carrusel from "./Carrusel";
+import BlueButton from "./BlueButton";
+import NavigatePurpleButton from "./NavigatePurpleButton";
+import UpdateWorkshopModal from "./modals/UpdateWorkshopModal";
 
 export default function ChargeWorkshop({ id }) {
     const navigate = useNavigate();
@@ -274,13 +274,14 @@ export default function ChargeWorkshop({ id }) {
                     )}
                 </div>
                 <UpdateWorkshopModal
-                    show={showModal}
-                    eventData={workshopToEdit}
-                    onClose={handleCloseModal}
-                    onUpdate={handleUpdateSuccess}
+                    showModal={showModal}
+                    workshopData={workshopToEdit}
+                    handleClose={handleCloseModal}
+                    onUpdateSuccess={handleUpdateSuccess}
                 />
+
             </div>
-  
+
         </div>
     );
 

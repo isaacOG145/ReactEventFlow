@@ -25,6 +25,7 @@ import CreateUserAcount from './components/modals/CreateUserAcount';
 import AdminEventWorkshops from './views/AdminEventWorkshops';
 
 function App() {
+
     return (
         <Router>
             <Routes>
@@ -53,6 +54,7 @@ function App() {
 
                 <Route path='/administrar/detalles-evento/:id' element={<AdminEventDetails/>}/>
                 <Route path='/administrar/ver-talleres-evento/:eventId' element={<AdminEventWorkshops/>}/>
+                <Route path='/administrar/detalles-taller/:id' element={<AdminWorkshopDetails/>}/>
                 
 
                 <Route path='/administrar/ver-checadores-evento/:id' element={<ShowCheckersEvent/>}/>

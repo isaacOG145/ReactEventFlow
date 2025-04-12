@@ -14,6 +14,8 @@ import ViewDetailsComponent from "../components/iconsComponent/ViewDetailsCompon
 import EditComponent from "../components/iconsComponent/EditComponent";
 import UpdateWorkshopModal from "../components/modals/UpdateWorkshopModal";
 import ChangeStatus from "../components/iconsComponent/ChangeStatus";
+import ModalComponent from "../components/modals/ModalComponent";
+import AssignmentChecker from "./AssignmentCheckers";
 
 export default function MyWorkshops() {
   const [workshops, setWorkshops] = useState([]);
@@ -21,6 +23,7 @@ export default function MyWorkshops() {
   const [error, setError] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [workshopToEdit, setWorkshopToEdit] = useState(null);
+  const [modalType, setModalType] = useState(null);
 
   useEffect(() => {
     const fetchWorkshops = async () => {

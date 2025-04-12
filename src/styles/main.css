@@ -585,6 +585,11 @@ h1 {
   /* 24px */
 }
 
+.activity-edit{
+  font-size: 1.25rem;
+  color: #142EA9;
+}
+
 .time-input-field::-webkit-calendar-picker-indicator {
   filter: invert(0.5);
   cursor: pointer;

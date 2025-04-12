@@ -14,6 +14,7 @@ import UpdateEventModal from "../components/modals/UpdateEventModal";
 import ChangeStatus from "../components/iconsComponent/ChangeStatus";
 import AssignmentComponent from "../components/iconsComponent/AssignmentComponent";
 import ModalComponent from "../components/modals/ModalComponent";
+import AssignmentChecker from "./AssignmentCheckers";
 
 export default function MyEvents() {
   const [events, setEvents] = useState([]);
@@ -191,9 +192,7 @@ export default function MyEvents() {
       {/* Modal de asignación */}
       {showModal && modalType === 'assign' && (
         <ModalComponent show={showModal} onClose={handleCloseModal} title="Asignar checador">
-          <h1>Soy el modal de asignación</h1>
-          <p>Evento: {eventToEdit?.name}</p>
-          {/* Aquí puedes agregar tu formulario o lógica de asignación */}
+          <AssignmentChecker activity={eventToEdit} />
         </ModalComponent>
       )}
     </div>

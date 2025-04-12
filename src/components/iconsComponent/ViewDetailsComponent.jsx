@@ -5,10 +5,9 @@ import Eye from '../../assets/icons/mas-detalles.png';
 
 const ViewDetailsComponent = ({ to, children }) => {
     return (
-        <button className="view-details-button" style={{
+        <button className="view-details-button" title="Ver detalles"style={{
             background: 'none',
             border: 'none',
-            
             cursor: 'pointer',
         }}>
             <Link to={to} className="view-details-link">

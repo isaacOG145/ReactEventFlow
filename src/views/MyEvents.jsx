@@ -1,19 +1,19 @@
 import React, { useState, useEffect } from "react";
 import { format, parseISO } from 'date-fns';
-import { es } from 'date-fns/locale';  // Importamos el locale en español
+import { es } from 'date-fns/locale';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../styles/main.css';
 import '../styles/tableStyles.css';
 import '../styles/iconStyles.css';
-
 
 import CustomerRootHeader from "../components/CustomerRootHeader";
 import AdminNav from "../components/AdminNav";
 import ViewDetailsComponent from "../components/iconsComponent/ViewDetailsComponent";
 import EditComponent from "../components/iconsComponent/EditComponent";
 import UpdateEventModal from "../components/modals/UpdateEventModal";
-import Assignment from "../components/iconsComponent/Assignment";
 import ChangeStatus from "../components/iconsComponent/ChangeStatus";
+import AssignmentComponent from "../components/iconsComponent/AssignmentComponent";
+import ModalComponent from "../components/modals/ModalComponent";
 
 export default function MyEvents() {
   const [events, setEvents] = useState([]);
@@ -21,6 +21,7 @@ export default function MyEvents() {
   const [error, setError] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [eventToEdit, setEventToEdit] = useState(null);
+  const [modalType, setModalType] = useState(null); // 'edit' | 'assign'
 
   useEffect(() => {
     const fetchEvents = async () => {
@@ -64,7 +65,6 @@ export default function MyEvents() {
 
       const data = await response.json();
       if (response.ok) {
-        // Si la solicitud es exitosa, actualizamos el estado del checador
         setEvents((prevEvents) =>
           prevEvents.map((event) =>
             event.id === id ? { ...event, status: !event.status } : event
@@ -81,12 +81,20 @@ export default function MyEvents() {
 
   const handleEdit = (event) => {
     setEventToEdit(event);
+    setModalType('edit');
+    setShowModal(true);
+  };
+
+  const handleOpenAssignModal = (event) => {
+    setEventToEdit(event); // si quieres usar datos del evento
+    setModalType('assign');
     setShowModal(true);
   };
 
   const handleCloseModal = () => {
     setShowModal(false);
     setEventToEdit(null);
+    setModalType(null);
   };
 
   const handleUpdateEvent = async (updatedEvent) => {
@@ -111,10 +119,9 @@ export default function MyEvents() {
     }
   };
 
-  // Función para formatear la fecha en español
   const formatDate = (dateString) => {
     const date = parseISO(dateString);
-    return format(date, 'dd MMMM yyyy', { locale: es }); // Usamos el locale en español
+    return format(date, 'dd MMMM yyyy', { locale: es });
   };
 
   return (
@@ -151,15 +158,15 @@ export default function MyEvents() {
                     <td>{event.name}</td>
                     <td className="td-blue">{event.description}</td>
                     <td>{formatDate(event.date)}</td>
-                    <td>{/**Aqui deberiamos poner depende del estado */}</td>
+                    <td>{/* Aquí podrías mostrar a quién está asignado */}</td>
                     <td className="actions">
                       <div>
                         <ViewDetailsComponent to={`/administrar/detalles-evento/${event.id}`} />
                         <EditComponent onClick={() => handleEdit(event)} />
-                        <Assignment activityId={event.id}/>
+                        <AssignmentComponent onClick={() => handleOpenAssignModal(event)} />
                         <ChangeStatus
-                          currentStatus={event.status}  
-                          onChangeStatus={() => handleChangeStatus(event.id)}  
+                          currentStatus={event.status}
+                          onChangeStatus={() => handleChangeStatus(event.id)}
                         />
                       </div>
                     </td>
@@ -171,13 +178,23 @@ export default function MyEvents() {
         )}
       </div>
 
-      {showModal && eventToEdit && (
+      {/* Modal de edición */}
+      {showModal && modalType === 'edit' && eventToEdit && (
         <UpdateEventModal
           showModal={showModal}
           eventData={eventToEdit}
           handleClose={handleCloseModal}
           handleUpdate={handleUpdateEvent}
         />
+      )}
+
+      {/* Modal de asignación */}
+      {showModal && modalType === 'assign' && (
+        <ModalComponent show={showModal} onClose={handleCloseModal} title="Asignar checador">
+          <h1>Soy el modal de asignación</h1>
+          <p>Evento: {eventToEdit?.name}</p>
+          {/* Aquí puedes agregar tu formulario o lógica de asignación */}
+        </ModalComponent>
       )}
     </div>
   );

@@ -12,6 +12,7 @@ const ChangeStatus = ({ currentStatus, onChangeStatus }) => {
       <button
         className={`change-status-btn btn btn-sm ${currentStatus ? "btn-success" : "btn-danger"}`}
         onClick={() => setShowModal(true)}
+        title="Cambiar estado"
         style={{ minWidth: "80px" }} // Para que no cambie de tamaño
       >
         {currentStatus ? "Activo" : "Inactivo"}

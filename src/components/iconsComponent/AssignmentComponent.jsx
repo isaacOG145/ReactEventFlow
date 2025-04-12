@@ -1,13 +1,15 @@
 import React from "react";
-import '../../styles/iconStyles.css';
-import iconEdit from '../../assets/icons/editar.png';
 
-const EditComponent = ({ onClick }) => {
+import '../../styles/iconStyles.css';
+import AssignmentIcon from '../../assets/icons/asignacion.png';
+
+const AssignmentComponent = ({ onClick }) =>  {
+
     return (
-        <button 
+        <button
             onClick={onClick}
             className="edit-button" // Añadimos clase para estilos
-            title="Editar"
+            title="Asignar checador"
             style={{
                 background: 'none',
                 border: 'none',
@@ -15,9 +17,10 @@ const EditComponent = ({ onClick }) => {
                 cursor: 'pointer',
             }}
         >
-            <img className="icon-sm" src={iconEdit} alt="Editar" />
+            <img className="icon-sm" src={AssignmentIcon} alt="Editar" />
         </button>
     );
-};
 
-export default EditComponent;
+}
+
+export default AssignmentComponent;

@@ -16,6 +16,7 @@ import UpdateWorkshopModal from "../components/modals/UpdateWorkshopModal";
 import ChangeStatus from "../components/iconsComponent/ChangeStatus";
 import ModalComponent from "../components/modals/ModalComponent";
 import AssignmentChecker from "./AssignmentCheckers";
+import AssignmentComponent from "../components/iconsComponent/AssignmentComponent";
 
 export default function MyWorkshops() {
   const [workshops, setWorkshops] = useState([]);
@@ -59,12 +60,20 @@ export default function MyWorkshops() {
 
   const handleEdit = (workshop) => {
     setWorkshopToEdit(workshop);
+    setModalType('edit');
+    setShowModal(true);
+  };
+
+  const handleOpenAssignModal = (workshop) => {
+    setWorkshopToEdit(workshop); // si quieres usar datos del evento
+    setModalType('assign');
     setShowModal(true);
   };
 
   const handleCloseModal = () => {
     setShowModal(false);
     setWorkshopToEdit(null);
+    setModalType(null);
   };
 
   const handleUpdateWorkshop = async (updatedWorkshop) => {
@@ -116,9 +125,9 @@ export default function MyWorkshops() {
   };
 
   const formatDate = (dateString) => {
-      const date = parseISO(dateString);
-      return format(date, 'dd MMMM yyyy', { locale: es }); // Usamos el locale en español
-    };
+    const date = parseISO(dateString);
+    return format(date, 'dd MMMM yyyy', { locale: es }); // Usamos el locale en español
+  };
 
   // Función para formatear la hora en formato 'HH:mm'
   const formatTime = (timeString) => {
@@ -176,7 +185,7 @@ export default function MyWorkshops() {
                         <div>
                           <strong>{workshop.fromActivity.name}</strong>
                           <div className="text-muted small">
-                          {formatDate(workshop.fromActivity.date)}
+                            {formatDate(workshop.fromActivity.date)}
                           </div>
                         </div>
                       ) : "Sin evento asociado"}
@@ -185,6 +194,7 @@ export default function MyWorkshops() {
                       <div>
                         <ViewDetailsComponent to={`/administrar/detalles-taller/${workshop.id}`} />
                         <EditComponent onClick={() => handleEdit(workshop)} />
+                        <AssignmentComponent onClick={() => handleOpenAssignModal(workshop)} />
                         <ChangeStatus
                           currentStatus={workshop.status}
                           onChangeStatus={() => handleChangeStatus(workshop.id)}
@@ -199,13 +209,20 @@ export default function MyWorkshops() {
         )}
       </div>
 
-      {showModal && workshopToEdit && (
+      {showModal && modalType === 'edit' && eventToEdit &&(
         <UpdateWorkshopModal
           showModal={showModal}
           workshopData={workshopToEdit}
           handleClose={handleCloseModal}
           handleUpdate={handleUpdateWorkshop}
         />
+      )}
+
+      {/* Modal de asignación */}
+      {showModal && modalType === 'assign' && (
+        <ModalComponent show={showModal} onClose={handleCloseModal} title="Asignar checador">
+          <AssignmentChecker activity={workshopToEdit} />
+        </ModalComponent>
       )}
     </div>
   );

@@ -209,7 +209,7 @@ export default function MyWorkshops() {
         )}
       </div>
 
-      {showModal && modalType === 'edit' && eventToEdit &&(
+      {showModal && modalType === 'edit' && workshopToEditT &&(
         <UpdateWorkshopModal
           showModal={showModal}
           workshopData={workshopToEdit}

@@ -14,6 +14,8 @@ import BlueButton from "../components/BlueButton";
 import NavigatePurpleButton from "../components/NavigatePurpleButton";
 import UpdateEventModal from "../components/modals/UpdateEventModal";
 
+import voidImg from '../assets/icons/void.png';
+
 export default function AdminEventDetails() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -176,7 +178,7 @@ export default function AdminEventDetails() {
         <AdminNav />
       </div>
       <div className="content">
-        <div className="card-details">
+        <div className="card-details col-12 col-lg-10 col-xl-10 mx-auto">
           <h1>{eventData.name}</h1>
           <p>
             <span className="badge bg-purple text-white">
@@ -227,12 +229,17 @@ export default function AdminEventDetails() {
         </div>
 
         <div className="row mt-4 d-flex justify-content-center">
-          <div className="col-6">
+          <div className="col-12 col-lg-10 col-xl-10 mx-auto">
             <h1>Asistencias</h1>
 
             {userActivities.length === 0 ? (
-              <div className="alert alert-warning" role="alert">
-                <strong>No hay usuarios inscritos en este evento.</strong>
+              <div className="card-details" role="alert">
+                <div className="row justify-content-center text-center">
+                  <img className="icon-xxlg" src={voidImg} alt="void" />
+                </div>
+                <div className="row justify-content-center text-center">
+                  <strong>No hay usuarios inscritos en este taller aún.</strong>
+                </div>
               </div>
             ) : (
               <div className="table-container">

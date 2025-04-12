@@ -451,6 +451,7 @@ h1 {
     left: auto; /* Lo colocamos centrado */
     width: 100%; /* El nav ocupa el 100% del ancho */
     box-shadow: none; /* Quitamos la sombra */
+    max-height: 500px;
   }
 }
 

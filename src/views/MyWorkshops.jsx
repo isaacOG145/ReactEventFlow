@@ -6,7 +6,7 @@ import '../styles/main.css';
 import '../styles/tableStyles.css';
 import '../styles/iconStyles.css';
 
-
+import {formatTime, formatDate} from '../utils/DateUtils';
 
 import CustomerRootHeader from "../components/CustomerRootHeader";
 import AdminNav from "../components/AdminNav";
@@ -34,19 +34,38 @@ export default function MyWorkshops() {
           throw new Error('No se encontró userId en el localStorage');
         }
 
-        const response = await fetch(`http://localhost:8080/activity/workshops/byOwner/${userId}`);
+        const [eventsRes, assignmentRes] = await Promise.all([
+          fetch(`http://localhost:8080/activity/workshops/byOwner/${userId}`),
+          fetch(`http://localhost:8080/activity/assignment-status/owner/${userId}`)
+        ]);
 
-        if (!response.ok) {
-          throw new Error('Error al cargar los talleres');
+        if (!eventsRes.ok) throw new Error('Error al cagar los talleres');
+
+        const eventsData = await eventsRes.json();
+        if (eventsData.type !== "SUCCESS" || !Array.isArray(eventsData.result)) {
+          throw new Error('Respuesta inválida del servidor al obtener eventos');
         }
 
-        const data = await response.json();
+        const assignmentData = assignmentRes.ok ? await assignmentRes.json() : null;
 
-        if (data.type === "SUCCESS") {
-          setWorkshops(data.result);
+        // Manejar casos donde assignmentData esté mal o no tenga result
+        const asignacionesMap = {};
+        if (assignmentData && Array.isArray(assignmentData.result)) {
+          assignmentData.result.forEach(item => {
+            if (item.id !== undefined && typeof item.asignado === "boolean") {
+              asignacionesMap[item.id] = item.asignado;
+            }
+          });
         } else {
-          throw new Error('No se encontraron talleres');
+          console.warn("Datos de asignación no disponibles o mal formateados:", assignmentData);
         }
+
+        const enrichedEvents = eventsData.result.map(workshops => ({
+          ...workshops,
+          asignado: asignacionesMap[workshops.id] || false
+        }));
+
+        setWorkshops(enrichedEvents);
       } catch (err) {
         setError(err.message);
         console.error("Error fetching workshops:", err);
@@ -55,7 +74,7 @@ export default function MyWorkshops() {
       }
     };
 
-    fetchWorkshops();
+    fetchWorkshops ();
   }, []);
 
   const handleEdit = (workshop) => {
@@ -124,28 +143,6 @@ export default function MyWorkshops() {
     }
   };
 
-  const formatDate = (dateString) => {
-    const date = parseISO(dateString);
-    return format(date, 'dd MMMM yyyy', { locale: es }); // Usamos el locale en español
-  };
-
-  // Función para formatear la hora en formato 'HH:mm'
-  const formatTime = (timeString) => {
-    if (!timeString) return 'Hora inválida';
-
-    const [hours, minutes] = timeString.split(':'); // Separamos las partes de la hora
-    const date = new Date();
-    date.setHours(hours);
-    date.setMinutes(minutes);
-    date.setSeconds(0); // Aseguramos que los segundos sean 0
-
-    // Verificamos si la fecha es válida
-    if (isNaN(date.getTime())) {
-      return 'Hora inválida';
-    }
-
-    return format(date, 'HH:mm'); // Formateamos la hora
-  };
   return (
     <div className="app-container">
       <CustomerRootHeader />
@@ -170,7 +167,8 @@ export default function MyWorkshops() {
                   <th>Ponente</th>
                   <th>Hora</th>
                   <th>Evento asociado</th>
-                  <th>Acciones</th>
+                  <th className="text-center">Asignado</th>
+                  <th className="text-center">Acciones</th>
                 </tr>
               </thead>
               <tbody>
@@ -189,6 +187,17 @@ export default function MyWorkshops() {
                           </div>
                         </div>
                       ) : "Sin evento asociado"}
+                    </td>
+                    <td className="td-blue text-center">
+                      {workshop.asignado ? (
+                        <span style={
+                          { color: "#28A745" }
+                        }>Si</span>
+                      ) : (
+                        <span style={
+                          { color: "#DC3545" }
+                        }>No</span>
+                      )}
                     </td>
                     <td className="actions">
                       <div>
@@ -209,7 +218,7 @@ export default function MyWorkshops() {
         )}
       </div>
 
-      {showModal && modalType === 'edit' && workshopToEditT &&(
+      {showModal && modalType === 'edit' && workshopToEdit && (
         <UpdateWorkshopModal
           showModal={showModal}
           workshopData={workshopToEdit}

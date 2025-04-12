@@ -6,45 +6,60 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 
 import SelectInputComponent from "../components/SelectInput.Component";
 import BlueButton from "../components/BlueButton";
+import MessageModal from "../components/modals/MessageModal";
 
-export default function AssignmentChecker({ activity }) {
+export default function AssignmentChecker({ activity, onClose, onUpdateSuccess }) {
   const [checkers, setCheckers] = useState([]);
   const [selectedChecker, setSelectedChecker] = useState("");
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [successMessage, setSuccessMessage] = useState("");
+
+  const [notification, setNotification] = useState({
+    show: false,
+    message: "",
+    type: "success"
+  });
 
   const navigate = useNavigate();
+
+  const showNotification = (message, type = "success", duration = 3000) => {
+    setNotification({ show: true, message, type });
+
+    if (type !== "loading") {
+      setTimeout(() => {
+        setNotification({ show: false, message: "", type: "success" });
+
+        if (type === "success") {
+          if (onUpdateSuccess) onUpdateSuccess(); // ✅ refrescar datos suavemente
+          if (onClose) onClose(); // ✅ cerrar modal
+        }
+      }, duration);
+    }
+  };
 
   useEffect(() => {
     const bossId = localStorage.getItem("userId");
 
     if (bossId) {
       setLoading(true);
-      setError(null);
-
-      // Obtener checadores activos
       fetch(`http://localhost:8080/user/findByBoss/${bossId}`)
-        .then(response => {
-          if (!response.ok) {
-            throw new Error("Error al cargar checadores");
-          }
-          return response.json();
+        .then(res => {
+          if (!res.ok) throw new Error("Error al cargar checadores");
+          return res.json();
         })
         .then(data => {
           if (data.type === "SUCCESS") {
-            const activeCheckers = data.result.filter(checker => checker.status === true);
-            setCheckers(activeCheckers);
+            const activos = data.result.filter(c => c.status === true);
+            setCheckers(activos);
           } else {
-            setError(data.message || "No se encontraron checadores activos");
+            showNotification(data.message || "No se encontraron checadores activos", "error");
           }
         })
-        .catch(error => {
-          setError(`Error al cargar checadores: ${error.message}`);
+        .catch(err => {
+          showNotification(`Error al cargar checadores: ${err.message}`, "error");
         })
         .finally(() => setLoading(false));
     } else {
-      setError("No se encontró el ID del jefe. Por favor, inicie sesión nuevamente.");
+      showNotification("No se encontró el ID del jefe. Inicie sesión.", "error");
       setLoading(false);
       navigate('/login');
     }
@@ -52,67 +67,62 @@ export default function AssignmentChecker({ activity }) {
 
   const handleAssign = () => {
     if (!activity || !selectedChecker) {
-      setError("Por favor seleccione un checador");
+      showNotification("Por favor seleccione un checador", "error");
       return;
     }
 
-    setLoading(true);
-    setError(null);
-    setSuccessMessage("");
+    showNotification("Asignando checador...", "loading");
 
     const assignmentData = {
       userId: selectedChecker,
-      activityId: activity.id // usamos directamente el id
+      activityId: activity.id
     };
 
     fetch("http://localhost:8080/assignment/saveAssignment", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify(assignmentData),
     })
-      .then(response => {
+      .then(async response => {
+        const data = await response.json();
+
         if (!response.ok) {
-          throw new Error("Error en la respuesta del servidor");
+          // Si es un 400 con tipo WARNING, no es un error real
+          if (response.status === 400 && data.type === "WARNING") {
+            return data; // ⚠️ Se trata como advertencia
+          }
+
+          // Otros errores sí los lanzamos
+          throw new Error(data.message || data.text || "Error en la respuesta del servidor");
         }
-        return response.json();
+
+        return data; // éxito
       })
       .then(data => {
         if (data.type === "SUCCESS") {
-          setSuccessMessage("Asignación realizada con éxito");
-          setSelectedChecker("");
+          showNotification("Asignación realizada con éxito", "success");
+        } else if (data.type === "WARNING") {
+          showNotification(data.text || "Advertencia", "warning");
+          // ⚠️ No cerramos el modal en este caso, si así lo quieres
         } else {
-          throw new Error(data.message || "Error al realizar la asignación");
+          throw new Error(data.message || "Respuesta desconocida");
         }
       })
-      .catch(error => {
-        setError(`Error al asignar: ${error.message}`);
-      })
-      .finally(() => setLoading(false));
+      .catch(err => {
+        console.error("Error en asignación:", err);
+        // ⚠️ Solo mostramos error real aquí
+        showNotification(err.message || "Ocurrió un error inesperado", "error");
+      });
   };
+
 
   return (
     <div>
-      {error && (
-        <div className="alert alert-danger mb-4" role="alert">
-          {error}
-        </div>
-      )}
-
-      {successMessage && (
-        <div className="alert alert-success mb-4" role="alert">
-          {successMessage}
-        </div>
-      )}
-
-      {/* Mostrar actividad como label */}
       <div className="form-block mb-4">
         <label className="form-label fw-bold">Actividad a asignar:</label>
         <p className="activity-edit">{activity?.name} ({activity?.typeActivity === 'EVENT' ? 'Evento' : 'Taller'})</p>
       </div>
 
-      {/* Select para checadores activos */}
       <div className="form-block mb-4">
         <SelectInputComponent
           label={
@@ -123,26 +133,33 @@ export default function AssignmentChecker({ activity }) {
           }
           options={[
             { value: "", label: "Seleccionar checador activo" },
-            ...checkers.map(checker => ({
-              value: checker.id,
-              label: `${checker.name} ${checker.lastName}`
+            ...checkers.map(c => ({
+              value: c.id,
+              label: `${c.name} ${c.lastName}`
             }))
           ]}
           value={selectedChecker}
           onChange={e => setSelectedChecker(e.target.value)}
           disabled={loading || checkers.length === 0}
         />
-        {checkers.length === 0 && (
+        {checkers.length === 0 && !loading && (
           <p className="text-muted small mt-2">No hay checadores activos disponibles</p>
         )}
       </div>
 
       <BlueButton
         onClick={handleAssign}
-        disabled={loading || !activity || !selectedChecker}
+        disabled={!activity || !selectedChecker}
       >
-        {loading ? "Asignando..." : "Asignar Checador"}
+        Asignar Checador
       </BlueButton>
+
+      <MessageModal
+        show={notification.show}
+        onClose={() => setNotification({ ...notification, show: false })}
+        type={notification.type}
+        message={notification.message}
+      />
     </div>
   );
 }

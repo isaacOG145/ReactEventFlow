@@ -6,7 +6,7 @@ import '../styles/main.css';
 import '../styles/tableStyles.css';
 import '../styles/iconStyles.css';
 
-import {formatTime, formatDate} from '../utils/DateUtils';
+import { formatTime, formatDate } from '../utils/DateUtils';
 
 import CustomerRootHeader from "../components/CustomerRootHeader";
 import AdminNav from "../components/AdminNav";
@@ -74,7 +74,7 @@ export default function MyWorkshops() {
   };
 
   useEffect(() => {
-    fetchWorkshops ();
+    fetchWorkshops();
   }, []);
 
   const handleUpdateSuccess = () => {
@@ -234,11 +234,21 @@ export default function MyWorkshops() {
       )}
 
       {/* Modal de asignación */}
-      {showModal && modalType === 'assign' && (
-        <ModalComponent show={showModal} onClose={handleCloseModal} title="Asignar checador">
-          <AssignmentChecker activity={workshopToEdit} />
+      {showModal && modalType === 'assign' && workshopToEdit && (
+        <ModalComponent
+          show={showModal}
+          onClose={handleCloseModal}
+          onUpdateSuccess={handleUpdateSuccess} 
+          title="Asignar checador"
+        >
+          <AssignmentChecker
+            activity={workshopToEdit}
+            onClose={handleCloseModal}
+            onUpdateSuccess={handleUpdateSuccess} 
+          />
         </ModalComponent>
       )}
+
     </div>
   );
 }

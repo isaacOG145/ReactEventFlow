@@ -16,7 +16,7 @@ export default function MessageModal({
     if (show && type !== 'loading') {
       const timer = setTimeout(() => {
         onClose();
-      }, 3000);
+      }, 2500);
 
       return () => clearTimeout(timer);
     }

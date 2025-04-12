@@ -4,6 +4,8 @@ import ImageGalleryUpload from "../ImagesGalleryUpload";
 import TimeInputComponent from "../TimeInputComponent";
 import BlueButton from "../BlueButton";
 import PurpleButton from "../PurpleButton";
+import MessageModal from "./MessageModal";
+
 import EventIcon from '../../assets/icons/event-date.png';
 import DetailsImg from '../../assets/icons/details.png';
 import TimeIcon from '../../assets/icons/time.png';
@@ -23,6 +25,28 @@ const UpdateWorkshopModal = ({ showModal, workshopData, handleClose, onUpdateSuc
   const [error, setError] = useState(null);
   const [originalImages, setOriginalImages] = useState([]);
 
+  const [notification, setNotification] = useState({
+    show: false,
+    message: "",
+    type: "success" // 'success', 'error', 'warning', 'loading'
+  });
+
+  // Función para mostrar notificaciones
+  const showNotification = (message, type = "success") => {
+    setNotification({
+      show: true,
+      message,
+      type
+    });
+
+    // Auto-cerrar solo si no es de tipo loading
+    if (type !== 'loading') {
+      setTimeout(() => {
+        setNotification(prev => ({ ...prev, show: false }));
+      }, 3000);
+    }
+  };
+
   useEffect(() => {
     if (workshopData && showModal) {
       setWorkshopName(workshopData.name || "");
@@ -30,12 +54,12 @@ const UpdateWorkshopModal = ({ showModal, workshopData, handleClose, onUpdateSuc
       setQuota(workshopData.quota || "");
       setWorkshopTime(workshopData.time || "");
       setDescription(workshopData.description || "");
-      
+
       const initialImages = workshopData.imageUrls ? [...workshopData.imageUrls] : [];
       setOriginalImages(initialImages);
       setImages(initialImages);
     }
-    
+
     // Cargar los eventos disponibles
     const userId = localStorage.getItem("userId");
     if (userId) {
@@ -105,32 +129,48 @@ const UpdateWorkshopModal = ({ showModal, workshopData, handleClose, onUpdateSuc
         }
       });
 
-      const response = await fetch('http://localhost:8080/activity/updateWorkshop', {
-        method: 'PUT',
-        body: formData,
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}` // Si usas autenticación
+      try {
+        // Mostrar estado de carga
+        showNotification("Actualizando...", "loading");
+        const response = await fetch('http://localhost:8080/activity/updateWorkshop', {
+          method: 'PUT',
+          body: formData,
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token')}` 
+          }
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.message || 'Error al actualizar el taller');
         }
-      });
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Error al actualizar el taller');
+        const result = await response.json();
+
+        // Mostrar éxito
+        showNotification("Taller actualizado con exito", "success");
+
+        if (onUpdateSuccess) {
+          onUpdateSuccess(result.result);
+        }
+
+        setTimeout(() => {
+          handleClose();
+        },2500);
+
+
+      } catch (error) {
+        console.error("Error:", error);
+        setError(error.message || "Hubo un error al actualizar el taller.");
+      } finally {
+        setLoading(false);
       }
 
-      const result = await response.json();
-
-      if (onUpdateSuccess) {
-        onUpdateSuccess(result.result);
-      }
-
-      handleClose();
     } catch (error) {
       console.error("Error:", error);
-      setError(error.message || "Hubo un error al actualizar el taller.");
-    } finally {
-      setLoading(false);
+      showNotification(error.message || "Hubo un error al actualizar el taller", "error");
     }
+
   };
 
   return (
@@ -256,20 +296,27 @@ const UpdateWorkshopModal = ({ showModal, workshopData, handleClose, onUpdateSuc
             <div className="row mt-4">
               <div className="col-6"></div>
               <div className="col-3">
-                <PurpleButton onClick={handleClose} disabled={loading} type="button">
+                <PurpleButton onClick={handleClose} type="button">
                   Cancelar
                 </PurpleButton>
               </div>
               <div className="col-3">
-                <BlueButton type="submit" disabled={loading}>
-                  {loading ? "Guardando..." : "Actualizar"}
+                <BlueButton type="submit">
+                  Actualizar
                 </BlueButton>
               </div>
             </div>
           </form>
         </div>
       </div>
+      <MessageModal
+        show={notification.show}
+        onClose={() => setNotification({ ...notification, show: false })}
+        type={notification.type}
+        message={notification.message}
+      />
     </div>
+
   );
 };
 

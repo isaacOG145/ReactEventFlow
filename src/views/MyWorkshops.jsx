@@ -26,56 +26,61 @@ export default function MyWorkshops() {
   const [workshopToEdit, setWorkshopToEdit] = useState(null);
   const [modalType, setModalType] = useState(null);
 
-  useEffect(() => {
-    const fetchWorkshops = async () => {
-      try {
-        const userId = localStorage.getItem('userId');
-        if (!userId) {
-          throw new Error('No se encontró userId en el localStorage');
-        }
-
-        const [eventsRes, assignmentRes] = await Promise.all([
-          fetch(`http://localhost:8080/activity/workshops/byOwner/${userId}`),
-          fetch(`http://localhost:8080/activity/assignment-status/owner/${userId}`)
-        ]);
-
-        if (!eventsRes.ok) throw new Error('Error al cagar los talleres');
-
-        const eventsData = await eventsRes.json();
-        if (eventsData.type !== "SUCCESS" || !Array.isArray(eventsData.result)) {
-          throw new Error('Respuesta inválida del servidor al obtener eventos');
-        }
-
-        const assignmentData = assignmentRes.ok ? await assignmentRes.json() : null;
-
-        // Manejar casos donde assignmentData esté mal o no tenga result
-        const asignacionesMap = {};
-        if (assignmentData && Array.isArray(assignmentData.result)) {
-          assignmentData.result.forEach(item => {
-            if (item.id !== undefined && typeof item.asignado === "boolean") {
-              asignacionesMap[item.id] = item.asignado;
-            }
-          });
-        } else {
-          console.warn("Datos de asignación no disponibles o mal formateados:", assignmentData);
-        }
-
-        const enrichedEvents = eventsData.result.map(workshops => ({
-          ...workshops,
-          asignado: asignacionesMap[workshops.id] || false
-        }));
-
-        setWorkshops(enrichedEvents);
-      } catch (err) {
-        setError(err.message);
-        console.error("Error fetching workshops:", err);
-      } finally {
-        setLoading(false);
+  const fetchWorkshops = async () => {
+    try {
+      const userId = localStorage.getItem('userId');
+      if (!userId) {
+        throw new Error('No se encontró userId en el localStorage');
       }
-    };
 
+      const [eventsRes, assignmentRes] = await Promise.all([
+        fetch(`http://localhost:8080/activity/workshops/byOwner/${userId}`),
+        fetch(`http://localhost:8080/activity/assignment-status/owner/${userId}`)
+      ]);
+
+      if (!eventsRes.ok) throw new Error('Error al cagar los talleres');
+
+      const eventsData = await eventsRes.json();
+      if (eventsData.type !== "SUCCESS" || !Array.isArray(eventsData.result)) {
+        throw new Error('Respuesta inválida del servidor al obtener eventos');
+      }
+
+      const assignmentData = assignmentRes.ok ? await assignmentRes.json() : null;
+
+      // Manejar casos donde assignmentData esté mal o no tenga result
+      const asignacionesMap = {};
+      if (assignmentData && Array.isArray(assignmentData.result)) {
+        assignmentData.result.forEach(item => {
+          if (item.id !== undefined && typeof item.asignado === "boolean") {
+            asignacionesMap[item.id] = item.asignado;
+          }
+        });
+      } else {
+        console.warn("Datos de asignación no disponibles o mal formateados:", assignmentData);
+      }
+
+      const enrichedEvents = eventsData.result.map(workshops => ({
+        ...workshops,
+        asignado: asignacionesMap[workshops.id] || false
+      }));
+
+      setWorkshops(enrichedEvents);
+    } catch (err) {
+      setError(err.message);
+      console.error("Error fetching workshops:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
     fetchWorkshops ();
   }, []);
+
+  const handleUpdateSuccess = () => {
+    // Actualizar la lista de talleres después de una actualización exitosa
+    fetchWorkshops();
+  };
 
   const handleEdit = (workshop) => {
     setWorkshopToEdit(workshop);
@@ -224,6 +229,7 @@ export default function MyWorkshops() {
           workshopData={workshopToEdit}
           handleClose={handleCloseModal}
           handleUpdate={handleUpdateWorkshop}
+          onUpdateSuccess={handleUpdateSuccess}
         />
       )}
 

@@ -7,225 +7,193 @@ import AdminNav from "../components/AdminNav";
 import CheckerCard from "../components/CheckerCard";
 
 export default function ShowCheckersEvent() {
-    const { id } = useParams();  // ID del evento desde la URL
-    const [eventAssignments, setEventAssignments] = useState([]);
-    const [workshopAssignments, setWorkshopAssignments] = useState([]);
-    const [checkers, setCheckers] = useState([]);
-    const [activities, setActivities] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
+  const { id } = useParams();
+  const [eventAssignments, setEventAssignments] = useState([]);
+  const [workshopAssignments, setWorkshopAssignments] = useState([]);
+  const [checkers, setCheckers] = useState([]);
+  const [activities, setActivities] = useState([]);
+  const [error, setError] = useState(null);
 
-    // Obtener las asignaciones de evento y talleres
-    useEffect(() => {
-        const fetchAssignments = async () => {
-            try {
-                const response = await fetch(`http://localhost:8080/assignment/findAssignmentsByActivity/${id}`);
-                const data = await response.json();
+  const [assignmentsLoaded, setAssignmentsLoaded] = useState(false);
+  const [checkersLoaded, setCheckersLoaded] = useState(false);
+  const [activitiesLoaded, setActivitiesLoaded] = useState(false);
 
-                console.log("Datos de asignaciones:", data); // Log para verificar lo que recibimos
+  // 1. Obtener asignaciones
+  useEffect(() => {
+    const fetchAssignments = async () => {
+      try {
+        const response = await fetch(`http://localhost:8080/assignment/findAssignmentsByActivity/${id}`);
+        const data = await response.json();
 
-                if (data.type === "SUCCESS") {
-                    setEventAssignments(data.result.eventAssignments || []);
-                    setWorkshopAssignments(data.result.workshopAssignments || []);
-                } else {
-                    setError("No se encontraron asignaciones.");
-                }
-            } catch (err) {
-                setError("Error al cargar las asignaciones.");
-                console.error('Error fetching assignments:', err);
-            }
-        };
-
-        fetchAssignments();
-    }, [id]);  // Dependemos del 'id' para que se recargue cuando cambie
-
-    const handleChangeStatus = async (checkerId) => {
-        try {
-            const response = await fetch(`http://localhost:8080/user/change-status/${checkerId}`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            });
-
-            const data = await response.json();
-            if (response.ok) {
-                // Si la solicitud es exitosa, actualizamos el estado del checador
-                setCheckers((prevCheckers) =>
-                    prevCheckers.map((checker) =>
-                        checker.id === checkerId ? { ...checker, status: !checker.status } : checker
-                    )
-                );
-                console.log('Estado actualizado:', data);
-            } else {
-                console.log('Error al actualizar estado:', data);
-            }
-        } catch (error) {
-            console.error('Error al realizar la solicitud:', error);
+        if (data.type === "SUCCESS") {
+          setEventAssignments(data.result.eventAssignments || []);
+          setWorkshopAssignments(data.result.workshopAssignments || []);
+        } else {
+          setError("No se encontraron asignaciones.");
         }
+      } catch (err) {
+        setError("Error al cargar las asignaciones.");
+      } finally {
+        setAssignmentsLoaded(true);
+      }
     };
 
-    // Obtener detalles de la actividad por ID (usamos activityId de las asignaciones)
-    useEffect(() => {
-        const fetchActivities = async () => {
-            try {
-                // Recorremos las asignaciones y obtenemos el nombre de la actividad
-                const activityIds = [
-                    ...eventAssignments.map(assignment => assignment.activityId),
-                    ...workshopAssignments.map(assignment => assignment.activityId)
-                ];
+    fetchAssignments();
+  }, [id]);
 
-                if (activityIds.length > 0) {
-                    // Hacemos las peticiones para obtener los nombres de las actividades
-                    const activityResponses = await Promise.all(
-                        activityIds.map(activityId =>
-                            fetch(`http://localhost:8080/activity/findById/${activityId}`).then(res => res.json())
-                        )
-                    );
+  // 2. Obtener detalles de actividades
+  useEffect(() => {
+    const fetchActivities = async () => {
+      try {
+        const activityIds = [
+          ...eventAssignments.map(a => a.activityId),
+          ...workshopAssignments.map(a => a.activityId)
+        ];
 
-                    const activitiesData = activityResponses.map(response => response.result.name);
-                    setActivities(activitiesData);
+        if (activityIds.length > 0) {
+          const activityResponses = await Promise.all(
+            activityIds.map(activityId =>
+              fetch(`http://localhost:8080/activity/findById/${activityId}`).then(res => res.json())
+            )
+          );
 
-                    console.log("Actividades obtenidas:", activitiesData); // Log para verificar actividades
-                }
-            } catch (err) {
-                setError("Error al cargar las actividades.");
-                console.error("Error fetching activities:", err);
-            }
-        };
-
-        // Solo ejecutar la solicitud si ya tenemos asignaciones
-        if (eventAssignments.length > 0 || workshopAssignments.length > 0) {
-            fetchActivities();
+          const activitiesData = activityResponses.map(res => res.result.name);
+          setActivities(activitiesData);
         }
-    }, [eventAssignments, workshopAssignments]);  // Solo ejecutar si las asignaciones cambian
+      } catch (err) {
+        setError("Error al cargar las actividades.");
+      } finally {
+        setActivitiesLoaded(true);
+      }
+    };
 
-    // Obtener detalles de los checadores (por userId)
-    useEffect(() => {
-        const fetchCheckers = async () => {
-            try {
-                // Obtenemos los userId de todas las asignaciones (event y workshop)
-                const checkerIds = [
-                    ...eventAssignments.map(assignment => assignment.userId),
-                    ...workshopAssignments.map(assignment => assignment.userId)
-                ];
-
-                if (checkerIds.length > 0) {
-                    const checkerResponses = await Promise.all(
-                        checkerIds.map(userId =>
-                            fetch(`http://localhost:8080/user/findId/${userId}`).then(res => res.json())
-                        )
-                    );
-
-                    const checkersData = checkerResponses.map(response => response.result);
-                    setCheckers(checkersData);
-
-                    console.log("Checadores obtenidos:", checkersData); // Log para verificar checadores
-                }
-            } catch (err) {
-                setError("Error al cargar los checadores.");
-                console.error("Error fetching checkers:", err);
-            }
-        };
-
-        // Solo ejecutar la solicitud si ya tenemos asignaciones
-        if (eventAssignments.length > 0 || workshopAssignments.length > 0) {
-            fetchCheckers();
-        }
-    }, [eventAssignments, workshopAssignments]);  // Solo ejecutar si las asignaciones cambian
-
-    // Cuando todos los datos están cargados, establecer loading en false
-    useEffect(() => {
-        if (
-            eventAssignments.length > 0 &&
-            workshopAssignments.length > 0 &&
-            activities.length > 0 &&
-            checkers.length > 0
-        ) {
-            setLoading(false);
-        }
-    }, [eventAssignments, workshopAssignments, activities, checkers]);
-
-    if (loading) {
-        return (
-            <div className="app-container">
-                <CustomerRootHeader />
-                <div className="admin-nav">
-                    <AdminNav />
-                </div>
-                <div className="content">
-                    <h1>Checadores del Evento</h1>
-                    <div className="text-center mt-5">
-                        <div className="spinner-border text-primary" role="status">
-                            <span className="visually-hidden">Cargando...</span>
-                        </div>
-                        <p>Cargando checadores...</p>
-                    </div>
-                </div>
-            </div>
-        );
+    if (assignmentsLoaded) {
+      fetchActivities();
     }
+  }, [eventAssignments, workshopAssignments, assignmentsLoaded]);
 
-    if (error) {
-        return (
-            <div className="app-container">
-                <CustomerRootHeader />
-                <div className="admin-nav">
-                    <AdminNav />
-                </div>
-                <div className="content">
-                    <h1>Checadores del Evento</h1>
-                    <div className="alert alert-danger" role="alert">
-                        Error al cargar los checadores: {error}
-                    </div>
-                </div>
-            </div>
-        );
+  // 3. Obtener checadores
+  useEffect(() => {
+    const fetchCheckers = async () => {
+      try {
+        const checkerIds = [
+          ...eventAssignments.map(a => a.userId),
+          ...workshopAssignments.map(a => a.userId)
+        ];
+
+        if (checkerIds.length > 0) {
+          const checkerResponses = await Promise.all(
+            checkerIds.map(userId =>
+              fetch(`http://localhost:8080/user/findId/${userId}`).then(res => res.json())
+            )
+          );
+
+          const checkersData = checkerResponses.map(res => res.result);
+          setCheckers(checkersData);
+        }
+      } catch (err) {
+        setError("Error al cargar los checadores.");
+      } finally {
+        setCheckersLoaded(true);
+      }
+    };
+
+    if (assignmentsLoaded) {
+      fetchCheckers();
     }
+  }, [eventAssignments, workshopAssignments, assignmentsLoaded]);
 
-    return (
-        <div className="app-container">
-            <CustomerRootHeader />
-            <div className="admin-nav">
-                <AdminNav />
+  const handleChangeStatus = async (checkerId) => {
+    try {
+      const response = await fetch(`http://localhost:8080/user/change-status/${checkerId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+      });
+
+      const data = await response.json();
+      if (response.ok) {
+        setCheckers(prev =>
+          prev.map(c => c.id === checkerId ? { ...c, status: !c.status } : c)
+        );
+      }
+    } catch (err) {
+      console.error('Error al cambiar estado del checador:', err);
+    }
+  };
+
+  const loading = !assignmentsLoaded || !activitiesLoaded || !checkersLoaded;
+
+  return (
+    <div className="app-container">
+      <CustomerRootHeader />
+      <div className="admin-nav"><AdminNav /></div>
+      <div className="content">
+        <h1>Checadores del Evento</h1>
+
+        {loading && (
+          <div className="text-center mt-5">
+            <div className="spinner-border text-primary" role="status">
+              <span className="visually-hidden">Cargando...</span>
             </div>
-            <div className="content">
-                <h1>Checadores del Evento <span className="badge bg-blue">{eventAssignments.length + workshopAssignments.length} Checadores</span></h1>
+            <p>Cargando checadores...</p>
+          </div>
+        )}
 
-                {/* Sección de checadores del evento */}
-                <div className="row mt-4">
-                    {eventAssignments.length > 0 && (
-                        <div className="col-12">
-                            <h2>Asignaciones del Evento</h2>
-                        </div>
-                    )}
-                    {eventAssignments.map((assignment, index) => (
-                        <CheckerCard
-                            key={assignment.assignmentId}
-                            checker={checkers[index]}  // Información del checador
-                            assignment={activities[index]}  // Nombre de la actividad
-                            onChangeStatus={() => handleChangeStatus(checkers[index].id)}  // Pasamos el ID del checador
-                        />
-                    ))}
-                </div>
+        {!loading && error && (
+          <div className="alert alert-danger" role="alert">
+            {error}
+          </div>
+        )}
 
-                {/* Sección de checadores de los talleres */}
-                <div className="row mt-4">
-                    {workshopAssignments.length > 0 && (
-                        <div className="col-12">
-                            <h2>Asignaciones de Talleres</h2>
-                        </div>
-                    )}
-                    {workshopAssignments.map((assignment, index) => (
-                        <CheckerCard
-                            key={assignment.assignmentId}
-                            checker={checkers[index + eventAssignments.length]}  // Información del checador
-                            assignment={activities[index + eventAssignments.length]}  // Nombre de la actividad
-                            onChangeStatus={() => handleChangeStatus(checkers[index + eventAssignments.length].id)}  // Pasamos el ID del checador
-                        />
-                    ))}
-                </div>
+        {!loading && !error && (
+          <>
+            {/* Asignaciones del evento */}
+            <div className="row mt-4">
+              {eventAssignments.length > 0 ? (
+                <>
+                  <div className="col-12"><h2>Asignaciones del Evento</h2></div>
+                  {eventAssignments.map((assignment, index) => (
+                    <CheckerCard
+                      key={assignment.assignmentId}
+                      checker={checkers[index]}
+                      assignment={activities[index]}
+                      onChangeStatus={() => handleChangeStatus(checkers[index]?.id)}
+                    />
+                  ))}
+                </>
+              ) : (
+                <div className="col-12 text-muted">No hay checadores asignados al evento.</div>
+              )}
             </div>
-        </div>
-    );
+
+            {/* Asignaciones de talleres */}
+            <div className="row mt-4">
+              {workshopAssignments.length > 0 ? (
+                <>
+                  <div className="col-12"><h2>Asignaciones de Talleres</h2></div>
+                  {workshopAssignments.map((assignment, index) => {
+                    const i = index + eventAssignments.length;
+                    return (
+                      <CheckerCard
+                        key={assignment.assignmentId}
+                        checker={checkers[i]}
+                        assignment={activities[i]}
+                        onChangeStatus={() => handleChangeStatus(checkers[i]?.id)}
+                      />
+                    );
+                  })}
+                </>
+              ) : (
+                <div className="col-12 text-muted">No hay checadores asignados a talleres.</div>
+              )}
+            </div>
+
+            {eventAssignments.length === 0 && workshopAssignments.length === 0 && (
+              <div className="alert alert-info mt-4">Este evento aún no tiene checadores asignados.</div>
+            )}
+          </>
+        )}
+      </div>
+    </div>
+  );
 }

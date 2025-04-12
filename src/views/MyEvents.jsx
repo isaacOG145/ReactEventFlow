@@ -25,35 +25,55 @@ export default function MyEvents() {
   const [modalType, setModalType] = useState(null); // 'edit' | 'assign'
 
   useEffect(() => {
-    const fetchEvents = async () => {
+    const fetchData = async () => {
       try {
         const userId = localStorage.getItem('userId');
-        if (!userId) {
-          throw new Error('No se encontró userId en el localStorage');
+        if (!userId) throw new Error('No se encontró userId en el localStorage');
+
+        const [eventsRes, assignmentRes] = await Promise.all([
+          fetch(`http://localhost:8080/activity/events/byOwner/${userId}`),
+          fetch(`http://localhost:8080/activity/assignment-status/owner/${userId}`)
+        ]);
+
+        if (!eventsRes.ok) throw new Error('Error al cargar eventos');
+
+        const eventsData = await eventsRes.json();
+        if (eventsData.type !== "SUCCESS" || !Array.isArray(eventsData.result)) {
+          throw new Error('Respuesta inválida del servidor al obtener eventos');
         }
 
-        const response = await fetch(`http://localhost:8080/activity/events/byOwner/${userId}`);
+        const assignmentData = assignmentRes.ok ? await assignmentRes.json() : null;
 
-        if (!response.ok) {
-          throw new Error('Error al cargar los eventos');
-        }
-
-        const data = await response.json();
-        if (data.type === "SUCCESS") {
-          setEvents(data.result);
+        // Manejar casos donde assignmentData esté mal o no tenga result
+        const asignacionesMap = {};
+        if (assignmentData && Array.isArray(assignmentData.result)) {
+          assignmentData.result.forEach(item => {
+            if (item.id !== undefined && typeof item.asignado === "boolean") {
+              asignacionesMap[item.id] = item.asignado;
+            }
+          });
         } else {
-          throw new Error('No se encontraron eventos');
+          console.warn("Datos de asignación no disponibles o mal formateados:", assignmentData);
         }
+
+        const enrichedEvents = eventsData.result.map(event => ({
+          ...event,
+          asignado: asignacionesMap[event.id] || false
+        }));
+
+        setEvents(enrichedEvents);
       } catch (err) {
         setError(err.message);
-        console.error("Error fetching events:", err);
+        console.error("Error fetching data:", err);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchEvents();
+    fetchData();
   }, []);
+
+
 
   const handleChangeStatus = async (id) => {
     try {
@@ -159,7 +179,18 @@ export default function MyEvents() {
                     <td>{event.name}</td>
                     <td className="td-blue">{event.description}</td>
                     <td>{formatDate(event.date)}</td>
-                    <td>{/* Aquí podrías mostrar a quién está asignado */}</td>
+                    <td className="td-blue">
+                      {event.asignado ? (
+                        <span style={
+                          { color: "#28A745" }
+                        }>Si</span>
+                      ) : (
+                        <span style={
+                          { color: "#DC3545" }
+                        }>No</span>
+                      )}
+                    </td>
+
                     <td className="actions">
                       <div>
                         <ViewDetailsComponent to={`/administrar/detalles-evento/${event.id}`} />

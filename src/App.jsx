@@ -23,6 +23,7 @@ import ShowCheckersWorkshop from './views/ShowCheckersWorkshop';
 import ShowCheckersEvent from './views/ShowCheckersEvent';
 import CreateUserAcount from './components/modals/CreateUserAcount';
 import AdminEventWorkshops from './views/AdminEventWorkshops';
+import MyProfile from './views/MyProfile';
 
 function App() {
 
@@ -39,6 +40,7 @@ function App() {
                 <Route path="/detalles-evento/:id" element={<EventDetails />} />
 
                 <Route path='/usuario/crear-cuenta' element={<CreateUserAcount/>} />
+                <Route path='/usuario/mi-perfil' element={<MyProfile/>}/>
 
 
                 {/**Rutas del administrador */}

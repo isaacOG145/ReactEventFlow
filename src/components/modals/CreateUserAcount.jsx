@@ -6,7 +6,6 @@ import '../../styles/modalStyles.css'
 import userIcon from '../../assets/icons/user.png';
 import sobre from '../../assets/icons/sobres.png';
 import cellphone from '../../assets/icons/telefono-inteligente.png';
-import passwordIcon from '../../assets/icons/llave.png';
 import EventDate from '../../assets/icons/calendario-black.png';
 import newsPaper from '../../assets/icons/periodico.png';
 import gender from '../../assets/icons/generos.png';
@@ -17,7 +16,6 @@ import alertImage from '../../assets/icons/error.png';
 
 import BirthDateComponent from "../BirthDateComponent";
 import InputComponent from "../InputComponent";
-import CustomPasswordInput from "../CustomPasswordInput";
 import SelectInputComponent from "../SelectInput.Component";
 import BlueButton from "../BlueButton";
 import MessageModal from "./MessageModal";
@@ -25,40 +23,51 @@ import MessageModal from "./MessageModal";
 
 export default function CreateUserAcount({ activityId, onRegistrationSuccess }) {
 
-    const [showNotification, setShowNotification] = useState(false);
-    const [notificationMessage, setNotificationMessage] = useState('');
-    const [messageType, setMessageType] = useState('success');
     const [formData, setFormData] = useState({
         name: "",
         lastName: "",
         email: "",
         phone: "",
-        password: "",
-        rePassword: "",
         birthday: "",
         gender: "",
         address: "",
         job: "",
         workPlace: "",
         howFound: "",
-        address: ""
     });
-
     const [errors, setErrors] = useState({
         name: "",
         lastName: "",
         email: "",
         phone: "",
-        password: "",
-        rePassword: "",
         birthday: "",
         gender: "",
         address: "",
         job: "",
         workPlace: "",
         howFound: "",
-        address: ""
     });
+    // Estado para el modal de notificación
+    const [notification, setNotification] = useState({
+        show: false,
+        message: "",
+        type: "success" // 'success', 'error', 'warning', 'loading'
+    });
+    // Función para mostrar notificaciones
+    const showNotification = (message, type = "success") => {
+        setNotification({
+            show: true,
+            message,
+            type
+        });
+
+        // Auto-cerrar solo si no es de tipo loading
+        if (type !== 'loading') {
+            setTimeout(() => {
+                setNotification(prev => ({ ...prev, show: false }));
+            }, 3000);
+        }
+    };
 
     const genderOptions = [
         { value: "masculino", label: "Masculino" },
@@ -94,11 +103,6 @@ export default function CreateUserAcount({ activityId, onRegistrationSuccess }) 
         const newErrors = {};
         let isValid = true;
 
-        if (formData.password !== formData.rePassword) {
-            newErrors.rePassword = "Las contraseñas no coinciden";
-            isValid = false;
-        }
-
         setErrors(newErrors);
 
         if (!isValid) {
@@ -106,14 +110,13 @@ export default function CreateUserAcount({ activityId, onRegistrationSuccess }) 
         }
 
         try {
-            const { rePassword, ...dataToSend } = formData;
 
             const response = await fetch("http://localhost:8080/user/saveUser", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify(dataToSend),
+                body: JSON.stringify(formData),
             });
 
             if (!response.ok) {
@@ -123,24 +126,13 @@ export default function CreateUserAcount({ activityId, onRegistrationSuccess }) 
             const data = await response.json();
 
             if (data.type === "SUCCESS") {
-                const userId = data.result.id; // Obtenemos el ID del usuario
-                localStorage.setItem('userId', userId);  // Guardamos el ID en el localStorage
-
-                setNotificationMessage(
-                    <div>
-                        <img src={successImage} alt="Éxito" style={{ width: '50px', marginRight: '10px' }} />
-                        ¡Cuenta creada exitosamente!
-                    </div>
-                );
-                setMessageType('success'); // Tipo de mensaje de éxito
-                setShowNotification(true); // Mostrar el modal de éxito
+                const userId = data.result.id;
 
                 const userActivityDTO = {
-                    userId: localStorage.getItem("userId"),
+                    userId: userId,
                     activityId: activityId, // Obtén el ID de la actividad del prop
-                    
+
                 };
-                console.log("Datos que se están enviando al servidor:", userActivityDTO);
 
 
                 // Enviar la inscripción al evento
@@ -152,34 +144,21 @@ export default function CreateUserAcount({ activityId, onRegistrationSuccess }) 
                     body: JSON.stringify(userActivityDTO),
                 });
 
-                if (!registerResponse.ok) {
-                    throw new Error('Error al inscribir en la actividad');
+                const registerData = await registerResponse.json(); // Mover esta línea antes de verificar response.ok
+
+                if (registerData.type === "WARNING") {
+                    // Si el backend devuelve un mensaje específico en el body (como tu ejemplo de Postman)
+                    showNotification(registerData.text, "warning");
+                } else {
+                    showNotification("Hubo un error en la inscripcion", "error")
                 }
 
-                const registerData = await registerResponse.json();
-
                 if (registerData.type === "SUCCESS") {
-                    setNotificationMessage(
-                        <div>
-                            <img src={successImage} alt="Éxito" style={{ width: '50px', marginRight: '10px' }} />
-                            ¡Registro exitoso al evento!
-                            Ahora puedes usar la aplicación e interactuar con el 
-                        </div>
-                    );
+                    showNotification("Incripción completada ahora puedes usar la app móvil", "success");
                     setTimeout(() => {
                         onRegistrationSuccess(); // Cerrar el modal después de 2 segundos
                     }, 3000);
-                } else {
-                    setNotificationMessage(
-                        <div>
-                            <img src={alertImage} alt="Alerta" style={{ width: '50px', marginRight: '10px' }} />
-                            ¡Error al inscribir en la actividad!
-                        </div>
-                    );
                 }
-
-                setShowNotification(true);
-
 
 
                 // Limpiar el formulario
@@ -188,8 +167,6 @@ export default function CreateUserAcount({ activityId, onRegistrationSuccess }) 
                     lastName: "",
                     email: "",
                     phone: "",
-                    password: "",
-                    rePassword: "",
                     birthday: "",
                     gender: "",
                     address: "",
@@ -202,14 +179,7 @@ export default function CreateUserAcount({ activityId, onRegistrationSuccess }) 
                 throw new Error("Error en el registro");
             }
         } catch (error) {
-            setNotificationMessage(
-                <div>
-                    <img src={alertImage} alt="alert" style={{ width: '50px', marginRight: '10px' }} />
-                    ¡Error al crear la cuenta!
-                </div>
-            );
-            setMessageType('error'); // Tipo de mensaje de error
-            setShowNotification(true); // Mostrar el modal de error
+            throw new Error(error);
         }
     };
     return (
@@ -418,45 +388,6 @@ export default function CreateUserAcount({ activityId, onRegistrationSuccess }) 
                     </div>
                 </div>
 
-                <div className="row">
-                    <div className="col-md-6">
-                        <div className="form-block p-2">
-                            <CustomPasswordInput
-                                value={formData.password}
-                                onChange={handleInputChange}
-                                label={
-                                    <>
-                                        <img className="icon-md" src={passwordIcon} alt="Icono" />
-                                        <span className="label-text">Ingresar contraseña</span>
-                                        <span className="required-asterisk">*</span>
-                                    </>
-                                }
-                                id="password"
-                                error={errors.password}
-                            />
-                        </div>
-                    </div>
-
-                    <div className="col-md-6">
-                        <div className="form-block p-2">
-                            <CustomPasswordInput
-                                value={formData.rePassword}
-                                onChange={handleInputChange}
-                                label={
-                                    <>
-                                        <img className="icon-md" src={passwordIcon} alt="Icono" />
-                                        <span className="label-text">Confirmar contraseña</span>
-                                        <span className="required-asterisk">*</span>
-                                    </>
-                                }
-                                id="rePassword"
-                                error={errors.rePassword}
-                            />
-                        </div>
-                    </div>
-                </div>
-
-
                 <div className="mb-3">
                     <BlueButton type="submit">
                         Crear cuenta
@@ -464,11 +395,12 @@ export default function CreateUserAcount({ activityId, onRegistrationSuccess }) 
                 </div>
             </form>
             {/* Modal de notificación */}
+
             <MessageModal
-                show={showNotification}
-                onClose={() => setShowNotification(false)}
-                type={messageType}
-                message={notificationMessage}  // Pasa el mensaje como prop correctamente
+                show={notification.show}
+                onClose={() => setNotification({ ...notification, show: false })}
+                type={notification.type}
+                message={notification.message}
             />
 
         </div>

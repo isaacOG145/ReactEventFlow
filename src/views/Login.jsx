@@ -68,18 +68,20 @@ export default function Login() {
     const validateForm = () => {
         let isValid = true;
 
-        if (!email) {
+        // Validación de email
+        if (!validateRequired(email)) {
             setEmailError("El correo electrónico es requerido");
             isValid = false;
-        } else if (!/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email)) {
-            setEmailError("El correo electrónico no es válido");
+        } else if (!validateEmail(email)) {
+            setEmailError("Ingresa un email válido (ejemplo@dominio.com)");
             isValid = false;
         }
 
-        if (!password) {
+        // Validación de password
+        if (!validateRequired(password)) {
             setPasswordError("La contraseña es requerida");
             isValid = false;
-        } else if (password.length < 8) {
+        } else if (!validatePassword(password)) {
             setPasswordError("La contraseña debe tener al menos 8 caracteres");
             isValid = false;
         }
@@ -117,7 +119,7 @@ export default function Login() {
 
             // Mostrar mensaje de éxito antes de redirigir
             showNotification("Inicio de sesión exitoso");
-            
+
             // Redirección después de 1.5 segundos (para que se vea el mensaje)
             setTimeout(() => {
                 if (userData.role === 'ADMIN' || userData.role === "SUPER_ADMIN") {
@@ -129,7 +131,7 @@ export default function Login() {
 
         } catch (error) {
             console.error('Login error:', error);
-            
+
             if (error.message.includes('401')) {
                 showNotification('Credenciales incorrectas', 'error');
             } else if (error.message.includes('403')) {
@@ -194,9 +196,9 @@ export default function Login() {
             <a onClick={handleForgotPassword} className="pass-message">¿Has olvidado la contraseña?</a>
 
             {/* Modal de notificación */}
-            <MessageModal 
+            <MessageModal
                 show={notification.show}
-                onClose={() => setNotification({...notification, show: false})}
+                onClose={() => setNotification({ ...notification, show: false })}
                 type={notification.type}
                 message={notification.message}
             />

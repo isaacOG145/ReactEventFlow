@@ -20,10 +20,8 @@ export default function NewChecker() {
   const [formData, setFormData] = useState({
     name: "",
     lastName: "",
-    password: "",
     email: "",
     phone: "",
-    rePassword: "",
   });
 
   // Estado para el modal de notificación
@@ -75,16 +73,6 @@ export default function NewChecker() {
         field: "email"
       },
       { 
-        condition: formData.password.length < 8, 
-        message: "La contraseña debe tener al menos 8 caracteres.",
-        field: "password"
-      },
-      { 
-        condition: formData.password !== formData.rePassword, 
-        message: "Las contraseñas no coinciden.",
-        field: "rePassword"
-      },
-      { 
         condition: !formData.phone, 
         message: "Por favor, ingresa un número de teléfono.",
         field: "phone"
@@ -100,7 +88,6 @@ export default function NewChecker() {
     
     if (failedValidation) {
       showNotification(failedValidation.message, "warning");
-      // Puedes agregar aquí lógica para enfocar el campo con error si lo deseas
       return false;
     }
     
@@ -149,14 +136,11 @@ export default function NewChecker() {
 
       showNotification("Checador registrado exitosamente!", "success");
 
-      // Limpiar el formulario
       setFormData({
         name: "",
         lastName: "",
-        password: "",
         email: "",
         phone: "",
-        rePassword: "",
       });
 
     } catch (error) {
@@ -253,41 +237,6 @@ export default function NewChecker() {
               </div>
             </div>
 
-            <div className="row">
-              <div className="col-md-6">
-                <div className="form-block p-2">
-                  <CustomPasswordInput
-                    value={formData.password}
-                    onChange={handleInputChange}
-                    label={
-                      <>
-                        <img className="icon-md" src={passwordIcon} alt="Icono" />
-                        <span className="label-text">Contraseña</span>
-                        <span className="required-asterisk">*</span>
-                      </>
-                    }
-                    id="password"
-                  />
-                </div>
-              </div>
-
-              <div className="col-md-6">
-                <div className="form-block p-2">
-                  <CustomPasswordInput
-                    value={formData.rePassword}
-                    onChange={handleInputChange}
-                    label={
-                      <>
-                        <img className="icon-md" src={passwordIcon} alt="Icono" />
-                        <span className="label-text">Confirmar contraseña</span>
-                        <span className="required-asterisk">*</span>
-                      </>
-                    }
-                    id="rePassword"
-                  />
-                </div>
-              </div>
-            </div>
 
             <div className="row mt-4">
               <div className="col-md-12 text-center">

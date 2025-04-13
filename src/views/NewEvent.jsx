@@ -136,7 +136,6 @@ export default function NewEvent() {
                     id="name"
                     value={eventName}
                     onChange={(e) => setEventName(e.target.value)}
-                    required
                   />
                 </div>
               </div>
@@ -173,7 +172,6 @@ export default function NewEvent() {
                 }
                 value={eventDescription}
                 onChange={(e) => setEventDescription(e.target.value)}
-                required
               />
             </div>
 

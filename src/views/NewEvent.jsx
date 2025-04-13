@@ -9,105 +9,85 @@ import BlueButton from "../components/BlueButton";
 import InputComponent from "../components/InputComponent";
 import DateInputComponent from "../components/DateInputComponent";
 import ImageGalleryUpload from "../components/ImagesGalleryUpload";
-import MessageModal from '../components/modals/MessageModal';
+import MessageModal from "../components/modals/MessageModal";
 
-import Event from '../assets/icons/event-name.png';
-import EventDate from '../assets/icons/event-date.png';
-import DetailsImg from '../assets/icons/details.png';
+import Event from "../assets/icons/event-name.png";
+import EventDate from "../assets/icons/event-date.png";
+import DetailsImg from "../assets/icons/details.png";
 
 export default function NewEvent() {
   // Estados del formulario
-  const [eventName, setEventName] = useState("");
-  const [eventDate, setEventDate] = useState("");
-  const [eventDescription, setEventDescription] = useState("");
+  const [formData, setFormData] = useState({
+    name: "",
+    date: "",
+    description: "",
+  });
   const [images, setImages] = useState([]);
-  
-  // Estado para el modal de notificación
   const [notification, setNotification] = useState({
     show: false,
     message: "",
-    type: "success" // 'success', 'error', 'warning', 'loading'
+    type: "success", // 'success', 'error', 'warning', 'loading'
   });
 
-  const handleDateChange = (e) => {
-    // Guardamos el valor directamente sin transformaciones
-    setEventDate(e.target.value);
-  };
-
-  // Función para mostrar notificaciones
   const showNotification = (message, type = "success") => {
     setNotification({
       show: true,
       message,
-      type
+      type,
     });
-    
-    // Auto-cerrar solo si no es de tipo loading
-    if (type !== 'loading') {
+
+    if (type !== "loading") {
       setTimeout(() => {
-        setNotification(prev => ({...prev, show: false}));
+        setNotification((prev) => ({ ...prev, show: false }));
       }, 3000);
     }
   };
 
-  const handleSubmit = async (e) => {
+  const handleInputChange = (e) => {
+    const { id, value } = e.target;
+    setFormData({
+      ...formData,
+      [id]: value,
+    });
+  };
+
+  const validateForm = () => {
+    const validations = [
+      { condition: !formData.name.trim(), message: "Por favor, ingresa el nombre del evento.", field: "name" },
+      { condition: !formData.date, message: "Por favor, selecciona una fecha para el evento.", field: "date" },
+      { condition: !formData.description.trim(), message: "Por favor, ingresa una descripción para el evento.", field: "description" },
+      { condition: images.length < 3, message: "Por favor, sube al menos 3 imágenes del evento.", field: "images" },
+    ];
+
+    const failedValidation = validations.find((v) => v.condition);
+
+    if (failedValidation) {
+      showNotification(failedValidation.message, "warning");
+      return false;
+    }
+
+    return true;
+  };
+
+  const handleSubmit = (e) => {
     e.preventDefault();
 
-    // Validación de campos requeridos
-    if (!eventName || !eventDate || !eventDescription || images.length < 3) {
-      showNotification("Por favor, completa todos los campos y sube al menos 3 imágenes.", "warning");
+    if (!validateForm()) {
       return;
     }
 
-    const formData = new FormData();
-    const activityDTO = {
-      ownerActivity: { id: localStorage.getItem("userId") },
-      name: eventName,
-      description: eventDescription,
-      date: `${eventDate}T00:00:00Z` // Formato UTC
-    };
+    showNotification("Guardando evento...", "loading");
 
-    // Agregar el JSON como string
-    formData.append("activity", new Blob([JSON.stringify(activityDTO)], {
-      type: "application/json"
-    }));
-
-    // Agregar las imágenes
-    images.forEach((imageObj) => {
-      if (imageObj && imageObj.file) {
-        formData.append("images", imageObj.file);
-      }
-    });
-
-    try {
-      // Mostrar estado de carga
-      showNotification("Guardando evento...", "loading");
-      
-      const response = await fetch('http://localhost:8080/activity/saveEvent', {
-        method: 'POST',
-        body: formData,
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Error al crear el evento');
-      }
-
-      const result = await response.json();
-      
-      // Mostrar éxito
+    // Simulación de envío
+    setTimeout(() => {
       showNotification("Evento creado con éxito", "success");
-      
-      // Resetear formulario
-      setEventName("");
-      setEventDate("");
-      setEventDescription("");
+      setFormData({
+        name: "",
+        date: "",
+        description: "",
+      });
       setImages([]);
-
-    } catch (error) {
-      console.error("Error:", error);
-      showNotification(error.message || "Hubo un error al crear el evento", "error");
-    }
+    }, 2000);
   };
 
   return (
@@ -134,8 +114,8 @@ export default function NewEvent() {
                       </>
                     }
                     id="name"
-                    value={eventName}
-                    onChange={(e) => setEventName(e.target.value)}
+                    value={formData.name}
+                    onChange={handleInputChange}
                     required
                   />
                 </div>
@@ -144,8 +124,8 @@ export default function NewEvent() {
               <div className="col-md-6">
                 <div className="form-block">
                   <DateInputComponent
-                    value={eventDate}
-                    onChange={handleDateChange}
+                    value={formData.date}
+                    onChange={(e) => handleInputChange({ id: "date", value: e.target.value })}
                     label={
                       <>
                         <img className="icon-sm" src={EventDate} alt="" />
@@ -153,9 +133,9 @@ export default function NewEvent() {
                         <span className="required-asterisk">*</span>
                       </>
                     }
-                    id="event-date"
+                    id="date"
                     required={true}
-                    error={eventDate === "" ? "La fecha es obligatoria" : ""}
+                    error={formData.date === "" ? "La fecha es obligatoria" : ""}
                   />
                 </div>
               </div>
@@ -171,8 +151,9 @@ export default function NewEvent() {
                     <span className="required-asterisk">*</span>
                   </>
                 }
-                value={eventDescription}
-                onChange={(e) => setEventDescription(e.target.value)}
+                id="description"
+                value={formData.description}
+                onChange={handleInputChange}
                 required
               />
             </div>
@@ -188,18 +169,16 @@ export default function NewEvent() {
             </div>
 
             <div className="text-center mt-4">
-              <BlueButton type="submit">
-                Crear nuevo
-              </BlueButton>
+              <BlueButton type="submit">Crear nuevo</BlueButton>
             </div>
           </form>
         </div>
       </div>
 
       {/* Modal de notificación */}
-      <MessageModal 
+      <MessageModal
         show={notification.show}
-        onClose={() => setNotification({...notification, show: false})}
+        onClose={() => setNotification({ ...notification, show: false })}
         type={notification.type}
         message={notification.message}
       />

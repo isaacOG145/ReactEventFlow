@@ -8,9 +8,9 @@ import AdminNav from "../components/AdminNav";
 import InputComponent from "../components/InputComponent";
 import CustomPasswordInput from "../components/CustomPasswordInput";
 import BlueButton from "../components/BlueButton";
-import MessageModal from "../components/modals/MessageModal"; // Importamos el modal para notificaciones
+import MessageModal from "../components/modals/MessageModal";
 
-// mis iconos
+// Iconos
 import passwordIcon from '../assets/icons/llave.png';
 import cellphone from '../assets/icons/telefono-inteligente.png';
 import sobre from '../assets/icons/sobres.png';
@@ -18,15 +18,6 @@ import userIcon from '../assets/icons/usuario.png';
 
 export default function NewChecker() {
   const [formData, setFormData] = useState({
-    name: "",
-    lastName: "",
-    password: "",
-    email: "",
-    phone: "",
-    rePassword: "",
-  });
-
-  const [errors, setErrors] = useState({
     name: "",
     lastName: "",
     password: "",
@@ -67,26 +58,60 @@ export default function NewChecker() {
   };
 
   const validateForm = () => {
-    const newErrors = {};
+    const validations = [
+      { 
+        condition: !formData.name.trim(), 
+        message: "Por favor, ingresa el nombre del checador.",
+        field: "name"
+      },
+      { 
+        condition: !formData.lastName.trim(), 
+        message: "Por favor, ingresa los apellidos del checador.",
+        field: "lastName"
+      },
+      { 
+        condition: !formData.email.includes("@") || !formData.email.includes("."), 
+        message: "Por favor, ingresa un correo electrónico válido.",
+        field: "email"
+      },
+      { 
+        condition: formData.password.length < 8, 
+        message: "La contraseña debe tener al menos 8 caracteres.",
+        field: "password"
+      },
+      { 
+        condition: formData.password !== formData.rePassword, 
+        message: "Las contraseñas no coinciden.",
+        field: "rePassword"
+      },
+      { 
+        condition: !formData.phone, 
+        message: "Por favor, ingresa un número de teléfono.",
+        field: "phone"
+      },
+      { 
+        condition: formData.phone && !/^\d+$/.test(formData.phone), 
+        message: "El teléfono solo puede contener números.",
+        field: "phone"
+      }
+    ];
 
-    if (!formData.name) newErrors.name = "El nombre es obligatorio.";
-    if (!formData.lastName) newErrors.lastName = "El apellido es obligatorio.";
-    if (!formData.email.includes("@")) newErrors.email = "Ingresa un email válido.";
-    if (formData.password.length < 8) newErrors.password = "La contraseña debe tener al menos 8 caracteres.";
-    if (formData.password !== formData.rePassword) newErrors.rePassword = "Las contraseñas no coinciden.";
-    if (!formData.phone) {
-      newErrors.phone = "El teléfono es obligatorio.";
-    } else if (!/^\d+$/.test(formData.phone)) {
-      newErrors.phone = "El teléfono solo puede contener números.";
+    const failedValidation = validations.find(v => v.condition);
+    
+    if (failedValidation) {
+      showNotification(failedValidation.message, "warning");
+      // Puedes agregar aquí lógica para enfocar el campo con error si lo deseas
+      return false;
     }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+    
+    return true;
   };
 
   const registerChecker = async (formData) => {
     try {
       let sentByUserId = localStorage.getItem("userId");
+
+      showNotification("Registrando checador...", "loading");
 
       const response = await fetch("http://localhost:8080/user/saveChecker", {
         method: "POST",
@@ -104,8 +129,7 @@ export default function NewChecker() {
         throw new Error(errorData.message || "Error en el registro");
       }
 
-      const data = await response.json();
-      return data;
+      return await response.json();
     } catch (error) {
       console.error("Error:", error);
       throw error;
@@ -115,38 +139,29 @@ export default function NewChecker() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Mostrar notificación de validación
-    showNotification("Validando formulario...", "loading");
+    if (!validateForm()) {
+      return; // Detener el envío si la validación falla
+    }
 
-    if (validateForm()) {
-      try {
-        // Mostrar notificación de registro en progreso
-        showNotification("Guardando checador...", "loading");
+    try {
+      const response = await registerChecker(formData);
+      console.log("Checador registrado:", response);
 
-        const response = await registerChecker(formData);
-        console.log("Respuesta del servidor:", response);
+      showNotification("Checador registrado exitosamente!", "success");
 
-        // Mostrar notificación de éxito
-        showNotification("Checador registrado exitosamente", "success");
+      // Limpiar el formulario
+      setFormData({
+        name: "",
+        lastName: "",
+        password: "",
+        email: "",
+        phone: "",
+        rePassword: "",
+      });
 
-        // Limpiar el formulario
-        setFormData({
-          name: "",
-          lastName: "",
-          password: "",
-          email: "",
-          phone: "",
-          rePassword: "",
-        });
-      } catch (error) {
-        console.error("Error al registrar el checador:", error);
-
-        // Mostrar notificación de error
-        showNotification(error.message || "Hubo un error al registrar el checador", "error");
-      }
-    } else {
-      // Mostrar notificación de advertencia
-      showNotification("Por favor, completa todos los campos correctamente.", "warning");
+    } catch (error) {
+      console.error("Error al registrar el checador:", error);
+      showNotification(error.message || "Hubo un error al registrar el checador", "error");
     }
   };
 
@@ -177,7 +192,6 @@ export default function NewChecker() {
                       </>
                     }
                     id="name"
-                    error={errors.name}
                   />
                 </div>
               </div>
@@ -196,18 +210,18 @@ export default function NewChecker() {
                       </>
                     }
                     id="lastName"
-                    error={errors.lastName}
                   />
                 </div>
               </div>
             </div>
+
             <div className="row">
               <div className="col-md-6">
                 <div className="form-block p-2">
                   <InputComponent
                     onChange={handleInputChange}
                     value={formData.email}
-                    type="text"
+                    type="email"
                     label={
                       <>
                         <img src={sobre} alt="Icono" className="icon-sm" />
@@ -216,7 +230,6 @@ export default function NewChecker() {
                       </>
                     }
                     id="email"
-                    error={errors.email}
                   />
                 </div>
               </div>
@@ -226,7 +239,7 @@ export default function NewChecker() {
                   <InputComponent
                     onChange={handleInputChange}
                     value={formData.phone}
-                    type="text"
+                    type="tel"
                     label={
                       <>
                         <img src={cellphone} alt="Icono" className="icon-sm" />
@@ -235,11 +248,11 @@ export default function NewChecker() {
                       </>
                     }
                     id="phone"
-                    error={errors.phone}
                   />
                 </div>
               </div>
             </div>
+
             <div className="row">
               <div className="col-md-6">
                 <div className="form-block p-2">
@@ -249,12 +262,11 @@ export default function NewChecker() {
                     label={
                       <>
                         <img className="icon-md" src={passwordIcon} alt="Icono" />
-                        <span className="label-text">Ingresar contraseña</span>
+                        <span className="label-text">Contraseña</span>
                         <span className="required-asterisk">*</span>
                       </>
                     }
                     id="password"
-                    error={errors.password}
                   />
                 </div>
               </div>
@@ -272,17 +284,16 @@ export default function NewChecker() {
                       </>
                     }
                     id="rePassword"
-                    error={errors.rePassword}
                   />
                 </div>
               </div>
             </div>
 
-            <div className="row">
-              <div className="col-md-3 offset-md-9">
-                <div className="form-block p-2">
-                  <BlueButton type="submit">Registrar</BlueButton>
-                </div>
+            <div className="row mt-4">
+              <div className="col-md-12 text-center">
+                <BlueButton type="submit">
+                  Registrar checador
+                </BlueButton>
               </div>
             </div>
           </form>

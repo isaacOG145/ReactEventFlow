@@ -44,9 +44,8 @@ export default function ChargeWorkshop({ id }) {
         setShowModal(false);
     };
 
-    const handleUpdateSuccess = (updatedData) => {
-        setEventData(updatedData);
-        setShowModal(false);
+    const handleUpdateSuccess = () => {
+        fetchEventData();
     };
 
     const formatTime = (time) => {
@@ -65,36 +64,37 @@ export default function ChargeWorkshop({ id }) {
         navigate(-1);
     };
 
+    const fetchEventData = async () => {
+        try {
+            const response = await fetch(`http://localhost:8080/activity/workshop/findById/${id}`);
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            const data = await response.json();
+            if (data.type === "SUCCESS") {
+                setEventData({
+                    id: data.result.id,
+                    name: data.result.name,
+                    description: data.result.description,
+                    imageUrls: data.result.imageUrls || [],
+                    speaker: data.result.speaker || "",
+                    quota: data.result.quota || "",
+                    time: data.result.time || "",
+                    fromActivity: data.result.fromActivity || {}
+                });
+            } else {
+                throw new Error(data.text || "Error al obtener los datos del evento");
+            }
+        } catch (err) {
+            console.error("Error fetching event data:", err);
+            setError(err.message);
+        } finally {
+            setLoadingEvent(false);
+        }
+    };
+
     // Cargar datos del evento
     useEffect(() => {
-        const fetchEventData = async () => {
-            try {
-                const response = await fetch(`http://localhost:8080/activity/workshop/findById/${id}`);
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                const data = await response.json();
-                if (data.type === "SUCCESS") {
-                    setEventData({
-                        id: data.result.id,
-                        name: data.result.name,
-                        description: data.result.description,
-                        imageUrls: data.result.imageUrls || [],
-                        speaker: data.result.speaker || "",
-                        quota: data.result.quota || "",
-                        time: data.result.time || "",
-                        fromActivity: data.result.fromActivity || {}
-                    });
-                } else {
-                    throw new Error(data.text || "Error al obtener los datos del evento");
-                }
-            } catch (err) {
-                console.error("Error fetching event data:", err);
-                setError(err.message);
-            } finally {
-                setLoadingEvent(false);
-            }
-        };
 
         fetchEventData();
     }, [id]);
@@ -218,7 +218,7 @@ export default function ChargeWorkshop({ id }) {
                         <NavigatePurpleButton onClick={handleReturn}>Volver</NavigatePurpleButton>
                     </div>
                     <div className="col-12 col-md-3 mb-2">
-                        <BlueButton onClick={handleEdit}>Editar</BlueButton>
+                        <BlueButton onClick={handleEdit}>Actualizar</BlueButton>
                     </div>
                 </div>
             </div>

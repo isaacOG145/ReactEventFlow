@@ -43,7 +43,7 @@ const UpdateWorkshopModal = ({ showModal, workshopData, handleClose, onUpdateSuc
     if (type !== 'loading') {
       setTimeout(() => {
         setNotification(prev => ({ ...prev, show: false }));
-      }, 3000);
+      }, 2500);
     }
   };
 

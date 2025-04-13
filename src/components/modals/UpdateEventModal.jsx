@@ -4,6 +4,7 @@ import ImageGalleryUpload from "../ImagesGalleryUpload";
 import DateInputComponent from "../DateInputComponent";
 import BlueButton from "../BlueButton";
 import PurpleButton from "../PurpleButton";
+import MessageModal from "./MessageModal";
 
 import Event from '../../assets/icons/event-name.png';
 import EventDate from '../../assets/icons/event-date.png';
@@ -19,6 +20,28 @@ const UpdateEventModal = ({ showModal, eventData, handleClose, onUpdateSuccess }
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [originalImages, setOriginalImages] = useState([]);
+
+    const [notification, setNotification] = useState({
+        show: false,
+        message: "",
+        type: "success" // 'success', 'error', 'warning', 'loading'
+    });
+
+    // Función para mostrar notificaciones
+    const showNotification = (message, type = "success") => {
+        setNotification({
+            show: true,
+            message,
+            type
+        });
+
+        // Auto-cerrar solo si no es de tipo loading
+        if (type !== 'loading') {
+            setTimeout(() => {
+                setNotification(prev => ({ ...prev, show: false }));
+            }, 2500);
+        }
+    };
 
     useEffect(() => {
         if (eventData && showModal) {
@@ -36,36 +59,36 @@ const UpdateEventModal = ({ showModal, eventData, handleClose, onUpdateSuccess }
         setEventDate(e.target.value);
     };
 
-    
+
     const handleSubmit = async (e) => {
         e.preventDefault();
-    
+
         if (!eventName || !eventDate || !eventDescription) {
             setError("Por favor, completa todos los campos obligatorios.");
             return;
         }
-    
+
         setLoading(true);
         setError(null);
-    
+
         try {
             // Identificar imágenes eliminadas
-            const deletedImages = originalImages.filter(originalImg => 
-                !images.some(currentImg => 
+            const deletedImages = originalImages.filter(originalImg =>
+                !images.some(currentImg =>
                     typeof currentImg === 'string' && currentImg === originalImg
                 )
             );
-    
+
             // Identificar imágenes existentes que se conservan
-            const existingImages = images.filter(img => 
+            const existingImages = images.filter(img =>
                 typeof img === 'string' && originalImages.includes(img)
             );
-    
+
             // Filtrar imágenes nuevas (archivos)
             const newImages = images.filter(img => typeof img === 'object');
-    
+
             const formData = new FormData();
-    
+
             const activityDTO = {
                 id: eventData.id,
                 name: eventName,
@@ -74,45 +97,58 @@ const UpdateEventModal = ({ showModal, eventData, handleClose, onUpdateSuccess }
                 deletedImages: deletedImages,
                 existingImages: existingImages
             };
-    
+
             formData.append("activity", new Blob([JSON.stringify(activityDTO)], {
                 type: "application/json"
             }));
-    
+
             // Agregar imágenes nuevas al FormData
             newImages.forEach((img) => {
                 if (img.file) {
                     formData.append("images", img.file);
                 }
             });
-    
-            const response = await fetch('http://localhost:8080/activity/updateEvent', {
-                method: 'PUT',
-                body: formData,
-                headers: {
-                    // No incluir 'Content-Type': el navegador lo establecerá automáticamente con el boundary correcto
-                    'Authorization': `Bearer ${localStorage.getItem('token')}` // Si usas autenticación
+
+            try {
+                showNotification("Actualizando...", "loading");
+                const response = await fetch('http://localhost:8080/activity/updateEvent', {
+                    method: 'PUT',
+                    body: formData,
+                    headers: {
+                        // No incluir 'Content-Type': el navegador lo establecerá automáticamente con el boundary correcto
+                        'Authorization': `Bearer ${localStorage.getItem('token')}` // Si usas autenticación
+                    }
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.message || 'Error al actualizar el evento');
                 }
-            });
-    
-            if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.message || 'Error al actualizar el evento');
+
+                const result = await response.json();
+
+
+                showNotification("Evento actualizado con exito", "success");
+
+                if (onUpdateSuccess) {
+                    onUpdateSuccess(result.result);
+                }
+
+                setTimeout(() => {
+                    handleClose();
+                }, 2500);
+            } catch (error) {
+                console.error("Error:", error);
+                setError(error.message || "Hubo un error al actualizar el taller.");
+            } finally {
+                setLoading(false);
             }
-    
-            const result = await response.json();
-            
-            if (onUpdateSuccess) {
-                onUpdateSuccess(result.result);
-            }
-    
-            handleClose();
         } catch (error) {
             console.error("Error:", error);
-            setError(error.message || "Hubo un error al actualizar el evento.");
-        } finally {
-            setLoading(false);
+            showNotification(error.message || "Hubo un error al actualizar el taller", "error");
         }
+
+
     };
 
     return (
@@ -120,9 +156,9 @@ const UpdateEventModal = ({ showModal, eventData, handleClose, onUpdateSuccess }
             <div className="modal-content">
                 <div className="modal-header">
                     <h1>Actualizar evento</h1>
-                    <button 
-                        onClick={handleClose} 
-                        className="close-button" 
+                    <button
+                        onClick={handleClose}
+                        className="close-button"
                         aria-label="Cerrar modal"
                         disabled={loading}
                     >
@@ -135,7 +171,7 @@ const UpdateEventModal = ({ showModal, eventData, handleClose, onUpdateSuccess }
                             {error}
                         </div>
                     )}
-                    
+
                     <form onSubmit={handleSubmit}>
                         <div className="row">
                             <div className="col-md-6">
@@ -209,8 +245,8 @@ const UpdateEventModal = ({ showModal, eventData, handleClose, onUpdateSuccess }
                         <div className="row mt-4">
                             <div className="col-6"></div>
                             <div className="col-3">
-                                <PurpleButton 
-                                    onClick={handleClose} 
+                                <PurpleButton
+                                    onClick={handleClose}
                                     disabled={loading}
                                     type="button"
                                 >
@@ -218,8 +254,8 @@ const UpdateEventModal = ({ showModal, eventData, handleClose, onUpdateSuccess }
                                 </PurpleButton>
                             </div>
                             <div className="col-3">
-                                <BlueButton 
-                                    type="submit" 
+                                <BlueButton
+                                    type="submit"
                                     disabled={loading}
                                 >
                                     {loading ? "Guardando..." : "Actualizar"}
@@ -229,6 +265,12 @@ const UpdateEventModal = ({ showModal, eventData, handleClose, onUpdateSuccess }
                     </form>
                 </div>
             </div>
+            <MessageModal
+                show={notification.show}
+                onClose={() => setNotification({ ...notification, show: false })}
+                type={notification.type}
+                message={notification.message}
+            />
         </div>
     );
 };

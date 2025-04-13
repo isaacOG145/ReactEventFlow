@@ -44,12 +44,9 @@ export default function AdminEventDetails() {
     setShowModal(false);
   };
 
-  const handleUpdateSuccess = (updatedEvent) => {
-    setEventData({
-      ...updatedEvent,
-      date: updatedEvent.date,
-    });
-    setShowModal(false);
+
+  const handleUpdateSuccess = () => {
+    fetchEventData();
   };
 
   const formatDate = (dateString) => {
@@ -62,31 +59,32 @@ export default function AdminEventDetails() {
     }
   };
 
+  const fetchEventData = async () => {
+    try {
+      const response = await fetch(`http://localhost:8080/activity/event/findById/${id}`);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const data = await response.json();
+      if (data.type === "SUCCESS") {
+        setEventData({
+          id: data.result.id,
+          name: data.result.name,
+          description: data.result.description,
+          date: data.result.date,
+          imageUrls: data.result.imageUrls || [],
+        });
+      } else {
+        throw new Error(data.text || "Error al obtener los datos del evento");
+      }
+    } catch (err) {
+      console.error("Error fetching event data:", err);
+      setError(err.message);
+    }
+  };
+
   // Cargar datos del evento
   useEffect(() => {
-    const fetchEventData = async () => {
-      try {
-        const response = await fetch(`http://localhost:8080/activity/event/findById/${id}`);
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        const data = await response.json();
-        if (data.type === "SUCCESS") {
-          setEventData({
-            id: data.result.id,
-            name: data.result.name,
-            description: data.result.description,
-            date: data.result.date,
-            imageUrls: data.result.imageUrls || [],
-          });
-        } else {
-          throw new Error(data.text || "Error al obtener los datos del evento");
-        }
-      } catch (err) {
-        console.error("Error fetching event data:", err);
-        setError(err.message);
-      }
-    };
 
     fetchEventData();
   }, [id]);

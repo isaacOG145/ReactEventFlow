@@ -24,54 +24,61 @@ export default function MyEvents() {
   const [eventToEdit, setEventToEdit] = useState(null);
   const [modalType, setModalType] = useState(null); // 'edit' | 'assign'
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const userId = localStorage.getItem('userId');
-        if (!userId) throw new Error('No se encontró userId en el localStorage');
 
-        const [eventsRes, assignmentRes] = await Promise.all([
-          fetch(`http://localhost:8080/activity/events/byOwner/${userId}`),
-          fetch(`http://localhost:8080/activity/assignment-status/owner/${userId}`)
-        ]);
+  const fetchData = async () => {
+    try {
+      const userId = localStorage.getItem('userId');
+      if (!userId) throw new Error('No se encontró userId en el localStorage');
 
-        if (!eventsRes.ok) throw new Error('Error al cargar eventos');
+      const [eventsRes, assignmentRes] = await Promise.all([
+        fetch(`http://localhost:8080/activity/events/byOwner/${userId}`),
+        fetch(`http://localhost:8080/activity/assignment-status/owner/${userId}`)
+      ]);
 
-        const eventsData = await eventsRes.json();
-        if (eventsData.type !== "SUCCESS" || !Array.isArray(eventsData.result)) {
-          throw new Error('Respuesta inválida del servidor al obtener eventos');
-        }
+      if (!eventsRes.ok) throw new Error('Error al cargar eventos');
 
-        const assignmentData = assignmentRes.ok ? await assignmentRes.json() : null;
-
-        // Manejar casos donde assignmentData esté mal o no tenga result
-        const asignacionesMap = {};
-        if (assignmentData && Array.isArray(assignmentData.result)) {
-          assignmentData.result.forEach(item => {
-            if (item.id !== undefined && typeof item.asignado === "boolean") {
-              asignacionesMap[item.id] = item.asignado;
-            }
-          });
-        } else {
-          console.warn("Datos de asignación no disponibles o mal formateados:", assignmentData);
-        }
-
-        const enrichedEvents = eventsData.result.map(event => ({
-          ...event,
-          asignado: asignacionesMap[event.id] || false
-        }));
-
-        setEvents(enrichedEvents);
-      } catch (err) {
-        setError(err.message);
-        console.error("Error fetching data:", err);
-      } finally {
-        setLoading(false);
+      const eventsData = await eventsRes.json();
+      if (eventsData.type !== "SUCCESS" || !Array.isArray(eventsData.result)) {
+        throw new Error('Respuesta inválida del servidor al obtener eventos');
       }
-    };
+
+      const assignmentData = assignmentRes.ok ? await assignmentRes.json() : null;
+
+      // Manejar casos donde assignmentData esté mal o no tenga result
+      const asignacionesMap = {};
+      if (assignmentData && Array.isArray(assignmentData.result)) {
+        assignmentData.result.forEach(item => {
+          if (item.id !== undefined && typeof item.asignado === "boolean") {
+            asignacionesMap[item.id] = item.asignado;
+          }
+        });
+      } else {
+        console.warn("Datos de asignación no disponibles o mal formateados:", assignmentData);
+      }
+
+      const enrichedEvents = eventsData.result.map(event => ({
+        ...event,
+        asignado: asignacionesMap[event.id] || false
+      }));
+
+      setEvents(enrichedEvents);
+    } catch (err) {
+      setError(err.message);
+      console.error("Error fetching data:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
 
     fetchData();
   }, []);
+
+  const handleUpdateSuccess = () => {
+    // Actualizar la lista de talleres después de una actualización exitosa
+    fetchData();
+  };
 
 
 
@@ -216,7 +223,7 @@ export default function MyEvents() {
           showModal={showModal}
           eventData={eventToEdit}
           handleClose={handleCloseModal}
-          handleUpdate={handleUpdateEvent}
+          onUpdateSuccess={handleUpdateSuccess} 
         />
       )}
 

@@ -11,14 +11,14 @@ import newsPaper from '../../assets/icons/periodico.png';
 import gender from '../../assets/icons/generos.png';
 import job from '../../assets/icons/trabajo.png';
 import place from '../../assets/icons/edificio-de-oficinas.png';
-import successImage from '../../assets/icons/success.png';
-import alertImage from '../../assets/icons/error.png';
 
 import BirthDateComponent from "../BirthDateComponent";
 import InputComponent from "../InputComponent";
 import SelectInputComponent from "../SelectInput.Component";
 import BlueButton from "../BlueButton";
 import MessageModal from "./MessageModal";
+
+import { validateEmail, validatePhone, validateRequiredField, validateRequired} from "../../utils/validateInputs";
 
 
 export default function CreateUserAcount({ activityId, onRegistrationSuccess }) {
@@ -103,9 +103,60 @@ export default function CreateUserAcount({ activityId, onRegistrationSuccess }) 
         const newErrors = {};
         let isValid = true;
 
+
+        // Validación de campos requeridos con longitud máxima
+        const nameValidation = validateRequiredField(formData.name, 50);
+        if (!nameValidation.isValid) {
+            newErrors.name = nameValidation.message;
+            isValid = false;
+        }
+
+        const lastNameValidation = validateRequiredField(formData.lastName, 100);
+        if (!lastNameValidation.isValid) {
+            newErrors.lastName = lastNameValidation.message;
+            isValid = false;
+        }
+
+        // Validación de email (requerido + formato)
+        if (!validateRequired(formData.email)) {
+            newErrors.email = "El email es obligatorio";
+            isValid = false;
+        } else if (!validateEmail(formData.email)) {
+            newErrors.email = "Ingresa un email válido";
+            isValid = false;
+        }
+
+        // Validación de teléfono (requerido + formato)
+        if (!validateRequired(formData.phone)) {
+            newErrors.phone = "El teléfono es obligatorio";
+            isValid = false;
+        } else if (!validatePhone(formData.phone)) {
+            newErrors.phone = "Ingresa un teléfono válido (10 dígitos)";
+            isValid = false;
+        }
+
+        // Validación de otros campos requeridos
+        const requiredFields = [
+            { field: 'birthday', maxLength: 10, name: 'Fecha de nacimiento' },
+            { field: 'gender', maxLength: 20, name: 'Género' },
+            { field: 'address', maxLength: 255, name: 'Dirección' },
+            { field: 'job', maxLength: 50, name: 'Profesión' },
+            { field: 'workPlace', maxLength: 255, name: 'Lugar de trabajo' },
+            { field: 'howFound', maxLength: 50, name: 'Medio de difusión' }
+        ];
+
+        requiredFields.forEach(({ field, maxLength, name }) => {
+            const validation = validateRequiredField(formData[field], maxLength);
+            if (!validation.isValid) {
+                newErrors[field] = validation.message;
+                isValid = false;
+            }
+        });
+
         setErrors(newErrors);
 
         if (!isValid) {
+            showNotification("Por favor completa todos los campos requeridos correctamente", "error");
             return;
         }
 

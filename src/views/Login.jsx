@@ -17,6 +17,8 @@ import InputComponent from "../components/InputComponent";
 import CustomPasswordInput from "../components/CustomPasswordInput";
 import MessageModal from "../components/modals/MessageModal";
 
+import { validateEmail, validatePassword, validateRequired } from "../utils/validateInputs";
+
 const loginUser = async (email, password) => {
     try {
         const response = await fetch('http://localhost:8080/login', {
@@ -69,7 +71,7 @@ export default function Login() {
         if (!email) {
             setEmailError("El correo electrónico es requerido");
             isValid = false;
-        } else if (!/\S+@\S+\.\S+/.test(email)) {
+        } else if (!/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email)) {
             setEmailError("El correo electrónico no es válido");
             isValid = false;
         }

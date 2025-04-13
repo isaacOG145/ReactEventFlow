@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../styles/main.css';
 
@@ -9,176 +9,102 @@ import BlueButton from "../components/BlueButton";
 import SelectInputComponent from "../components/SelectInput.Component";
 import ImageGalleryUpload from "../components/ImagesGalleryUpload";
 import TimeInputComponent from "../components/TimeInputComponent";
-import MessageModal from '../components/modals/MessageModal'; // Asegúrate de importar el MessageModal
+import MessageModal from "../components/modals/MessageModal";
 
-import time from '../assets/icons/time.png';
-import People from '../assets/icons/people.png';
-import DetailsImg from '../assets/icons/details.png';
+import cellphone from '../assets/icons/telefono-inteligente.png';
+import sobre from '../assets/icons/sobres.png';
 import userIcon from '../assets/icons/usuario.png';
-import EventIcon from '../assets/icons/event-date.png';
+import timeIcon from '../assets/icons/time.png';
 
 export default function NewWorkshop() {
-  const [selectedEvent, setSelectedEvent] = useState("");
-  const [events, setEvents] = useState([]);
-  const [loading, setLoading] = useState(true); // Estado para controlar la carga
-  const [error, setError] = useState(null);
-
-  const [images, setImages] = useState([]);
-  const [workshopTime, setWorkshopTime] = useState("");
-
-  // Estado para el modal de notificación
-  const [notification, setNotification] = useState({
-    show: false,
-    message: "",
-    type: "success" // 'success', 'error', 'warning', 'loading'
-  });
-
+  // Estados
   const [formData, setFormData] = useState({
     name: "",
     speaker: "",
     quota: "",
-    description: ""
+    description: "",
+  });
+  const [workshopTime, setWorkshopTime] = useState(""); // Estado para la hora del taller
+  const [selectedOption, setSelectedOption] = useState("");
+  const [images, setImages] = useState([]);
+  const [notification, setNotification] = useState({
+    show: false,
+    message: "",
+    type: "success",
   });
 
-  // Función para mostrar notificaciones
+  // Opciones temporales para el selector
+  const options = [
+    { value: "op1", label: "Opción 1" },
+    { value: "op2", label: "Opción 2" },
+    { value: "op3", label: "Opción 3" },
+  ];
+
   const showNotification = (message, type = "success") => {
     setNotification({
       show: true,
       message,
-      type
+      type,
     });
-    
-    // Auto-cerrar solo si no es de tipo loading
-    if (type !== 'loading') {
+
+    if (type !== "loading") {
       setTimeout(() => {
-        setNotification(prev => ({...prev, show: false}));
+        setNotification((prev) => ({ ...prev, show: false }));
       }, 3000);
     }
   };
 
-  useEffect(() => {
-    const userId = localStorage.getItem("userId");
-
-    if (userId) {
-      fetch(`http://localhost:8080/activity/events/byOwner/${userId}`)
-        .then((response) => {
-          if (!response.ok) {
-            throw new Error("Error en la respuesta del servidor");
-          }
-          return response.json();
-        })
-        .then((data) => {
-          if (data.type === "SUCCESS") {
-            const activeEvents = data.result
-              .filter(event => event.status === true && event.typeActivity === "EVENT")
-              .map(event => ({
-                value: event.id.toString(),
-                label: event.name
-              }));
-
-            setEvents(activeEvents);
-            if (activeEvents.length === 0) {
-              setError("No hay eventos activos disponibles");
-            }
-          } else {
-            setError("No se encontraron eventos activos.");
-          }
-          setLoading(false);
-        })
-        .catch((error) => {
-          setError(`Error al cargar eventos: ${error.message}`);
-          setLoading(false);
-          showNotification("Error al cargar eventos", "error");
-        });
-    } else {
-      setError("No se encontró el ID de usuario.");
-      setLoading(false);
-      showNotification("No se identificó al usuario", "error");
-    }
-  }, []);
-
   const handleInputChange = (e) => {
     const { id, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [id]: value
-    }));
+    setFormData({
+      ...formData,
+      [id]: value,
+    });
   };
 
-  const handleSubmit = async (e) => {
+  const validateForm = () => {
+    const validations = [
+      { condition: !formData.name.trim(), message: "Por favor, ingresa el nombre del taller.", field: "name" },
+      { condition: !formData.speaker.trim(), message: "Por favor, ingresa el nombre del ponente.", field: "speaker" },
+      { condition: !workshopTime.trim(), message: "Por favor, ingresa la hora del taller.", field: "time" },
+      { condition: !formData.quota.trim(), message: "Por favor, ingresa el cupo del taller.", field: "quota" },
+      { condition: !selectedOption, message: "Por favor, selecciona un evento asociado.", field: "fromActivity" },
+      { condition: !formData.description.trim(), message: "Por favor, ingresa una descripción del taller.", field: "description" },
+      { condition: images.length < 3, message: "Por favor, sube al menos 3 imágenes.", field: "images" },
+    ];
+
+    const failedValidation = validations.find((v) => v.condition);
+
+    if (failedValidation) {
+      showNotification(failedValidation.message, "warning");
+      return false;
+    }
+
+    return true;
+  };
+
+  const handleSubmit = (e) => {
     e.preventDefault();
 
-    // Validación de campos requeridos
-    if (!formData.name || !formData.speaker || !formData.quota ||
-      !formData.description || !workshopTime || !selectedEvent ||
-      images.length < 3) {
-      showNotification("Por favor, completa todos los campos y sube al menos 3 imágenes.", "warning");
+    if (!validateForm()) {
       return;
     }
 
-    // Formatear la hora al formato HH:MM:SS
-    const formattedTime = `${workshopTime}:00`;
+    showNotification("Guardando taller...", "loading");
 
-    const formDataToSend = new FormData();
-
-    // Crear el objeto activityDTO para el taller
-    const workshopDTO = {
-      name: formData.name,
-      description: formData.description,
-      quota: parseInt(formData.quota),
-      speaker: formData.speaker,
-      time: formattedTime,
-      fromActivity: {
-        id: parseInt(selectedEvent)
-      }
-    };
-
-    // Agregar el JSON como string
-    formDataToSend.append("activity", new Blob([JSON.stringify(workshopDTO)], {
-      type: "application/json"
-    }));
-
-    // Agregar las imágenes
-    images.forEach((imageObj) => {
-      if (imageObj && imageObj.file) {
-        formDataToSend.append("images", imageObj.file);
-      }
-    });
-
-    try {
-      // Mostrar estado de carga
-      showNotification("Guardando taller...", "loading");
-
-      const response = await fetch('http://localhost:8080/activity/saveWorkshop', {
-        method: 'POST',
-        body: formDataToSend,
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Error al crear el taller');
-      }
-
-      const result = await response.json();
-
-      // Mostrar éxito
-      showNotification("Taller creado con éxito", "success");
-
-      // Resetear el formulario
+    // Aquí iría la lógica para enviar el formulario al servidor
+    setTimeout(() => {
+      showNotification("Taller registrado exitosamente.", "success");
       setFormData({
         name: "",
         speaker: "",
         quota: "",
-        description: ""
+        description: "",
       });
       setWorkshopTime("");
-      setSelectedEvent("");
+      setSelectedOption("");
       setImages([]);
-      setError(null);
-    } catch (error) {
-      console.error("Error:", error);
-      showNotification(error.message || "Hubo un error al crear el taller", "error");
-    }
+    }, 2000);
   };
 
   return (
@@ -191,17 +117,15 @@ export default function NewWorkshop() {
         <div className="form">
           <form onSubmit={handleSubmit}>
             <h1 className="text-center mb-4">Registrar taller</h1>
-
-            {error && <div className="alert alert-danger">{error}</div>}
-
             <div className="row">
+              {/* Primera columna */}
               <div className="col-md-6">
                 <div className="form-block">
                   <InputComponent
                     type="text"
                     label={
                       <>
-                        <img className="icon-sm" src={EventIcon} alt="" />
+                        <img src={userIcon} alt="Icono" className="icon-sm" />
                         <span className="label-text">Nombre del taller</span>
                         <span className="required-asterisk">*</span>
                       </>
@@ -209,11 +133,11 @@ export default function NewWorkshop() {
                     id="name"
                     value={formData.name}
                     onChange={handleInputChange}
-                    required
                   />
                 </div>
               </div>
 
+              {/* Segunda columna */}
               <div className="col-md-6">
                 <div className="form-block">
                   <InputComponent
@@ -228,19 +152,19 @@ export default function NewWorkshop() {
                     id="speaker"
                     value={formData.speaker}
                     onChange={handleInputChange}
-                    required
                   />
                 </div>
               </div>
             </div>
 
             <div className="row">
+              {/* Hora del taller */}
               <div className="col-md-6">
                 <div className="form-block">
                   <TimeInputComponent
                     label={
                       <>
-                        <img className="icon-sm" src={time} alt="" />
+                        <img src={timeIcon} alt="Icono" className="icon-sm" />
                         <span className="label-text">Hora del taller</span>
                         <span className="required-asterisk">*</span>
                       </>
@@ -248,18 +172,18 @@ export default function NewWorkshop() {
                     id="workshopTime"
                     value={workshopTime}
                     onChange={(e) => setWorkshopTime(e.target.value)}
-                    required
                   />
                 </div>
               </div>
 
+              {/* Cupo */}
               <div className="col-md-6">
                 <div className="form-block">
                   <InputComponent
-                    type="number"
+                    type="text"
                     label={
                       <>
-                        <img src={People} alt="Icono" className="icon-sm" />
+                        <img src={cellphone} alt="Icono" className="icon-sm" />
                         <span className="label-text">Cupo</span>
                         <span className="required-asterisk">*</span>
                       </>
@@ -267,57 +191,40 @@ export default function NewWorkshop() {
                     id="quota"
                     value={formData.quota}
                     onChange={handleInputChange}
-                    required
-                    min="1"
                   />
                 </div>
               </div>
             </div>
 
             <div className="row">
-              <div className="col-md-12">
-                <div className="form-block">
-                  <SelectInputComponent
-                    options={events}
-                    value={selectedEvent}
-                    onChange={(e) => setSelectedEvent(e.target.value)}
-                    label={
-                      <>
-                        <img className="icon-sm" src={EventIcon} alt="" />
-                        <span className="label-text">Evento asociado</span>
-                        <span className="required-asterisk">*</span>
-                      </>
-                    }
-                    id="fromActivity"
-                    placeholder={"Selecciona un evento"}
-                    required
-                  />
-                  {events.length === 0 && !loading && (
-                    <p className="text-muted">No hay eventos activos disponibles</p>
-                  )}
-                </div>
-              </div>
+              <SelectInputComponent
+                options={options}
+                value={selectedOption}
+                onChange={(e) => setSelectedOption(e.target.value)}
+                label={
+                  <>
+                    <span className="label-text">Evento asociado</span>
+                    <span className="required-asterisk">*</span>
+                  </>
+                }
+                id="fromActivity"
+                placeholder="Selecciona un evento"
+              />
             </div>
 
             <div className="row">
-              <div className="col-md-12">
-                <div className="form-block">
-                  <InputComponent
-                    type="text"
-                    label={
-                      <>
-                        <img className="icon-sm" src={DetailsImg} alt="" />
-                        <span className="label-text">Descripción</span>
-                        <span className="required-asterisk">*</span>
-                      </>
-                    }
-                    id="description"
-                    value={formData.description}
-                    onChange={handleInputChange}
-                    required
-                  />
-                </div>
-              </div>
+              <InputComponent
+                type="text"
+                label={
+                  <>
+                    <span className="label-text">Descripción</span>
+                    <span className="required-asterisk">*</span>
+                  </>
+                }
+                id="description"
+                value={formData.description}
+                onChange={handleInputChange}
+              />
             </div>
 
             <ImageGalleryUpload
@@ -332,18 +239,17 @@ export default function NewWorkshop() {
               <div className="col-md-9">
                 <div className="form-block p-2"></div>
               </div>
-
               <div className="col-md-3">
                 <div className="form-block p-2">
-                  <BlueButton type="submit">
-                    Crear nuevo
-                  </BlueButton>
+                  <BlueButton type="submit">Registrar</BlueButton>
                 </div>
               </div>
             </div>
           </form>
         </div>
       </div>
+
+      {/* Modal de notificación */}
       <MessageModal
         show={notification.show}
         onClose={() => setNotification({ ...notification, show: false })}

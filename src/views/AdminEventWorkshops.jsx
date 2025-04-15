@@ -26,6 +26,7 @@ export default function AdminEventWorkshops() {
           method: 'GET',
           headers: {
             'Accept': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
           }
         });
 

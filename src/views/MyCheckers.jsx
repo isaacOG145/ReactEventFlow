@@ -22,6 +22,7 @@ export default function MyCheckers() {
           method: 'GET',
           headers: {
             'Accept': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
           }
         });
 
@@ -49,6 +50,7 @@ export default function MyCheckers() {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
         },
       });
 

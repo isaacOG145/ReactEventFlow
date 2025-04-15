@@ -86,6 +86,9 @@ export default function NewEvent() {
       const response = await fetch('http://localhost:8080/activity/saveEvent', {
         method: 'POST',
         body: formData,
+        headers:{
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
       });
 
       if (!response.ok) {
@@ -179,9 +182,7 @@ export default function NewEvent() {
               <ImageGalleryUpload
                 images={images}
                 onChange={setImages}
-                required
                 minImages={3}
-                error={images.length < 3 ? "Sube al menos 3 imágenes" : ""}
               />
             </div>
 

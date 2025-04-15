@@ -31,8 +31,16 @@ export default function MyEvents() {
       if (!userId) throw new Error('No se encontró userId en el localStorage');
 
       const [eventsRes, assignmentRes] = await Promise.all([
-        fetch(`http://localhost:8080/activity/events/byOwner/${userId}`),
-        fetch(`http://localhost:8080/activity/assignment-status/owner/${userId}`)
+        fetch(`http://localhost:8080/activity/events/byOwner/${userId}`,{
+          headers:{
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
+          }
+        }),
+        fetch(`http://localhost:8080/activity/assignment-status/owner/${userId}`,{
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
+          }
+        })
       ]);
 
       if (!eventsRes.ok) throw new Error('Error al cargar eventos');
@@ -88,6 +96,7 @@ export default function MyEvents() {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
         },
       });
 
@@ -131,6 +140,7 @@ export default function MyEvents() {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
         },
         body: JSON.stringify(updatedEvent),
       });

@@ -66,7 +66,11 @@ export default function ChargeWorkshop({ id }) {
 
     const fetchEventData = async () => {
         try {
-            const response = await fetch(`http://localhost:8080/activity/workshop/findById/${id}`);
+            const response = await fetch(`http://localhost:8080/activity/workshop/findById/${id}`,{
+                headers:{
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                }
+            });
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
@@ -103,7 +107,11 @@ export default function ChargeWorkshop({ id }) {
     useEffect(() => {
         const fetchUserActivities = async () => {
             try {
-                const usersResponse = await fetch(`http://localhost:8080/user-activities/findByActivity/${id}`);
+                const usersResponse = await fetch(`http://localhost:8080/user-activities/findByActivity/${id}`,{
+                    headers:{
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    }
+                });
                 if (usersResponse.status === 404) {
                     setUserActivities([]);
                     return;

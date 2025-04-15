@@ -41,7 +41,11 @@ export default function AssignmentChecker({ activity, onClose, onUpdateSuccess }
 
     if (bossId) {
       setLoading(true);
-      fetch(`http://localhost:8080/user/findByBoss/${bossId}`)
+      fetch(`http://localhost:8080/user/findByBoss/${bossId}`,{
+        headers:{
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+      })
         .then(res => {
           if (!res.ok) throw new Error("Error al cargar checadores");
           return res.json();
@@ -80,7 +84,10 @@ export default function AssignmentChecker({ activity, onClose, onUpdateSuccess }
 
     fetch("http://localhost:8080/assignment/saveAssignment", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: { 
+        "Content-Type": "application/json",
+        'Authorization': `Bearer ${localStorage.getItem('token')}`
+       },
       body: JSON.stringify(assignmentData),
     })
       .then(async response => {

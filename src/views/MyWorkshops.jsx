@@ -34,8 +34,16 @@ export default function MyWorkshops() {
       }
 
       const [eventsRes, assignmentRes] = await Promise.all([
-        fetch(`http://localhost:8080/activity/workshops/byOwner/${userId}`),
-        fetch(`http://localhost:8080/activity/assignment-status/owner/${userId}`)
+        fetch(`http://localhost:8080/activity/workshops/byOwner/${userId}`,{
+          headers:{
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
+          }
+        }),
+        fetch(`http://localhost:8080/activity/assignment-status/owner/${userId}`,{
+          headers:{
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
+          }
+        })
       ]);
 
       if (!eventsRes.ok) throw new Error('Error al cagar los talleres');
@@ -106,6 +114,7 @@ export default function MyWorkshops() {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
         },
         body: JSON.stringify(updatedWorkshop),
       });
@@ -128,6 +137,7 @@ export default function MyWorkshops() {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
         },
       });
 

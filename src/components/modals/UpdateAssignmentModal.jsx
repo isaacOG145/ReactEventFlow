@@ -42,7 +42,11 @@ export default function UpdateAssignmentModal({ assignmentId, onUpdate, onClose 
                 }
 
                 // Cargar checkers
-                const checkersResponse = await fetch(`http://localhost:8080/user/findByBoss/${ownerId}`);
+                const checkersResponse = await fetch(`http://localhost:8080/user/findByBoss/${ownerId}`,{
+                    headers:{
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    }
+                });
                 const checkersData = await checkersResponse.json();
 
                 if (checkersData.type === "SUCCESS") {
@@ -55,7 +59,11 @@ export default function UpdateAssignmentModal({ assignmentId, onUpdate, onClose 
                 // Cargar asignación si hay ID
                 if (assignmentId) {
                     setLoading(true);
-                    const assignmentResponse = await fetch(`http://localhost:8080/assignment/findById/${assignmentId}`);
+                    const assignmentResponse = await fetch(`http://localhost:8080/assignment/findById/${assignmentId}`,{
+                        headers: {
+                            'Authorization': `Bearer ${localStorage.getItem('token')}`
+                        }
+                    });
                     const assignmentData = await assignmentResponse.json();
 
                     if (assignmentData.type === "SUCCESS") {
@@ -98,6 +106,7 @@ export default function UpdateAssignmentModal({ assignmentId, onUpdate, onClose 
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`
                 },
                 body: JSON.stringify(updateData),
             });

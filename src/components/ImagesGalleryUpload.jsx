@@ -16,6 +16,7 @@ export default function ImageGalleryUpload({
 }) {
   const fileInputRefs = useRef([]);
   const [processing, setProcessing] = useState(false);
+  const [galleryError, setGalleryError] = useState('');
 
   // Limpieza de URLs de objeto
   useEffect(() => {
@@ -37,17 +38,17 @@ export default function ImageGalleryUpload({
         img.onload = () => {
           const canvas = document.createElement('canvas');
           const ctx = canvas.getContext('2d');
-          
+
           // Tamaño objetivo 16:9 (800x450)
           canvas.width = 800;
           canvas.height = 450;
-          
+
           // Calculamos el recorte centrado
           const sourceAspect = img.width / img.height;
           const targetAspect = 16 / 9;
-          
+
           let drawWidth, drawHeight, offsetX = 0, offsetY = 0;
-          
+
           if (sourceAspect > targetAspect) {
             // Imagen más ancha - recortar lados
             drawHeight = img.height;
@@ -59,9 +60,9 @@ export default function ImageGalleryUpload({
             drawHeight = drawWidth / targetAspect;
             offsetY = (img.height - drawHeight) / 2;
           }
-          
+
           ctx.drawImage(
-            img, 
+            img,
             offsetX,
             offsetY,
             drawWidth,
@@ -71,9 +72,9 @@ export default function ImageGalleryUpload({
             800,
             450
           );
-          
+
           canvas.toBlob((blob) => {
-            resolve(new File([blob], file.name, { 
+            resolve(new File([blob], file.name, {
               type: 'image/jpeg',
               lastModified: Date.now()
             }));
@@ -101,7 +102,7 @@ export default function ImageGalleryUpload({
     setProcessing(true);
     try {
       let processedFile = file;
-      
+
       // Solo redimensionamos imágenes nuevas (no las existentes)
       if (!images[index]?.existing) {
         processedFile = await resizeTo16_9(file);
@@ -138,6 +139,16 @@ export default function ImageGalleryUpload({
     const newImages = images.filter((_, i) => i !== index);
     onChange(newImages);
   };
+
+  useEffect(() => {
+    const validImages = images.filter((img) => img !== null);
+    if (required && validImages.length < minImages) {
+      setGalleryError(`Debes subir al menos ${minImages} imágenes.`);
+    } else {
+      setGalleryError('');
+    }
+  }, [images, minImages, required]);
+
 
   return (
     <div className="image-gallery-upload-container">
@@ -206,7 +217,12 @@ export default function ImageGalleryUpload({
         )}
       </div>
 
-      {error && <div className="image-gallery-upload-error">{error}</div>}
+      {(error || galleryError) && (
+        <div className="image-gallery-upload-error">
+          {galleryError || error}
+        </div>
+      )}
+
     </div>
   );
 }

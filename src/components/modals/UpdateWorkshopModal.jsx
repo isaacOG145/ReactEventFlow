@@ -63,7 +63,11 @@ const UpdateWorkshopModal = ({ showModal, workshopData, handleClose, onUpdateSuc
     // Cargar los eventos disponibles
     const userId = localStorage.getItem("userId");
     if (userId) {
-      fetch(`http://localhost:8080/activity/events/byOwner/${userId}`)
+      fetch(`http://localhost:8080/activity/events/byOwner/${userId}`,{
+        headers:{
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+      })
         .then((response) => response.json())
         .then((data) => {
           if (data.type === "SUCCESS") {

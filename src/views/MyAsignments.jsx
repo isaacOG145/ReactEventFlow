@@ -28,7 +28,11 @@ export default function MyAssignments() {
         // Cargar eventos
         async function fetchEvents() {
             try {
-                const response = await fetch(`http://localhost:8080/assignment/events/findByOwner/${ownerId}`);
+                const response = await fetch(`http://localhost:8080/assignment/events/findByOwner/${ownerId}`,{
+                    headers:{
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    }
+                });
                 const data = await response.json();
                 
                 if (data.type === "SUCCESS") {
@@ -52,7 +56,11 @@ export default function MyAssignments() {
         // Cargar talleres
         async function fetchWorkshops() {
             try {
-                const response = await fetch(`http://localhost:8080/assignment/workshops/findByOwner/${ownerId}`);
+                const response = await fetch(`http://localhost:8080/assignment/workshops/findByOwner/${ownerId}`,{
+                    headers:{
+                        'Authorization': `Bearer ${localStorage.getItem('token')}` 
+                    }
+                });
                 const data = await response.json();
                 
                 if (data.type === "SUCCESS") {
@@ -83,6 +91,7 @@ export default function MyAssignments() {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`
                 },
             });
 

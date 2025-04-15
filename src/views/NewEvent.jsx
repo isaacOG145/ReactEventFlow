@@ -1,25 +1,116 @@
 import React, { useState } from "react";
-import 'bootstrap/dist/css/bootstrap.min.css';
-import '../styles/main.css';
+import "bootstrap/dist/css/bootstrap.min.css";
+import "../styles/main.css";
+import "../styles/iconStyles.css";
 
 import CustomerRootHeader from "../components/CustomerRootHeader";
 import AdminNav from "../components/AdminNav";
 import BlueButton from "../components/BlueButton";
-import galleryIcon from "../assets/icons/galeria-de-imagenes.png";
-import addIcon from "../assets/icons/mas.png";
+import InputComponent from "../components/InputComponent";
+import DateInputComponent from "../components/DateInputComponent";
+import ImageGalleryUpload from "../components/ImagesGalleryUpload";
+import MessageModal from '../components/modals/MessageModal';
 
-
+import Event from '../assets/icons/event-name.png';
+import EventDate from '../assets/icons/event-date.png';
+import DetailsImg from '../assets/icons/details.png';
 
 export default function NewEvent() {
+  // Estados del formulario
   const [eventName, setEventName] = useState("");
   const [eventDate, setEventDate] = useState("");
   const [eventDescription, setEventDescription] = useState("");
-  const [gallery, setGallery] = useState([null, null, null]);
+  const [images, setImages] = useState([]);
+  
+  // Estado para el modal de notificación
+  const [notification, setNotification] = useState({
+    show: false,
+    message: "",
+    type: "success" // 'success', 'error', 'warning', 'loading'
+  });
 
-  const handleImageChange = (index, file) => {
-    const newGallery = [...gallery];
-    newGallery[index] = file;
-    setGallery(newGallery);
+  const handleDateChange = (e) => {
+    // Guardamos el valor directamente sin transformaciones
+    setEventDate(e.target.value);
+  };
+
+  // Función para mostrar notificaciones
+  const showNotification = (message, type = "success") => {
+    setNotification({
+      show: true,
+      message,
+      type
+    });
+    
+    // Auto-cerrar solo si no es de tipo loading
+    if (type !== 'loading') {
+      setTimeout(() => {
+        setNotification(prev => ({...prev, show: false}));
+      }, 3000);
+    }
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    // Validación de campos requeridos
+    if (!eventName || !eventDate || !eventDescription || images.length < 3) {
+      showNotification("Por favor, completa todos los campos y sube al menos 3 imágenes.", "warning");
+      return;
+    }
+
+    const formData = new FormData();
+    const activityDTO = {
+      ownerActivity: { id: localStorage.getItem("userId") },
+      name: eventName,
+      description: eventDescription,
+      date: `${eventDate}T00:00:00Z` // Formato UTC
+    };
+
+    // Agregar el JSON como string
+    formData.append("activity", new Blob([JSON.stringify(activityDTO)], {
+      type: "application/json"
+    }));
+
+    // Agregar las imágenes
+    images.forEach((imageObj) => {
+      if (imageObj && imageObj.file) {
+        formData.append("images", imageObj.file);
+      }
+    });
+
+    try {
+      // Mostrar estado de carga
+      showNotification("Guardando evento...", "loading");
+      
+      const response = await fetch('http://localhost:8080/activity/saveEvent', {
+        method: 'POST',
+        body: formData,
+        headers:{
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Error al crear el evento');
+      }
+
+      const result = await response.json();
+      
+      // Mostrar éxito
+      showNotification("Evento creado con éxito", "success");
+      
+      // Resetear formulario
+      setEventName("");
+      setEventDate("");
+      setEventDescription("");
+      setImages([]);
+
+    } catch (error) {
+      console.error("Error:", error);
+      showNotification(error.message || "Hubo un error al crear el evento", "error");
+    }
   };
 
   return (
@@ -30,73 +121,87 @@ export default function NewEvent() {
       </div>
 
       <div className="content">
-        <h1>Crear evento</h1>
-
-        <form className="event-form">
-          <div className="mb-3 d-flex justify-content-between">
-            <div className="w-50 me-3">
-              <label htmlFor="eventName" className="form-label">Nombre del evento<span>*</span></label>
-              <input
-                type="text"
-                id="eventName"
-                value={eventName}
-                onChange={(e) => setEventName(e.target.value)}
-                className="form-control"
-                required
-              />
-            </div>
-
-            <div className="w-50">
-              <label htmlFor="eventDate" className="form-label">Fecha<span>*</span></label>
-              <input
-                type="date"
-                id="eventDate"
-                value={eventDate}
-                onChange={(e) => setEventDate(e.target.value)}
-                className="form-control"
-                required
-              />
-            </div>
-          </div>
-
-          <div className="mb-3">
-            <label htmlFor="eventDescription" className="form-label">Descripción<span>*</span></label>
-            <textarea
-              id="eventDescription"
-              value={eventDescription}
-              onChange={(e) => setEventDescription(e.target.value)}
-              className="form-control"
-              required
-            />
-          </div>
-
-          <div className="mb-3">
-            <label className="form-label">Galería (mínimo 3 imágenes)</label>
-            <div className="d-flex gap-3">
-              {gallery.map((image, index) => (
-                <div key={index} className="position-relative">
-                  {image ? (
-                    <img src={URL.createObjectURL(image)} alt="preview" className="img-thumbnail" style={{ width: '100px', height: '100px', objectFit: 'cover' }} />
-                  ) : (
-                    <img src={index === gallery.length - 1 ? addIcon : galleryIcon} alt="icon" className="img-thumbnail" style={{ width: '100px', height: '100px' }} />
-                  )}
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={(e) => handleImageChange(index, e.target.files[0])}
-                    className="position-absolute top-0 start-0 w-100 h-100 opacity-0"
-                    required
+        <div className="form">
+          <form className="event-form" onSubmit={handleSubmit}>
+            <h1>Crear evento</h1>
+            <div className="row">
+              <div className="col-md-6">
+                <div className="form-block">
+                  <InputComponent
+                    type="text"
+                    label={
+                      <>
+                        <img className="icon-sm" src={Event} alt="" />
+                        <span className="label-text">Nombre del evento</span>
+                        <span className="required-asterisk">*</span>
+                      </>
+                    }
+                    id="name"
+                    value={eventName}
+                    onChange={(e) => setEventName(e.target.value)}
                   />
                 </div>
-              ))}
-            </div>
-          </div>
+              </div>
 
-          <div className="text-center mt-4">
-            <BlueButton>Crear nuevo</BlueButton>
-          </div>
-        </form>
+              <div className="col-md-6">
+                <div className="form-block">
+                  <DateInputComponent
+                    value={eventDate}
+                    onChange={handleDateChange}
+                    label={
+                      <>
+                        <img className="icon-sm" src={EventDate} alt="" />
+                        <span className="label-text">Fecha</span>
+                        <span className="required-asterisk">*</span>
+                      </>
+                    }
+                    id="event-date"
+                    required={true}
+                    error={eventDate === "" ? "La fecha es obligatoria" : ""}
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div className="row">
+              <InputComponent
+                type="text"
+                label={
+                  <>
+                    <img className="icon-sm" src={DetailsImg} alt="" />
+                    <span className="label-text">Descripción</span>
+                    <span className="required-asterisk">*</span>
+                  </>
+                }
+                value={eventDescription}
+                onChange={(e) => setEventDescription(e.target.value)}
+              />
+            </div>
+
+            <div className="row">
+              <ImageGalleryUpload
+                images={images}
+                onChange={setImages}
+                minImages={3}
+              />
+            </div>
+
+            <div className="text-center mt-4">
+              <BlueButton type="submit">
+                Crear nuevo
+              </BlueButton>
+            </div>
+          </form>
+        </div>
       </div>
+
+      {/* Modal de notificación */}
+      <MessageModal 
+        show={notification.show}
+        onClose={() => setNotification({...notification, show: false})}
+        type={notification.type}
+        message={notification.message}
+      />
     </div>
   );
 }

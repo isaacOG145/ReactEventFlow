@@ -9,11 +9,15 @@ import backgroundLogin from '../assets/backgroundLogin.png';
 import loginLogo from '../assets/loginLogo.png';
 import userIcon from '../assets/icons/user.png';
 import PasswordIcon from '../assets/icons/password.png';
+
 // Componentes
 import PurpleButton from "../components/PurpleButton";
 import BlueButton from "../components/BlueButton";
 import InputComponent from "../components/InputComponent";
 import CustomPasswordInput from "../components/CustomPasswordInput";
+import MessageModal from "../components/modals/MessageModal";
+
+import { validateEmail, validatePassword, validateRequired } from "../utils/validateInputs";
 
 const loginUser = async (email, password) => {
     try {
@@ -26,14 +30,16 @@ const loginUser = async (email, password) => {
         });
 
         if (!response.ok) {
-            throw new Error('Error en la autenticación');
+            const errorData = await response.json().catch(() => ({}));
+            const errorMessage = errorData.message || 'Error en la autenticación';
+            throw new Error(`${errorMessage} (${response.status})`);
         }
 
         const data = await response.json();
-        return data; // Retorna los datos del servidor (por ejemplo, un token)
+        return data;
     } catch (error) {
         console.error('Error:', error);
-        throw error; // Lanza el error para manejarlo en el componente
+        throw error;
     }
 };
 
@@ -42,6 +48,11 @@ export default function Login() {
     const [password, setPassword] = useState("");
     const [emailError, setEmailError] = useState("");
     const [passwordError, setPasswordError] = useState("");
+    const [notification, setNotification] = useState({
+        show: false,
+        message: "",
+        type: "success"
+    });
     const navigate = useNavigate();
 
     const handleEmailChange = (e) => {
@@ -57,18 +68,20 @@ export default function Login() {
     const validateForm = () => {
         let isValid = true;
 
-        if (!email) {
+        // Validación de email
+        if (!validateRequired(email)) {
             setEmailError("El correo electrónico es requerido");
             isValid = false;
-        } else if (!/\S+@\S+\.\S+/.test(email)) {
-            setEmailError("El correo electrónico no es válido");
+        } else if (!validateEmail(email)) {
+            setEmailError("Ingresa un email válido (ejemplo@dominio.com)");
             isValid = false;
         }
 
-        if (!password) {
+        // Validación de password
+        if (!validateRequired(password)) {
             setPasswordError("La contraseña es requerida");
             isValid = false;
-        } else if (password.length < 8) {
+        } else if (!validatePassword(password)) {
             setPasswordError("La contraseña debe tener al menos 8 caracteres");
             isValid = false;
         }
@@ -77,33 +90,57 @@ export default function Login() {
     };
 
     const handleForgotPassword = () => {
-        navigate('/recover-password'); // Redirige a la página de recuperación de contraseña
+        navigate('/recover-password');
+    };
+
+    const showNotification = (message, type = "success") => {
+        setNotification({
+            show: true,
+            message,
+            type
+        });
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setPasswordError("");
+        setEmailError("");
 
-        if (validateForm()) {
-            try {
-                const userData = await loginUser(email, password);
-                console.log('Autenticación exitosa:', userData);
+        if (!validateForm()) {
+            return;
+        }
 
-                // Guardar el token en localStorage
-                localStorage.setItem('token', userData.jwt);
-                localStorage.setItem('userId', userData.userId);
-                localStorage.setItem('role', userData.role);
+        try {
+            const userData = await loginUser(email, password);
 
-                if(userData.role != 'ADMIN' || userData.role != "SUPER_ADMIN"){
+            localStorage.setItem('token', userData.jwt);
+            localStorage.setItem('userId', userData.userId);
+            localStorage.setItem('role', userData.role);
+
+            // Mostrar mensaje de éxito antes de redirigir
+            showNotification("Inicio de sesión exitoso");
+
+            // Redirección después de 1.5 segundos (para que se vea el mensaje)
+            setTimeout(() => {
+                if (userData.role === 'ADMIN' || userData.role === "SUPER_ADMIN") {
+                    navigate('/dashboard/mis-talleres');
+                } else {
                     navigate('/');
                 }
-                navigate('/dashboard/mis-talleres');
+            }, 1500);
 
-            } catch (error) {
-                console.error('Error en la autenticación:', error);
-                setPasswordError('Correo electrónico o contraseña incorrectos');
+        } catch (error) {
+            console.error('Login error:', error);
+
+            if (error.message.includes('401')) {
+                showNotification('Credenciales incorrectas', 'error');
+            } else if (error.message.includes('403')) {
+                showNotification('Acceso no autorizado', 'error');
+            } else if (error.message.includes('NetworkError')) {
+                showNotification('Error de conexión. Intente nuevamente.', 'error');
+            } else {
+                showNotification('Error al iniciar sesión', 'error');
             }
-        } else {
-            console.log("Formulario con errores");
         }
     };
 
@@ -157,6 +194,14 @@ export default function Login() {
             </div>
 
             <a onClick={handleForgotPassword} className="pass-message">¿Has olvidado la contraseña?</a>
+
+            {/* Modal de notificación */}
+            <MessageModal
+                show={notification.show}
+                onClose={() => setNotification({ ...notification, show: false })}
+                type={notification.type}
+                message={notification.message}
+            />
         </div>
     );
 }

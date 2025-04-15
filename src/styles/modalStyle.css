@@ -1,0 +1,39 @@
+/* Estilos personalizados para el modal */
+.custom-modal {
+    z-index: 1060; /* Mayor que el backdrop */
+  }
+  
+  .custom-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1050; /* Menor que el modal pero mayor que otros elementos */
+  }
+  
+  /* Opcional: Ajustes para la apariencia del modal */
+  .custom-modal .modal-content {
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+    animation: fadeIn 0.3s ease-in-out;
+  }
+  
+  /* Animación de entrada */
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: scale(0.95);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+  
+  /* Asegurar que el modal esté por encima de todo */
+  .modal {
+    z-index: 1060 !important;
+  }

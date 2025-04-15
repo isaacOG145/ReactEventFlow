@@ -1,0 +1,117 @@
+.more-icon{
+  width: 25px;
+  height: 25px;
+}
+
+.img-icon{
+  height: 40px;
+  width: 40px;
+}
+
+.image-gallery-upload-container {
+    margin-bottom: 1rem;
+    position: relative;
+  }
+  
+  .image-gallery-upload-label {
+    display: flex;
+    font-size: 20px;
+    margin-bottom: 0.5rem;
+    text-align: left;
+  }
+
+  .label-icon {
+    margin-right: 8px;
+    width: 30px;
+    height: 30px;
+  }
+  
+  .image-gallery-upload-required {
+    color: #dc3545;
+  }
+  
+  .image-gallery-upload-gallery {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+  
+  .image-gallery-upload-wrapper {
+    position: relative;
+  }
+  
+  .image-gallery-upload-thumbnail {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border: 1px solid #dee2e6;
+    border-radius: 0.25rem;
+  }
+  
+  .image-gallery-upload-placeholder {
+    width: 100px;
+    height: 100px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    background-color: #E5E7E9;
+    border: 1px solid #909497;
+    border-radius: 0.25rem;
+  }
+  
+  .image-gallery-upload-input {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+  }
+  
+  .image-gallery-upload-delete {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 24px;
+    height: 24px;
+    line-height: 12px;
+    padding: 0;
+    margin: 0.25rem;
+  }
+  
+  .image-gallery-upload-add {
+    width: 100px;
+    height: 100px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid #909497;
+    background-color: #E5E7E9;
+    border-radius: 0.25rem;
+    cursor: pointer;
+  }
+  
+  .image-gallery-upload-add:hover {
+    background-color: #f8f9fa;
+  }
+  
+  .image-gallery-upload-error {
+    color: #dc3545;
+    font-size: 0.875rem;
+    margin-top: 0.5rem;
+  }
+  
+  /* Overlay de procesamiento */
+  .image-processing-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(255, 255, 255, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+  }

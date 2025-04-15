@@ -1,3 +1,25 @@
+html {
+  font-size: 16px;
+  /* Define un tamaño base para la fuente */
+}
+
+.badge.bg-purple {
+  background-color: #8005a3 !important;
+  margin-left: 8px;
+}
+
+.badge.bg-magent {
+  background-color: #4210A9;
+  margin-left: 8px;
+}
+
+.badge.bg-blue {
+  background-color: #142EA9;
+  margin-left: 8px;
+}
+
+
+
 * {
   font-family: "Montserrat", sans-serif;
   margin: 0;
@@ -8,9 +30,9 @@
 .app-container {
   display: flex;
   flex-direction: column;
-  min-height: 100%;
+  min-height: 100vh;
   width: 100vw;
-  background-color: #F2F6F9;
+  background-color: #f2f6f9;
 }
 
 .background-container {
@@ -22,156 +44,625 @@
   align-items: center;
   height: 100vh;
   width: 100vw;
+  background-color: #f2f6f9;
 }
-/* Estilos para el logo */
-.logo {
-  height: auto; /* Mantiene la proporción de la imagen */
-  max-height: 100px; /* Altura máxima del logo */
-  width: auto; /* Ancho automático para mantener la proporción */
+
+.content-container {
+  margin-top: 7.5rem;
+  /* 120px */
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+
+}
+
+.presentation-block {
+  background-color: #e5e7e9;
+  width: 100%;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  padding: 1.875rem 0.9375rem;
+  /* 30px 15px */
+}
+
+.about-us {
+  text-align: center;
+  padding: 1.25rem;
+  /* 20px */
+}
+
+h2 {
+  font-weight: bold;
+  font-size: 2rem;
+  /* 32px */
+  margin-bottom: 1.25rem;
+  /* 20px */
+  color: #141414;
+}
+
+.about-us h2 {
+  font-weight: bold;
+  font-size: 2rem;
+  /* 32px */
+  margin-bottom: 0.625rem;
+  /* 10px */
+  color: #141414;
+}
+
+.about-us p {
+  font-size: 1.25rem;
+  /* 20px */
+  line-height: 1.6;
+  color: #141414;
+  margin-bottom: 1.25rem;
+  /* 20px */
+}
+
+/* Estilo para las tarjetas */
+.card-presentation {
+  background-color: #fff;
+  border-radius: 15px;
+  padding: 1.25rem;
+  /* 20px */
+  margin: 0.625rem;
+  /* 10px */
+  text-align: center;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.icon-presentation {
+  width: 3.75rem;
+  /* 60px */
+  height: auto;
+  margin-bottom: 0.9375rem;
+  /* 15px */
+}
+
+.card-presentation h3 {
+  font-size: 1.25rem;
+  /* 20px */
+  font-weight: 600;
+  margin-bottom: 0.625rem;
+  /* 10px */
+}
+
+.card-presentation p {
+  font-size: 1rem;
+  /* 16px */
+  line-height: 1.5;
+  color: #555;
+}
+
+/* Estilos responsivos para móviles */
+@media (max-width: 768px) {
+  .about-us h2 {
+    font-size: 1.75rem;
+    /* 28px */
+  }
+
+  .about-us p {
+    font-size: 1.125rem;
+    /* 18px */
+  }
+
+  .card-presentation {
+    padding: 1rem;
+    /* 15px */
+  }
+
+  .card-presentation h3 {
+    font-size: 1.125rem;
+    /* 18px */
+  }
+
+  .card-presentation p {
+    font-size: 0.875rem;
+    /* 14px */
+  }
+}
+
+/* Agregar una mayor responsividad para pantallas muy pequeñas */
+@media (max-width: 576px) {
+  .card-presentation {
+    padding: 0.625rem;
+    /* 10px */
+  }
+
+  .card-presentation h3 {
+    font-size: 1rem;
+    /* 16px */
+  }
+
+  .card-presentation p {
+    font-size: 0.75rem;
+    /* 12px */
+  }
+
+  .presentation-block {
+    padding: 1.25rem 0.625rem;
+    /* 20px 10px */
+  }
 }
 
 .login-container {
   background-color: white;
-  padding: 30px;
+  padding: 1.875rem;
+  /* 30px */
   border-radius: 15px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   text-align: center;
-  width: 100%; /* Ocupa el ancho completo del contenedor padre */
-  max-width: 800px; /* Limita el ancho máximo del formulario */
-  margin: 0 auto; /* Centra el formulario horizontalmente */
+  width: 100%;
+  /* Ocupa el ancho completo del contenedor padre */
+  max-width: 50rem;
+  /* 800px */
+  margin: 0 auto;
+  /* Centra el formulario horizontalmente */
 }
 
-.form{
+.form {
   background-color: white;
-  padding: 30px;
+  padding: 1.875rem;
+  /* 30px */
   border-radius: 15px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   text-align: center;
-  width: 90%; /* Ocupa el ancho completo del contenedor padre */
+  width: 90%;
+  /* Ocupa el ancho completo del contenedor padre */
+  margin: 0 auto;
+}
+
+.form-asign {
+  background-color: white;
+  padding: 1.875rem;
+  /* 30px */
+  border-radius: 15px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  width: 60%;
+  /* Ocupa el ancho completo del contenedor padre */
+  margin: 0 auto;
+}
+
+.card-details {
+  background-color: white;
+  padding: 1.875rem;
+  border-radius: 15px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  text-align: left;
   margin: 0 auto;
 }
 
 h1 {
-  font-optical-sizing: auto;
   font-weight: 700;
-  font-style: bold;
-  color: #142EA9;
+  font-size: 2.5rem;
+  /* 40px */
+  color: #142ea9;
 }
 
 .login-title {
-  font-size: 40px;
-  margin-top: 30px; 
-  margin-bottom: 50px;
+  font-size: 2.5rem;
+  /* 40px */
+  margin-top: 1.875rem;
+  /* 30px */
+  margin-bottom: 3.125rem;
+  /* 50px */
   font-weight: 700;
-  font-style: bold; 
+  font-style: bold;
 }
 
 /* Estilos para el campo de entrada */
-
-/* Estilos para el contenedor del input */
 .input-container {
-  margin-bottom: 15px; /* Espacio entre los campos */
-  width: 100%; /* Ocupa todo el ancho disponible */
+  margin-bottom: 0.9375rem;
+  /* 15px */
+  width: 100%;
 }
 
-/* Estilos para la etiqueta */
 .input-label {
   display: flex;
-  align-items: start; /* Alinea los elementos verticalmente */
-  margin-bottom: 5px;
-  font-size: 20px;
+  align-items: start;
+  /* Alinea los elementos verticalmente */
+  margin-bottom: 0.3125rem;
+  /* 5px */
+  font-size: 1.25rem;
+  /* 20px */
   font-weight: normal;
   color: #141414 !important;
 }
 
-/* Estilos para el texto dentro del label */
-.label-text {
-  margin-right: 4px; /* Espacio entre el texto y el asterisco */
+/* Ajustes para los selectores */
+.select-field {
+  width: 100%;
+  padding: 0.625rem;
+  color: #141414;
+  background-color: #e5e7e9;
+  border: 1px solid #ccc;
+  border-radius: 15px;
+  font-size: 1.25rem;
+  outline: none;
+  transition: border-color 0.3s ease;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.625rem center;
+  background-size: 1.25rem;
 }
 
-/* Estilos para el asterisco de color diferente */
+.select-field:focus {
+  border-color: #007bff;
+}
+
+/* Ajuste para el contenedor de los selectores */
+.input-container .time-selectors {
+  margin-top: 0.3125rem;
+}
+
+/* Estilos para el texto dentro del label */
+.label-text {
+  margin-right: 0.25rem;
+  /* 4px */
+}
+
 .required-asterisk {
-  color: #CC1212; /* Color del asterisco */
-  font-size: 20px;
+  color: #cc1212;
+  /* Color del asterisco */
+  font-size: 1.25rem;
+  /* 20px */
 }
 
 .input-field {
   width: 100%;
-  padding: 10px;
+  padding: 0.625rem;
+  /* 10px */
   color: #141414;
-  background-color: #E5E7E9;
+  background-color: #e5e7e9;
   border: 1px solid #ccc;
   border-radius: 15px;
-  font-size: 20px;
+  font-size: 1.25rem;
+  /* 20px */
   outline: none;
   transition: border-color 0.3s ease;
 }
 
 .input-field[type="password"] {
-  font-size: 20px !important; /* Asegúrate de que el tamaño de fuente sea el mismo que para otros campos */
+  font-size: 1.25rem !important;
+  /* Asegúrate de que el tamaño de fuente sea el mismo que para otros campos */
 }
 
 .input-field:focus {
-  border-color: #007bff; /* Cambia el color del borde al enfocar */
+  border-color: #007bff;
+  /* Cambia el color del borde al enfocar */
 }
 
-.pass-message{
-  font-size: 20px;
-  color: #8005A3;
+/* Estilos para los selectores de hora */
+.time-selectors {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+}
+
+.time-separator {
+  font-size: 1.25rem;
+  font-weight: bold;
+  color: #141414;
+}
+
+
+.pass-message {
+  font-size: 1.25rem;
+  /* 20px */
+  color: #8005a3;
   text-decoration: none;
-  margin-top: 50px;
+  margin-top: 3.125rem;
+  /* 50px */
 }
 
 .error-message {
-  color: red;
+  color: #dc3545;
   font-size: 0.875rem;
+  /* 14px */
   margin-top: 0.25rem;
+  /* 4px */
   text-align: start;
 }
-
-/*header principal*/
-/* Estilos para el root-header */
+/* Header */
 .root-header {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   z-index: 1000;
-  padding: 20px;
-  height: 150px; /* Altura fija de la cabecera */
-  border-bottom: 2px solid #8005A3;
+  padding: 0.625rem 1.25rem; /* 10px 20px */
+  height: 6.25rem; /* 100px */
+  border-bottom: 2px solid #8005a3;
   background-color: #ffffff;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
+/* Logo */
+.root-header .logo {
+  max-width: 100%;
+  height: auto;
+}
+
+@media (max-width: 576px) {
+  .root-header {
+    padding: 0.625rem; /* 10px */
+    height: 5rem; /* 80px */
+  }
+
+  .root-header .logo {
+    width: 80%; /* Hacemos el logo un poco más pequeño en móviles */
+  }
+}
+
+@media (min-width: 768px) {
+  .root-header {
+    height: 7.5rem; /* 120px */
+  }
+
+  .root-header .logo {
+    width: auto; /* El logo vuelve a su tamaño original */
+  }
+}
+
+/* Admin Nav */
 .admin-nav {
   position: fixed;
-  top: 150px;  /* Empuja el nav hacia abajo para que esté debajo del header */
+  top: 7.5rem; /* Justo debajo del header */
   left: 0;
-  height: calc(100vh - 150px);  /* Resta la altura del header */
-  width: 320px;
-  background-color: #5C30B6;
+  height: calc(100vh - 7.5rem); /* Ocupa el espacio restante */
+  width: 20rem; /* 320px */
+  background-color: #5c30b6;
   padding: 1rem;
-  z-index: 999;  /* Asegura que se quede debajo del header */
+  z-index: 999;
   box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
-}
-
-.content {
-  margin-left: 320px;
-  margin-top: 150px;
-  padding: 40px;
-  width: calc(100% - 320px);
-  height: calc(100vh - 150px);
   overflow-y: auto;
-  background-color: #F2F6F9;
 }
 
-/* Asegura que el contenedor ocupe el 100% de la altura */
+/* Content */
+.content {
+  margin-left: 20rem; /* 320px */
+  margin-top: 7.5rem; /* 120px */
+  padding: 2.5rem; /* 40px */
+  width: calc(100% - 20rem); /* 320px */
+  height: calc(100vh - 9.375rem); /* 150px */
+  overflow-y: auto;
+  background-color: #f2f6f9;
+}
+
+/* Estilos para pantallas pequeñas (max-width: 768px) */
+@media (max-width: 768px) {
+  /* Ajustamos el content para que ocupe todo el ancho y no tenga margen izquierdo */
+  .content {
+    margin-left: 0;
+    width: 100%;
+    margin-top: 5rem; /* Ajustamos el margin-top para que no se solape con el header */
+  }
+
+  /* Mover el admin-nav a la parte superior (debajo del header) */
+  .admin-nav {
+    position: relative; /* Cambiamos a relative para que se mueva al flujo normal */
+    top: 3rem; /* No necesitamos top aquí */
+    left: auto; /* Lo colocamos centrado */
+    width: 100%; /* El nav ocupa el 100% del ancho */
+    box-shadow: none; /* Quitamos la sombra */
+    max-height: 500px;
+  }
+}
+
+/* Estilos para pantallas muy pequeñas (max-width: 576px) */
+@media (max-width: 576px) {
+  .content {
+    padding: 1rem; /* Reducimos el padding para aprovechar mejor el espacio */
+    height: auto;
+  }
+}
+
+
 .container-fluid.h-100 {
   height: 100%;
 }
 
-/* Asegura que la fila ocupe el 100% de la altura */
 .row.h-100 {
   height: 100%;
+}
+
+.card-activity {
+  margin: 0.625rem 1.875rem;
+  /* 10px 30px */
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  margin-bottom: 2rem;
+  background: white;
+
+  /* Uso de flexbox para distribuir contenido */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  /* Mantiene el botón al fondo */
+  min-height: 400px;
+  /* Altura mínima para la tarjeta */
+}
+
+.card-activity:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.12);
+}
+
+.activity-carousel {
+  max-height: 18.75rem;
+  /* 300px */
+  overflow: hidden;
+}
+
+.carousel-image-container {
+  height: 21.875rem;
+  /* 350px */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f8f9fa;
+}
+
+.carousel-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  transition: transform 0.5s ease;
+}
+
+.carousel-control-prev,
+.carousel-control-next {
+  width: 2.5rem;
+  /* 40px */
+  height: 2.5rem;
+  /* 40px */
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 50%;
+  top: 50%;
+  transform: translateY(-50%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.card-activity:hover .carousel-control-prev,
+.card-activity:hover .carousel-control-next {
+  opacity: 1;
+}
+
+.card-activity-content {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  /* Asegura que el contenido se quede en la parte superior */
+  flex-grow: 1;
+  /* Permite que el contenido crezca y ocupe el espacio disponible */
+}
+
+.card-activity-content h3 {
+  color: #2c3e50;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  /* Espacio entre el título y la descripción */
+}
+
+.card-activity-content p {
+  color: #141414;
+  line-height: 1.6;
+  font-size: 1.5rem;
+  /* 24px */
+}
+
+.blue-button-container {
+  margin-top: auto;
+  /* Empuja el botón hacia la parte inferior */
+}
+
+@media (max-width: 768px) {
+  .card-activity {
+    margin-bottom: 1rem;
+  }
+
+  .carousel-image-container {
+    height: 15.625rem;
+    /* 250px */
+  }
+}
+
+.date-text {
+  font-weight: normal;
+  color: #909497;
+  line-height: 1.6;
+  font-size: 1rem;
+  /* 24px */
+}
+
+.activity-edit{
+  font-size: 1.25rem;
+  color: #142EA9;
+}
+
+.time-input-field::-webkit-calendar-picker-indicator {
+  filter: invert(0.5);
+  cursor: pointer;
+}
+
+.event-info {
+  color: #4210A9;
+  font-size: 1rem;
+  /* 20px */
+  font-weight: bold;
+  margin-right: 0.5rem;
+  text-decoration: none;
+  /* 8px */
+}
+
+.event-info:hover {
+  color: #340C85;
+  cursor: pointer;
+}
+
+/* Estilos para el botón de estado */
+.status-btn {
+  border-radius: 15px;
+  text-align: center;
+  color: #fafafa;
+  padding: 5px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.status-active {
+  background-color: #28a745;
+  /* Verde */
+}
+
+.status-inactive {
+  background-color: #dc3545;
+  /* Rojo */
+}
+
+.status-btn:hover {
+  opacity: 0.9;
+  transform: scale(1.02);
+}
+
+/* Estilos para el modal claro */
+.clear-modal .modal-content {
+  border: 1px solid #dee2e6;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
+}
+
+/* Estilos específicos para React-Bootstrap Modal */
+.custom-modal .modal-content {
+  border: none;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  border-radius: 12px;
+}
+
+/* Ajustes para el backdrop */
+.custom-modal .modal-backdrop {
+  opacity: 0.5 !important;
+  background-color: #000;
+}
+
+/* Botones del modal */
+.modal-footer .btn {
+  min-width: 100px;
+}
+
+/* Asegura que el modal esté sobre todo */
+.modal {
+  z-index: 1060 !important;
 }

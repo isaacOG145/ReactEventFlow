@@ -1,66 +1,225 @@
-/* Estilos para el botón del ícono */
+/* Icono de usuario - botón para abrir el modal */
 .icon-button {
-    background: none;
-    border: none;
-    padding: 0;
-    cursor: pointer;
+  background: none;
+  border: none;
+  cursor: pointer;
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  z-index: 1001; /* Asegura que el icono siempre esté por encima */
 }
 
 .icon {
-    width: 85px;
-    height: 85px;
+  width: 80px; /* Tamaño del icono, ajusta según prefieras */
+  height: 80px;
 }
 
-.info{
-    margin-left: 24px;
+/* Responsividad */
+@media (max-width: 768px) {
+  .icon {
+    width: 50px; /* Reduce el tamaño del icono en pantallas más pequeñas */
+    height: 50px;
+  }
+
+  .icon-button {
+    top: 0.8rem; /* Ajusta la posición superior en pantallas más pequeñas */
+    right: 0.8rem; /* Ajusta la posición derecha en pantallas más pequeñas */
+  }
+}
+
+@media (max-width: 480px) {
+  .icon {
+    width: 40px; /* Ajusta aún más el tamaño en pantallas muy pequeñas (móviles) */
+    height: 40px;
+  }
+
+  .icon-button {
+    top: 0.5rem; /* Ajusta la distancia superior en dispositivos móviles */
+    right: 0.5rem; /* Ajusta la distancia derecha en dispositivos móviles */
+  }
 }
 
 /* Estilos para el modal */
 .modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(0, 0, 0, 0.5); /* Fondo semitransparente */
-    z-index: 1000; /* Asegura que el modal esté por encima de otros elementos */
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1000; /* El modal debe estar por encima del contenido pero debajo del icono */
 }
 
 .about-profile {
-    font-size: 16px;
-    width: 380px; /* Ancho fijo del modal */
-    border: 1px solid #000;
-    background-color: #fff; /* Fondo blanco para el modal */
-    position: absolute; /* Posición absoluta para colocarlo cerca del ícono */
-    top: 20px; /* Ajusta la distancia desde la parte superior */
-    right: 10px; /* Ajusta la distancia desde la derecha */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra para resaltar el modal */
+  font-size: 16px;
+  width: 380px;
+  border: 1px solid #000;
+  background-color: #fff;
+  position: absolute;
+  top: 20px;
+  right: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  display: flex; /* Usamos flexbox para organizar el contenido */
+  flex-direction: column;
+  
 }
 
 .profile-header {
-    color: #fff;
-    background-color: #8005A3;
-    padding: 15px;
-    width: 100%;
-    border-bottom: 1px solid #000;
+  color: #fff;
+  background-color: #8005A3;
+  padding: 15px;
+  display: flex;
+  align-items: center; /* Alineamos el contenido horizontalmente */
+  justify-content: flex-start;
+  width: 100%;
+  border-bottom: 1px solid #000;
+}
+
+.profile-header .icon-button {
+  position: relative;
+  top: 0; /* Asegura que el icono esté alineado con el texto */
+  right: 0;
+  margin-right: 10px; /* Añadimos un margen para que haya espacio entre el logo y el texto */
+}
+
+.profile-header .info {
+  margin-left: 10px; /* Alineamos la información del perfil al lado del icono */
 }
 
 .profile-action {
-    color: #000;
-    background-color: #fff;
-    border: 1px solid #000;
-    width: 100%;
-    font-weight: bold;
-    margin-bottom: 5px;
-    padding: 10px;
-    text-align: center;
+  color: #000;
+  background-color: #fff;
+  border: 1px solid #000;
+  width: 100%;
+  font-weight: bold;
+  margin-bottom: 5px;
+  padding: 10px;
+  text-align: center;
 }
 
 .profile-action:last-child {
-    margin-bottom: 0;
+  margin-bottom: 0;
 }
 
 .profile-action:hover {
-    background-color: #f0f0f0;
-    border-color: #000;
+  background-color: #f0f0f0;
+  border-color: #000;
+}
+
+/* Estilos para el modal */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  overflow-y: auto; /* Permite scroll si el contenido es muy largo */
+}
+
+.modal.show {
+  display: flex;
+}
+
+/* Contenido del Modal - Ahora más ancho */
+.modal-content {
+  background-color: white;
+  padding: 30px;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 800px; /* Más ancho que antes (era 500px) */
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  position: relative;
+  margin: 20px;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+
+.modal-header {
+  display: flex;
+  justify-content: space-between; /* Distribuye el espacio entre h1 y el botón */
+  align-items: center; /* Centra verticalmente ambos elementos */
+  margin-bottom: 20px;
+  padding-bottom: 15px;
+  width: 100%; /* Asegura que ocupe todo el ancho */
+}
+
+.modal-header h1 {
+  margin: 0;
+  font-size: 2.5rem;
+  color: #142ea9;
+  flex-grow: 1;
+  text-align: center; /* Centra el texto horizontalmente */
+}
+
+.close-button {
+  background: #dc3545;
+  border: none;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  color: white;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  padding: 0;
+  line-height: 1;
+  margin-left: auto; /* Empuja el botón a la derecha */
+}
+
+.close-button:hover {
+  background: #cc0000;
+}
+
+/* Cuerpo del modal */
+.modal-body {
+  padding: 15px 0;
+}
+
+/* Pie del modal */
+.modal-footer {
+  text-align: right;
+  padding-top: 20px;
+  margin-top: 20px;
+}
+
+/* Ajustes para los inputs en modal más ancho */
+.modal-body .row {
+  margin-bottom: 20px;
+}
+
+.modal-body .col-md-6 {
+  padding: 0 15px;
+}
+
+/* Ajustes para la galería de imágenes */
+.image-gallery-container {
+  margin-top: 20px;
+}
+
+/* Estilos responsivos */
+@media (max-width: 768px) {
+  .modal-content {
+    width: 95%;
+    padding: 20px;
+  }
+  
+  .modal-body .row {
+    flex-direction: column;
+  }
+  
+  .modal-body .col-md-6 {
+    width: 100%;
+    padding: 0;
+    margin-bottom: 15px;
+  }
 }

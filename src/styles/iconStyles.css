@@ -1,3 +1,10 @@
+.icon-ssm{
+    width: 20px;
+    height: 20px;
+    margin-bottom: 5px;
+    margin-right: 5px;
+}
+
 .icon-sm{
     width: 30px;
     height: 30px;
@@ -9,3 +16,15 @@
     width: 35px;
     height: 35px;
 }
+
+.icon-xxlg{
+    width: 120px;
+    height: 120px;
+    margin-bottom: 8px;
+}
+
+.icon-presentation{
+    width: 80px;
+    height: 80px;
+}
+

@@ -1,11 +1,13 @@
-import React from "react";
+import React, { useState } from "react";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../styles/main.css';
 
 import CustomerRootHeader from "../components/CustomerRootHeader";
 import AdminNav from "../components/AdminNav";
 
+
 export default function Dashboard() {
+  
   return (
     <div className="app-container">
       <CustomerRootHeader />
@@ -13,11 +15,8 @@ export default function Dashboard() {
         <AdminNav />
       </div>
       <div className="content">
-        <h1>Contenido Principal</h1>
-        <p>Este es el contenido principal del dashboard.</p>
-        <p>Puedes agregar más elementos aquí.</p>
-
+        
       </div>
     </div>
   );
-} 
+}

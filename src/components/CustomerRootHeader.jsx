@@ -13,12 +13,12 @@ export default function CustomerRootHeader() {
             <div className="container-fluid h-100">
                 <div className="row align-items-center h-100">
                     {/* Columna para el logo */}
-                    <div className="col">
+                    <div className="col-6 col-sm-4">
                         <img src={purpleLogo} alt="logo" className="logo" />
                     </div>
 
                     {/* Columna para el ProfileModal (alineada a la derecha) */}
-                    <div className="col-auto">
+                    <div className="col-6 col-sm-auto ml-auto">
                         <ProfileModal />
                     </div>
                 </div>

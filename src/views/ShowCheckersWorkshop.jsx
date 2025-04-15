@@ -16,11 +16,13 @@ export default function ShowCheckersByActivity() {
   // Obtener las asignaciones por actividad
   useEffect(() => {
     const fetchAssignments = async () => {
+      
       try {
         const response = await fetch(`http://localhost:8080/assignment/findByActivity/${id}`, {
           method: 'GET',
           headers: {
             'Accept': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
           }
         });
 
@@ -54,6 +56,7 @@ export default function ShowCheckersByActivity() {
                 method: 'GET',
                 headers: {
                   'Accept': 'application/json',
+                  'Authorization': `Bearer ${localStorage.getItem('token')}`
                 }
               })
             )
@@ -78,6 +81,7 @@ export default function ShowCheckersByActivity() {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
         },
       });
 

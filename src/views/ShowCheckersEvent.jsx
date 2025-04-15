@@ -22,7 +22,11 @@ export default function ShowCheckersEvent() {
   useEffect(() => {
     const fetchAssignments = async () => {
       try {
-        const response = await fetch(`http://localhost:8080/assignment/findAssignmentsByActivity/${id}`);
+        const response = await fetch(`http://localhost:8080/assignment/findAssignmentsByActivity/${id}`,{
+          headers:{
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
+          }
+        });
         const data = await response.json();
 
         if (data.type === "SUCCESS") {
@@ -53,7 +57,13 @@ export default function ShowCheckersEvent() {
         if (activityIds.length > 0) {
           const activityResponses = await Promise.all(
             activityIds.map(activityId =>
-              fetch(`http://localhost:8080/activity/findById/${activityId}`).then(res => res.json())
+              fetch(`http://localhost:8080/activity/findById/${activityId}`,{
+                headers: {
+                  'Authorization': `Bearer ${localStorage.getItem('token')}`
+                }
+              }
+              
+              ).then(res => res.json())
             )
           );
 
@@ -76,6 +86,9 @@ export default function ShowCheckersEvent() {
   useEffect(() => {
     const fetchCheckers = async () => {
       try {
+        const token = localStorage.getItem('token'); // Obtener el token aquí
+        if (!token) throw new Error('No authentication token found');
+
         const checkerIds = [
           ...eventAssignments.map(a => a.userId),
           ...workshopAssignments.map(a => a.userId)
@@ -84,7 +97,11 @@ export default function ShowCheckersEvent() {
         if (checkerIds.length > 0) {
           const checkerResponses = await Promise.all(
             checkerIds.map(userId =>
-              fetch(`http://localhost:8080/user/findId/${userId}`).then(res => res.json())
+              fetch(`http://localhost:8080/user/findId/${userId}`, {
+                headers: {
+                  'Authorization': `Bearer ${token}` // Incluir el token en cada request
+                }
+              }).then(res => res.json())
             )
           );
 
@@ -93,6 +110,7 @@ export default function ShowCheckersEvent() {
         }
       } catch (err) {
         setError("Error al cargar los checadores.");
+        console.error("Error details:", err); // Mejor para debugging
       } finally {
         setCheckersLoaded(true);
       }
@@ -107,7 +125,10 @@ export default function ShowCheckersEvent() {
     try {
       const response = await fetch(`http://localhost:8080/user/change-status/${checkerId}`, {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        },
       });
 
       const data = await response.json();

@@ -1,17 +1,32 @@
-import React from "react";
+import React, { useState } from "react";
 import EditComponent from "./iconsComponent/EditComponent";
 import ChangeStatus from "./iconsComponent/ChangeStatus";
+import ModalComponent from '../components/modals/ModalComponent';
+import UpdateChecker from "../components/modals/UpdateChecker";
 
 import '../styles/main.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-export default function CheckerCard({ 
-  checker, 
-  onChangeStatus, 
+export default function CheckerCard({
+  checker,
+  onChangeStatus,
   onEdit,
-  assignment 
+  assignment
 }) {
-  
+
+  const [showModal, setShowModal] = useState(false);
+  const [checkerToEdit, setCheckerToEdit] = useState("");
+
+  const handleEditClick = (checker) => {
+    setCheckerToEdit(checker);
+    setShowModal(true);
+  };
+
+  const handleModalClose = () => {
+    setShowModal(false);
+    setCheckerToEdit(null);
+  };
+
 
   return (
     <div className="col-12 col-sm-6 col-md-4 mb-4">
@@ -33,17 +48,17 @@ export default function CheckerCard({
             )}
           </h5>
         </div>
-        
+
         <p className="mb-2 text-muted">
           <i className="bi bi-envelope me-2"></i>
           {checker.email || "No especificado"}
         </p>
-        
+
         <p className="mb-3 text-muted">
           <i className="bi bi-telephone me-2"></i>
           {checker.phone || "No especificado"}
         </p>
-        
+
         {assignment && (
           <p className="mb-2">
             <span className="badge bg-purple text-white">
@@ -53,14 +68,10 @@ export default function CheckerCard({
         )}
 
         <div className="d-flex mt-auto justify-content-end">
-          <button 
-            className="btn btn-link p-2 me-2"
-            onClick={() => onEdit(checker)}
-            aria-label="Editar"
-          >
-            <EditComponent />
-          </button>
-          
+
+          <EditComponent onClick={() => handleEditClick(checker)} />
+
+
           <ChangeStatus
             currentStatus={checker.status}
             onChangeStatus={() => onChangeStatus(checker.id)}
@@ -68,6 +79,18 @@ export default function CheckerCard({
           />
         </div>
       </div>
+      {showModal && (
+        <ModalComponent
+          show={showModal}
+          onClose={handleModalClose}
+          title="Actualizar checador">
+          <UpdateChecker
+            checker={checkerToEdit}
+            handleClose={handleModalClose}
+            onUpdateSuccess={onEdit} />
+        </ModalComponent>
+      )}
+
     </div>
   );
 }

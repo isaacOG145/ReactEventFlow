@@ -6,12 +6,10 @@ import '../styles/main.css';
 import CustomerRootHeader from "../components/CustomerRootHeader";
 import AdminNav from "../components/AdminNav";
 import InputComponent from "../components/InputComponent";
-import CustomPasswordInput from "../components/CustomPasswordInput";
 import BlueButton from "../components/BlueButton";
 import MessageModal from "../components/modals/MessageModal";
 
 // Iconos
-import passwordIcon from '../assets/icons/llave.png';
 import cellphone from '../assets/icons/telefono-inteligente.png';
 import sobre from '../assets/icons/sobres.png';
 import userIcon from '../assets/icons/usuario.png';

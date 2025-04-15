@@ -118,7 +118,7 @@ const ProfileModal = () => {
 
                                 <div className="row">
                                     <div className="col-12">
-                                        <button className="profile-action" onClick={() => navigate('')}>Mi perfil</button>
+                                        <button className="profile-action" onClick={() => navigate('/usuario/mi-perfil')}>Mi perfil</button>
                                     </div>
                                 </div>
                                 <div className="row">

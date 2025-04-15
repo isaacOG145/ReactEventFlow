@@ -1,60 +1,85 @@
 import React, { useState, useEffect } from "react";
 import 'bootstrap/dist/css/bootstrap.min.css';
-import '../../styles/modalStyles.css';
 import SelectInputComponent from "../SelectInput.Component";
 import BlueButton from "../BlueButton";
+import PurpleButton from '../PurpleButton';
+import MessageModal from '../../components/modals/MessageModal';
 
-export default function UpdateAssignmentModal({ showModal, setShowModal, assignmentId, onUpdate }) {
+export default function UpdateAssignmentModal({ assignmentId, onUpdate, onClose }) {
     const [checkers, setCheckers] = useState([]);
     const [selectedChecker, setSelectedChecker] = useState("");
     const [loading, setLoading] = useState(false);
-    const [error, setError] = useState("");
-    const [successMessage, setSuccessMessage] = useState("");
     const [assignment, setAssignment] = useState(null);
+    const [notification, setNotification] = useState({
+        show: false,
+        message: "",
+        type: "success"
+    });
+
+    const showNotification = (message, type = "success", duration = 2500) => {
+        setNotification({ show: true, message, type });
+
+        if (type !== "loading") {
+            setTimeout(() => {
+                setNotification(prev => ({ ...prev, show: false }));
+
+                // Cerrar solo si es éxito
+                if (type === "success" && onClose) {
+                    onClose();
+                }
+            }, duration);
+        }
+    };
 
     const ownerId = localStorage.getItem('userId');
 
     useEffect(() => {
-        if (!ownerId) {
-            setError("No se ha encontrado el ID del propietario.");
-            return;
-        }
-
-        fetch(`http://localhost:8080/user/findByBoss/${ownerId}`)
-            .then(response => response.json())
-            .then(data => {
-                if (data.type === "SUCCESS") {
-                    setCheckers(data.result);
-                } else {
-                    setError("Error al cargar los checadores.");
+        const fetchData = async () => {
+            try {
+                if (!ownerId) {
+                    showNotification("No se ha encontrado el ID del propietario", "error");
+                    return;
                 }
-            })
-            .catch(() => setError("Error al cargar los checadores."));
 
-        if (assignmentId) {
-            setLoading(true);
-            fetch(`http://localhost:8080/assignment/findById/${assignmentId}`)
-                .then(response => response.json())
-                .then(data => {
-                    if (data.type === "SUCCESS") {
-                        setAssignment(data.result);
-                        setSelectedChecker(data.result.user.id);
+                // Cargar checkers
+                const checkersResponse = await fetch(`http://localhost:8080/user/findByBoss/${ownerId}`);
+                const checkersData = await checkersResponse.json();
+
+                if (checkersData.type === "SUCCESS") {
+                    const activos = checkersData.result.filter(c => c.status === true);
+                    setCheckers(activos);
+                } else {
+                    showNotification(checkersData.message || "No se encontraron checadores activos", "error");
+                }
+
+                // Cargar asignación si hay ID
+                if (assignmentId) {
+                    setLoading(true);
+                    const assignmentResponse = await fetch(`http://localhost:8080/assignment/findById/${assignmentId}`);
+                    const assignmentData = await assignmentResponse.json();
+
+                    if (assignmentData.type === "SUCCESS") {
+                        setAssignment(assignmentData.result);
+                        setSelectedChecker(assignmentData.result.user.id);
                     } else {
-                        setError("Error al obtener los detalles de la asignación.");
+                        showNotification("Error al obtener los detalles de la asignación", "error");
                     }
-                })
-                .catch(error => setError("Error al obtener la asignación: " + error.message))
-                .finally(() => setLoading(false));
-        }
+                }
+            } catch (error) {
+                showNotification("Error al cargar datos: " + error.message, "error");
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchData();
     }, [assignmentId, ownerId]);
 
     const handleUpdate = async () => {
-        // Limpiar mensajes anteriores
-        setError("");
-        setSuccessMessage("");
-        setLoading(true);
-
         try {
+            setLoading(true);
+
+            // Validaciones
             if (!selectedChecker) {
                 throw new Error("Por favor, seleccione un checador.");
             }
@@ -80,85 +105,102 @@ export default function UpdateAssignmentModal({ showModal, setShowModal, assignm
             const data = await response.json();
 
             if (!response.ok) {
-                throw new Error(data.message || "Error al actualizar la asignación.");
+                throw new Error(data.message || "Error al actualizar la asignación");
             }
 
-            // Obtener datos completos del nuevo checador
-            const selectedCheckerData = checkers.find(c => c.id == selectedChecker);
-            if (!selectedCheckerData) {
-                throw new Error("No se encontró la información del nuevo checador.");
+            if (data.type === "WARNING") {
+                showNotification(data.text || "Advertencia", "warning");
+                return;
             }
 
-            // Preparar datos actualizados
-            const updatedAssignment = {
-                ...assignment,
-                user: {
-                    ...selectedCheckerData,
-                    id: selectedChecker
-                },
-                status: assignment.status // Mantener el estado actual
-            };
+            if (data.type === "SUCCESS") {
+                const selectedCheckerData = checkers.find(c => c.id == selectedChecker);
+                if (!selectedCheckerData) {
+                    throw new Error("No se encontró la información del nuevo checador.");
+                }
 
-            setSuccessMessage("Asignación actualizada con éxito.");
-            onUpdate(updatedAssignment); // Pasar los datos completos al padre
+                const updatedAssignment = {
+                    ...assignment,
+                    user: {
+                        ...selectedCheckerData,
+                        id: selectedChecker
+                    },
+                    status: assignment.status
+                };
 
-            setTimeout(() => setShowModal(false), 1500);
+                showNotification("Asignación actualizada con éxito", "success");
+                setTimeout(() => {
+                    onUpdate(updatedAssignment);
+                }, 2500);
+
+            }
         } catch (error) {
-            setError(error.message);
+            showNotification(error.message, "error");
         } finally {
             setLoading(false);
         }
     };
 
-    if (!showModal || !assignment) return null;
+    if (!assignment) {
+        return (
+            <div className="text-center p-4">
+                {loading ? "Cargando..." : "No se encontró la asignación"}
+            </div>
+        );
+    }
 
-    const activityName = assignment.activity ? assignment.activity.name : "Actividad no disponible";
+    const activityName = assignment.activity?.name || "Actividad no disponible";
     const checkerName = `${assignment.user.name} ${assignment.user.lastName}`;
 
     return (
-        <div className="modal-overlay">
-            <div className="modal-content">
-                <div className="modal-header">
-                    <h1>Actualizar Asignación</h1>
-                    <button className="close-button" onClick={() => setShowModal(false)}>×</button>
-                </div>
-                <div className="modal-body">
-                    {error && <div className="alert alert-danger">{error}</div>}
-                    {successMessage && <div className="alert alert-success">{successMessage}</div>}
-
-                    <div className="form-group">
-                        <label>Actividad</label>
-                        <input type="text" className="form-control" value={activityName} disabled />
-                    </div>
-
-                    <div className="form-group">
-                        <label>Checador Actual</label>
-                        <input type="text" className="form-control" value={checkerName} disabled />
-                    </div>
-
-                    <div className="form-group">
-                        <label>Nuevo Checador</label>
-                        <SelectInputComponent
-                            options={[
-                                { value: "", label: "Seleccionar checador" },
-                                ...checkers.map(checker => ({
-                                    value: checker.id,
-                                    label: `${checker.name} ${checker.lastName}`
-                                }))
-                            ]}
-                            value={selectedChecker}
-                            onChange={e => setSelectedChecker(e.target.value)}
-                        />
-                    </div>
-                </div>
-
-                <div className="modal-footer">
-                    <BlueButton onClick={handleUpdate} disabled={loading || !selectedChecker}>
-                        {loading ? "Actualizando..." : "Actualizar Asignación"}
-                    </BlueButton>
-                </div>
+        <div className="p-3">
+            <div className="form-group mb-3">
+                <label className="form-label">Actividad</label>
+                <input type="text" className="form-control" value={activityName} disabled />
             </div>
-        </div>
 
+            <div className="form-group mb-3">
+                <label className="form-label">Checador Actual</label>
+                <input type="text" className="form-control" value={checkerName} disabled />
+            </div>
+
+            <div className="form-group mb-4">
+                <label className="form-label">Nuevo Checador</label>
+                <SelectInputComponent
+                    options={[
+                        { value: "", label: "Seleccionar checador" },
+                        ...checkers.map(checker => ({
+                            value: checker.id,
+                            label: `${checker.name} ${checker.lastName}`
+                        }))
+                    ]}
+                    value={selectedChecker}
+                    onChange={e => setSelectedChecker(e.target.value)}
+                    disabled={loading}
+                />
+            </div>
+
+            <div className="mb-3">
+
+                <BlueButton
+                    onClick={handleUpdate}
+                    disabled={loading || !selectedChecker}
+                >
+                    {loading ? "Actualizando..." : "Actualizar"}
+                </BlueButton>
+            </div>
+            <PurpleButton
+                onClick={onClose} >
+                Cancelar
+            </PurpleButton>
+
+
+            <MessageModal
+                show={notification.show}
+                onClose={() => setNotification(prev => ({ ...prev, show: false }))}
+                type={notification.type}
+                message={notification.message}
+            />
+        </div>
     );
 }

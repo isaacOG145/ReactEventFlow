@@ -5,6 +5,7 @@ import "../styles/tableStyles.css";
 import ChangeStatus from "./iconsComponent/ChangeStatus";
 import EditComponent from "./iconsComponent/EditComponent";
 import UpdateAssignmentModal from "./modals/UpdateAssignmentModal";
+import ModalComponent from "./modals/ModalComponent";
 
 export default function AssignmentTable({ title, assignments, onChangeStatus, onUpdate }) {
     const [showModal, setShowModal] = useState(false);
@@ -61,16 +62,22 @@ export default function AssignmentTable({ title, assignments, onChangeStatus, on
                     </table>
 
                     {showModal && (
-                        <UpdateAssignmentModal
-                            showModal={showModal}
-                            setShowModal={handleModalClose}
-                            assignmentId={selectedAssignmentId}
-                            onUpdate={(updatedData) => {
-                                onUpdate(updatedData);
-                                handleModalClose();
-                            }}
-                        />
+                        <ModalComponent
+                            show={showModal}
+                            onClose={handleModalClose}
+                            title="Actualizar Asignación"
+                        >
+                            <UpdateAssignmentModal
+                                assignmentId={selectedAssignmentId}
+                                onUpdate={(updatedData) => {
+                                    onUpdate(updatedData);
+                                    handleModalClose();
+                                }}
+                                onClose={handleModalClose}
+                            />
+                        </ModalComponent>
                     )}
+
                 </>
             ) : (
                 <div className="card no-data-card">

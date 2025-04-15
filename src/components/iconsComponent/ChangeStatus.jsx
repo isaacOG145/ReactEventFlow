@@ -26,11 +26,10 @@ const ChangeStatus = ({ currentStatus, onChangeStatus }) => {
         className="custom-modal"
         dialogClassName="modal-dialog-centered"
       >
-        <Modal.Header closeButton closeVariant="white" className="bg-primary text-white">
-          <Modal.Title>Confirmar cambio de estado</Modal.Title>
-        </Modal.Header>
+        <h1 className="text-center">Confirmar cambio de estado</h1>
         <Modal.Body>
-          ¿Estás seguro de cambiar el estado a {!currentStatus ? "Activo" : "Inactivo"}?
+          <p className="text-center">¿Estás seguro de cambiar el estado?</p>
+          
         </Modal.Body>
         <Modal.Footer>
           <BlueButton 

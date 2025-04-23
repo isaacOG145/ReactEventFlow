@@ -111,7 +111,8 @@ const UpdateEventModal = ({ showModal, eventData, handleClose, onUpdateSuccess }
 
             try {
                 showNotification("Actualizando...", "loading");
-                const response = await fetch('http://localhost:8080/activity/updateEvent', {
+                const apiUrl = import.meta.env.VITE_API_URL;
+                const response = await fetch(`${apiUrl}/activity/updateEvent`, {
                     method: 'PUT',
                     body: formData,
                     headers: {

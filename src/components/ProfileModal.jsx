@@ -45,7 +45,8 @@ const ProfileModal = () => {
 
     const fetchUserInfo = async (userId) => {
         try {
-            const response = await fetch(`http://localhost:8080/user/findId/${userId}`, {
+            const apiUrl = import.meta.env.VITE_API_URL;
+            const response = await fetch(`${apiUrl}/user/findId/${userId}`, {
                 method: "GET",
                 headers: {
                     "Authorization": `Bearer ${localStorage.getItem("token")}`,

@@ -103,8 +103,8 @@ export default function UpdateAssignmentModal({ assignmentId, onUpdate, onClose 
                 userId: selectedChecker,
                 activityId: assignment.activity.id,
             };
-
-            const response = await fetch("http://localhost:8080/assignment/update", {
+            const apiUrl = import.meta.env.VITE_API_URL;
+            const response = await fetch(`${apiUrl}/assignment/update`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",

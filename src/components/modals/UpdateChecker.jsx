@@ -115,8 +115,8 @@ export default function UpdateChecker({ checker, handleClose, onUpdateSuccess })
                 setIsLoading(false);
                 return;
             }
-
-            const response = await fetch(`http://localhost:8080/user/updateChecker`, {
+            const apiUrl = import.meta.env.VITE_API_URL;
+            const response = await fetch(`${apiUrl}/user/updateChecker`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',

@@ -57,8 +57,8 @@ export default function UpdateProfile({ profileData, handleClose, onUpdateSucces
         try {
             const userId = localStorage.getItem('userId');
             const token = localStorage.getItem('token');
-
-            const response = await fetch(`http://localhost:8080/user/updateUser`, {
+            const apiUrl = import.meta.env.VITE_API_URL;
+            const response = await fetch(`${apiUrl}/user/updateUser`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',

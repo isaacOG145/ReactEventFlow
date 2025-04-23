@@ -62,8 +62,9 @@ const UpdateWorkshopModal = ({ showModal, workshopData, handleClose, onUpdateSuc
 
     // Cargar los eventos disponibles
     const userId = localStorage.getItem("userId");
+    const apiUrl = import.meta.env.VITE_API_URL;
     if (userId) {
-      fetch(`http://localhost:8080/activity/events/byOwner/${userId}`,{
+      fetch(`${apiUrl}/activity/events/byOwner/${userId}`,{
         headers:{
           'Authorization': `Bearer ${localStorage.getItem('token')}`
         }
@@ -136,7 +137,8 @@ const UpdateWorkshopModal = ({ showModal, workshopData, handleClose, onUpdateSuc
       try {
         // Mostrar estado de carga
         showNotification("Actualizando...", "loading");
-        const response = await fetch('http://localhost:8080/activity/updateWorkshop', {
+        const apiUrl = import.meta.env.VITE_API_URL;
+        const response = await fetch(`${apiUrl}/activity/updateWorkshop`, {
           method: 'PUT',
           body: formData,
           headers: {

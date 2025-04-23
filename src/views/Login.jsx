@@ -36,6 +36,7 @@ const loginUser = async (email, password) => {
         }
 
         const data = await response.json();
+        
         return data;
     } catch (error) {
         console.error('Error:', error);
@@ -113,16 +114,16 @@ export default function Login() {
         try {
             const userData = await loginUser(email, password);
 
-            localStorage.setItem('token', userData.jwt);
-            localStorage.setItem('userId', userData.userId);
-            localStorage.setItem('role', userData.role);
+            localStorage.setItem('token', userData.result.jwt);
+            localStorage.setItem('userId', userData.result.userId);
+            localStorage.setItem('role', userData.result.role);
 
             // Mostrar mensaje de éxito antes de redirigir
             showNotification("Inicio de sesión exitoso");
 
             // Redirección después de 1.5 segundos (para que se vea el mensaje)
             setTimeout(() => {
-                if (userData.role === 'ADMIN' || userData.role === "SUPER_ADMIN") {
+                if (userData.result.role === 'ADMIN' || userData.result.role === "SUPER_ADMIN") {
                     navigate('/dashboard/mis-talleres');
                 } else {
                     navigate('/');
@@ -133,9 +134,9 @@ export default function Login() {
             console.error('Login error:', error);
 
             if (error.message.includes('401')) {
-                showNotification('Credenciales incorrectas', 'error');
+                showNotification('Contraseña o correo incorrectos', 'error');
             } else if (error.message.includes('403')) {
-                showNotification('Acceso no autorizado', 'error');
+                showNotification('Usuario inhabilitado, contacte con el administrador', 'error');
             } else if (error.message.includes('NetworkError')) {
                 showNotification('Error de conexión. Intente nuevamente.', 'error');
             } else {

@@ -42,7 +42,7 @@ html {
   display: flex;
   flex-direction: column;
   align-items: center;
-  height: 100vh;
+  min-height: 100vh;
   width: 100vw;
   background-color: #f2f6f9;
 }
@@ -354,7 +354,6 @@ h1 {
   /* 20px */
   color: #8005a3;
   text-decoration: none;
-  margin-top: 3.125rem;
   /* 50px */
 }
 

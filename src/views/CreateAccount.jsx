@@ -3,6 +3,7 @@ import InputComponent from "../components/InputComponent";
 import CustomPasswordInput from "../components/CustomPasswordInput";
 import BlueButton from "../components/BlueButton";
 import { useState } from "react";
+import { Link } from 'react-router-dom';
 // Estilos
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../styles/main.css';
@@ -284,10 +285,11 @@ export default function CreateAccount() {
                     </div>
                 </form>
 
-
             </div>
 
-            <a className="pass-message mb-5">Volver al inicio</a>
+            <Link to="/login" className="pass-message mt-3">¿Ya tienes una cuenta?</Link>
+
+            <Link to="/" className="pass-message mt-3 mb-5">Volver al inicio</Link>
 
 
 

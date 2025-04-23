@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../styles/main.css';
 import '../styles/iconStyles.css';
@@ -71,9 +72,11 @@ export default function RecoverUserPassword() {
             </div>
 
 
-            <div className="text-center mt-4">
-                <a href="/login">¿Has recordado tu contraseña?</a>
-            </div>
+          
+            <Link to="/login" className="pass-message ">¿Ya tienes una cuenta?</Link>
+
+                
+            
         </div>
     );
 }

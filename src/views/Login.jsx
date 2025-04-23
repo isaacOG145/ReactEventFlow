@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 // Estilos
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../styles/main.css';
@@ -93,6 +94,10 @@ export default function Login() {
     const handleForgotPassword = () => {
         navigate('/recover-password');
     };
+
+    const handleCreateAccount = () => {
+        navigate ('/crear-cuenta');
+    }
 
     const showNotification = (message, type = "success") => {
         setNotification({
@@ -189,7 +194,7 @@ export default function Login() {
                         <BlueButton type="submit">Iniciar sesión</BlueButton>
                     </div>
                     <div className="mb-3">
-                        <PurpleButton>Crear una cuenta</PurpleButton>
+                        <PurpleButton onClick={handleCreateAccount}>Crear una cuenta</PurpleButton>
                     </div>
                 </form>
             </div>

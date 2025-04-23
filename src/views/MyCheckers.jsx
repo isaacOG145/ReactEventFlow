@@ -46,7 +46,8 @@ export default function MyCheckers() {
   // Función para manejar el cambio de estado
   const handleChangeStatus = async (id) => {
     try {
-      const response = await fetch(`http://localhost:8080/user/change-status/${id}`, {
+      const apiUrl = import.meta.env.VITE_API_URL;
+      const response = await fetch(`${apiUrl}/user/change-status/${id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

@@ -42,7 +42,8 @@ export default function UpdateAssignmentModal({ assignmentId, onUpdate, onClose 
                 }
 
                 // Cargar checkers
-                const checkersResponse = await fetch(`http://localhost:8080/user/findByBoss/${ownerId}`,{
+                const apiUrl = import.meta.env.VITE_API_URL;
+                const checkersResponse = await fetch(`${apiUrl}/user/findByBoss/${ownerId}`,{
                     headers:{
                         'Authorization': `Bearer ${localStorage.getItem('token')}`
                     }
@@ -59,7 +60,8 @@ export default function UpdateAssignmentModal({ assignmentId, onUpdate, onClose 
                 // Cargar asignación si hay ID
                 if (assignmentId) {
                     setLoading(true);
-                    const assignmentResponse = await fetch(`http://localhost:8080/assignment/findById/${assignmentId}`,{
+                    const apiUrl = import.meta.env.VITE_API_URL;
+                    const assignmentResponse = await fetch(`${apiUrl}/assignment/findById/${assignmentId}`,{
                         headers: {
                             'Authorization': `Bearer ${localStorage.getItem('token')}`
                         }

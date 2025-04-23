@@ -41,7 +41,8 @@ export default function AssignmentChecker({ activity, onClose, onUpdateSuccess }
 
     if (bossId) {
       setLoading(true);
-      fetch(`http://localhost:8080/user/findByBoss/${bossId}`,{
+      const apiUrl = import.meta.env.VITE_API_URL;
+      fetch(`${apiUrl}/user/findByBoss/${bossId}`,{
         headers:{
           'Authorization': `Bearer ${localStorage.getItem('token')}`
         }
@@ -81,8 +82,8 @@ export default function AssignmentChecker({ activity, onClose, onUpdateSuccess }
       userId: selectedChecker,
       activityId: activity.id
     };
-
-    fetch("http://localhost:8080/assignment/saveAssignment", {
+    const apiUrl = import.meta.env.VITE_API_URL;
+    fetch(`${apiUrl}/assignment/saveAssignment`, {
       method: "POST",
       headers: { 
         "Content-Type": "application/json",

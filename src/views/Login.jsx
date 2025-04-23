@@ -22,7 +22,8 @@ import { validateEmail, validatePassword, validateRequired } from "../utils/vali
 
 const loginUser = async (email, password) => {
     try {
-        const response = await fetch('http://localhost:8080/login', {
+        const apiUrl = import.meta.env.VITE_API_URL;
+        const response = await fetch(`${apiUrl}/login`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

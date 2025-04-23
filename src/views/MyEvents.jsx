@@ -29,14 +29,15 @@ export default function MyEvents() {
     try {
       const userId = localStorage.getItem('userId');
       if (!userId) throw new Error('No se encontró userId en el localStorage');
-
+      const apiUrl = import.meta.env.VITE_API_URL;
       const [eventsRes, assignmentRes] = await Promise.all([
-        fetch(`http://localhost:8080/activity/events/byOwner/${userId}`,{
-          headers:{
+
+        fetch(`${apiUrl}/activity/events/byOwner/${userId}`, {
+          headers: {
             'Authorization': `Bearer ${localStorage.getItem('token')}`
           }
         }),
-        fetch(`http://localhost:8080/activity/assignment-status/owner/${userId}`,{
+        fetch(`${apiUrl}/activity/assignment-status/owner/${userId}`, {
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('token')}`
           }
@@ -136,7 +137,8 @@ export default function MyEvents() {
 
   const handleUpdateEvent = async (updatedEvent) => {
     try {
-      const response = await fetch(`http://localhost:8080/activity/events/update`, {
+      const apiUrl = import.meta.env.VITE_API_URL;
+      const response = await fetch(`${apiUrl}/activity/events/update`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -233,7 +235,7 @@ export default function MyEvents() {
           showModal={showModal}
           eventData={eventToEdit}
           handleClose={handleCloseModal}
-          onUpdateSuccess={handleUpdateSuccess} 
+          onUpdateSuccess={handleUpdateSuccess}
         />
       )}
 

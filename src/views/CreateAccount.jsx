@@ -22,8 +22,8 @@ export default function CreateAccount() {
 
     const registerAdmin = async (formData) => {
         try {
-
-            const response = await fetch('http://localhost:8080/user/saveAdmin', {
+            const apiUrl = import.meta.env.VITE_API_URL;
+            const response = await fetch(`${apiUrl}/user/saveAdmin`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

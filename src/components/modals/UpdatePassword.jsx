@@ -73,8 +73,8 @@ export default function UpdatePassword({ handleClose, onUpdateSuccess }) {
         try {
             const userId = localStorage.getItem('userId');
             const token = localStorage.getItem('token');
-
-            const response = await fetch(`http://localhost:8080/user/updatePassword`, {
+            const apiUrl = import.meta.env.VITE_API_URL;
+            const response = await fetch(`${apiUrl}/user/updatePassword`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',

@@ -97,8 +97,8 @@ export default function NewChecker() {
       let sentByUserId = localStorage.getItem("userId");
 
       showNotification("Registrando checador...", "loading");
-
-      const response = await fetch("http://localhost:8080/user/saveChecker", {
+      const apiUrl = import.meta.env.VITE_API_URL;
+      const response = await fetch(`${apiUrl}/user/saveChecker`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

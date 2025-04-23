@@ -66,7 +66,8 @@ export default function ChargeWorkshop({ id }) {
 
     const fetchEventData = async () => {
         try {
-            const response = await fetch(`http://localhost:8080/activity/workshop/findById/${id}`,{
+            const apiUrl = import.meta.env.VITE_API_URL;
+            const response = await fetch(`${apiUrl}/activity/workshop/findById/${id}`,{
                 headers:{
                     'Authorization': `Bearer ${localStorage.getItem('token')}`
                 }
@@ -107,7 +108,8 @@ export default function ChargeWorkshop({ id }) {
     useEffect(() => {
         const fetchUserActivities = async () => {
             try {
-                const usersResponse = await fetch(`http://localhost:8080/user-activities/findByActivity/${id}`,{
+                const apiUrl = import.meta.env.VITE_API_URL;
+                const usersResponse = await fetch(`${apiUrl}/user-activities/findByActivity/${id}`,{
                     headers:{
                         'Authorization': `Bearer ${localStorage.getItem('token')}`
                     }

@@ -21,7 +21,8 @@ export default function MyProfile() {
     try {
       const userId = localStorage.getItem('userId');
       const token = localStorage.getItem('token');
-      const response = await fetch(`http://localhost:8080/user/findId/${userId}`, {
+      const apiUrl = import.meta.env.VITE_API_URL;
+      const response = await fetch(`${apiUrl}/user/findId/${userId}`, {
         method: 'GET',
         headers: {
           'Accept': 'application/json',

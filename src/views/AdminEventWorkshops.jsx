@@ -21,8 +21,8 @@ export default function AdminEventWorkshops() {
   useEffect(() => {
     const fetchWorkshops = async () => {
       try {
-
-        const response = await fetch(`http://localhost:8080/activity/findByEvent/${eventId}`, {
+        const apiUrl = import.meta.env.VITE_API_URL;
+        const response = await fetch(`${apiUrl}/activity/findByEvent/${eventId}`, {
           method: 'GET',
           headers: {
             'Accept': 'application/json',

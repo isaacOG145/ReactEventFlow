@@ -22,7 +22,8 @@ export default function ShowCheckersEvent() {
   useEffect(() => {
     const fetchAssignments = async () => {
       try {
-        const response = await fetch(`http://localhost:8080/assignment/findAssignmentsByActivity/${id}`,{
+        const apiUrl = import.meta.env.VITE_API_URL;
+        const response = await fetch(`${apiUrl}/assignment/findAssignmentsByActivity/${id}`,{
           headers:{
             'Authorization': `Bearer ${localStorage.getItem('token')}`
           }
@@ -55,9 +56,10 @@ export default function ShowCheckersEvent() {
         ];
 
         if (activityIds.length > 0) {
+          const apiUrl = import.meta.env.VITE_API_URL;
           const activityResponses = await Promise.all(
             activityIds.map(activityId =>
-              fetch(`http://localhost:8080/activity/findById/${activityId}`,{
+              fetch(`${apiUrl}/activity/findById/${activityId}`,{
                 headers: {
                   'Authorization': `Bearer ${localStorage.getItem('token')}`
                 }
@@ -95,9 +97,10 @@ export default function ShowCheckersEvent() {
         ];
 
         if (checkerIds.length > 0) {
+          const apiUrl = import.meta.env.VITE_API_URL;
           const checkerResponses = await Promise.all(
             checkerIds.map(userId =>
-              fetch(`http://localhost:8080/user/findId/${userId}`, {
+              fetch(`${apiUrl}/user/findId/${userId}`, {
                 headers: {
                   'Authorization': `Bearer ${token}` // Incluir el token en cada request
                 }
@@ -123,7 +126,8 @@ export default function ShowCheckersEvent() {
 
   const handleChangeStatus = async (checkerId) => {
     try {
-      const response = await fetch(`http://localhost:8080/user/change-status/${checkerId}`, {
+      const apiUrl = import.meta.env.VITE_API_URL;
+      const response = await fetch(`${apiUrl}/user/change-status/${checkerId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

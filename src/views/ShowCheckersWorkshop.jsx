@@ -18,7 +18,8 @@ export default function ShowCheckersByActivity() {
     const fetchAssignments = async () => {
       
       try {
-        const response = await fetch(`http://localhost:8080/assignment/findByActivity/${id}`, {
+        const apiUrl = import.meta.env.VITE_API_URL;
+        const response = await fetch(`${apiUrl}/assignment/findByActivity/${id}`, {
           method: 'GET',
           headers: {
             'Accept': 'application/json',
@@ -48,11 +49,11 @@ export default function ShowCheckersByActivity() {
       const fetchCheckers = async () => {
         try {
           const checkerIds = assignments.map((assignment) => assignment.user.id);  // Extraemos los user.id de las asignaciones
-
+          const apiUrl = import.meta.env.VITE_API_URL;
           // Realizamos las peticiones para obtener los checkers
           const checkerResponses = await Promise.all(
             checkerIds.map((userId) =>
-              fetch(`http://localhost:8080/user/findId/${userId}`, {
+              fetch(`${apiUrl}/user/findId/${userId}`, {
                 method: 'GET',
                 headers: {
                   'Accept': 'application/json',
@@ -73,11 +74,11 @@ export default function ShowCheckersByActivity() {
       fetchCheckers();
     }
   }, [assignments]);  // Solo ejecutar este useEffect si las asignaciones cambian
-
+  const apiUrl = import.meta.env.VITE_API_URL;
   // Función para manejar el cambio de estado de un checker
   const handleChangeStatus = async (id) => {
     try {
-      const response = await fetch(`http://localhost:8080/user/change-status/${id}`, {
+      const response = await fetch(`${apiUrl}/user/change-status/${id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

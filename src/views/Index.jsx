@@ -24,8 +24,8 @@ export default function Index() {
   const navigate = useNavigate(); // Usamos useNavigate
 
   useEffect(() => {
-    
-    fetch('http://localhost:8080/activity/findActiveEvents')
+    const apiUrl = import.meta.env.VITE_API_URL;
+    fetch(`${apiUrl}/activity/findActiveEvents`)
       .then((response) => {
         if (!response.ok) {
           throw new Error('Error al obtener las actividades');

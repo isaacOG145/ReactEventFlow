@@ -28,7 +28,8 @@ export default function MyAssignments() {
         // Cargar eventos
         async function fetchEvents() {
             try {
-                const response = await fetch(`http://localhost:8080/assignment/events/findByOwner/${ownerId}`,{
+                const apiUrl = import.meta.env.VITE_API_URL;
+                const response = await fetch(`${apiUrl}/assignment/events/findByOwner/${ownerId}`,{
                     headers:{
                         'Authorization': `Bearer ${localStorage.getItem('token')}`
                     }
@@ -56,7 +57,8 @@ export default function MyAssignments() {
         // Cargar talleres
         async function fetchWorkshops() {
             try {
-                const response = await fetch(`http://localhost:8080/assignment/workshops/findByOwner/${ownerId}`,{
+                const apiUrl = import.meta.env.VITE_API_URL;
+                const response = await fetch(`${apiUrl}/assignment/workshops/findByOwner/${ownerId}`,{
                     headers:{
                         'Authorization': `Bearer ${localStorage.getItem('token')}` 
                     }
@@ -87,7 +89,8 @@ export default function MyAssignments() {
 
     const handleChangeStatus = async (id) => {
         try {
-            const response = await fetch(`http://localhost:8080/assignment/change-status/${id}`, {
+            const apiUrl = import.meta.env.VITE_API_URL;
+            const response = await fetch(`${apiUrl}/assignment/change-status/${id}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',

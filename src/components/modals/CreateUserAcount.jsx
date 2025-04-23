@@ -161,8 +161,8 @@ export default function CreateUserAcount({ activityId, onRegistrationSuccess }) 
         }
 
         try {
-
-            const response = await fetch("http://localhost:8080/user/saveUser", {
+            const apiUrl = import.meta.env.VITE_API_URL;
+            const response = await fetch(`${apiUrl}/user/saveUser`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -187,7 +187,8 @@ export default function CreateUserAcount({ activityId, onRegistrationSuccess }) 
 
 
                 // Enviar la inscripción al evento
-                const registerResponse = await fetch('http://localhost:8080/user-activities/save', {
+                const apiUrl = import.meta.env.VITE_API_URL;
+                const registerResponse = await fetch(`${apiUrl}/user-activities/save`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',

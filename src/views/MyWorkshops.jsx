@@ -32,14 +32,15 @@ export default function MyWorkshops() {
       if (!userId) {
         throw new Error('No se encontró userId en el localStorage');
       }
-
+      const apiUrl = import.meta.env.VITE_API_URL;
       const [eventsRes, assignmentRes] = await Promise.all([
-        fetch(`http://localhost:8080/activity/workshops/byOwner/${userId}`,{
+        fetch(`${apiUrl}/activity/workshops/byOwner/${userId}`,{
           headers:{
             'Authorization': `Bearer ${localStorage.getItem('token')}`
           }
         }),
-        fetch(`http://localhost:8080/activity/assignment-status/owner/${userId}`,{
+        
+        fetch(`${apiUrl}/activity/assignment-status/owner/${userId}`,{
           headers:{
             'Authorization': `Bearer ${localStorage.getItem('token')}`
           }
@@ -110,7 +111,8 @@ export default function MyWorkshops() {
 
   const handleUpdateWorkshop = async (updatedWorkshop) => {
     try {
-      const response = await fetch(`http://localhost:8080/activity/workshops/update/${updatedWorkshop.id}`, {
+      const apiUrl = import.meta.env.VITE_API_URL;
+      const response = await fetch(`${apiUrl}/activity/workshops/update/${updatedWorkshop.id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -133,7 +135,8 @@ export default function MyWorkshops() {
 
   const handleChangeStatus = async (id) => {
     try {
-      const response = await fetch(`http://localhost:8080/activity/change-status/${id}`, {
+      const apiUrl = import.meta.env.VITE_API_URL;
+      const response = await fetch(`${apiUrl}/activity/change-status/${id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

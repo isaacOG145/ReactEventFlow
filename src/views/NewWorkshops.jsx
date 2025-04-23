@@ -41,9 +41,9 @@ export default function NewWorkshop() {
   useEffect(() => {
     const userId = localStorage.getItem("userId");
     const token = localStorage.getItem("token");
-
+    const apiUrl = import.meta.env.VITE_API_URL;
     if (userId && token) {
-      fetch(`http://localhost:8080/activity/events/byOwner/${userId}`, {
+      fetch(`${apiUrl}/activity/events/byOwner/${userId}`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -154,8 +154,8 @@ export default function NewWorkshop() {
     try {
       showNotification("Guardando taller...", "loading");
       const token = localStorage.getItem("token");
-      
-      const response = await fetch('http://localhost:8080/activity/saveWorkshop', {
+      const apiUrl = import.meta.env.VITE_API_URL;
+      const response = await fetch(`${apiUrl}/activity/saveWorkshop`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`

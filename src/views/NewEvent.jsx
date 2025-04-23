@@ -82,8 +82,8 @@ export default function NewEvent() {
     try {
       // Mostrar estado de carga
       showNotification("Guardando evento...", "loading");
-      
-      const response = await fetch('http://localhost:8080/activity/saveEvent', {
+      const apiUrl = import.meta.env.VITE_API_URL;
+      const response = await fetch(`${apiUrl}/activity/saveEvent`, {
         method: 'POST',
         body: formData,
         headers:{

@@ -224,7 +224,6 @@ export default function CreateUserAcount({ activityId, onRegistrationSuccess }) 
                     job: "",
                     workPlace: "",
                     howFound: "",
-                    address: ""
                 });
             } else {
                 throw new Error("Error en el registro");

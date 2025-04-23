@@ -24,7 +24,7 @@ export default function Index() {
   const navigate = useNavigate(); // Usamos useNavigate
 
   useEffect(() => {
-    // Realizamos la solicitud GET usando fetch
+    
     fetch('http://localhost:8080/activity/findActiveEvents')
       .then((response) => {
         if (!response.ok) {

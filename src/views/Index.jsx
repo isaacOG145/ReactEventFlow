@@ -60,7 +60,8 @@ export default function Index() {
 
   useEffect(() => {
     // Realizamos la solicitud GET usando fetch
-    fetch('http://localhost:8080/activity/findActiveWorkshops')
+    const apiUrl = import.meta.env.VITE_API_URL;
+    fetch(`${apiUrl}/activity/findActiveWorkshops`)
       .then((response) => {
         if (!response.ok) {
           throw new Error('Error al obtener los talleres');

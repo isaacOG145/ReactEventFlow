@@ -93,7 +93,8 @@ export default function MyEvents() {
 
   const handleChangeStatus = async (id) => {
     try {
-      const response = await fetch(`http://localhost:8080/activity/change-status/${id}`, {
+      const apiUrl = import.meta.env.VITE_API_URL;
+      const response = await fetch(`${apiUrl}/activity/change-status/${id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

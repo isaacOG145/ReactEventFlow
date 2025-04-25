@@ -18,7 +18,8 @@ export default function MyCheckers() {
           throw new Error('No se encontró userId en el localStorage');
         }
 
-        const response = await fetch(`http://localhost:8080/user/findByBoss/${userId}`, {
+        const apiUrl = import.meta.env.VITE_API_URL;
+        const response = await fetch(`${apiUrl}/user/findByBoss/${userId}`, {
           method: 'GET',
           headers: {
             'Accept': 'application/json',

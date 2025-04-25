@@ -27,7 +27,8 @@ export default function EventDetails() {
     // Función para obtener los detalles del evento
     const fetchEventDetails = async () => {
         try {
-            const response = await fetch(`http://localhost:8080/activity/event/findById/${id}`);
+            const apiUrl = import.meta.env.VITE_API_URL;
+            const response = await fetch(`${apiUrl}/activity/event/findById/${id}`);
             const data = await response.json();
             if (data.type === "SUCCESS") {
                 setEventDetails(data.result);
@@ -40,7 +41,8 @@ export default function EventDetails() {
     // Función para obtener las actividades del evento
     const fetchActivities = async () => {
         try {
-            const response = await fetch(`http://localhost:8080/activity/findByEvent/${id}`);
+            const apiUrl = import.meta.env.VITE_API_URL;
+            const response = await fetch(`${apiUrl}/activity/findByEvent/${id}`);
             const data = await response.json();
             if (data.type === "SUCCESS") {
                 setActivities(data.result);
